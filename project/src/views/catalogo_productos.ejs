@@ -19,9 +19,65 @@
     Tiempo de preventa restante: 4 días | 3 horas | 45 minutos | 32 segundos
   </div>
 
-  <!-- Grid de Productos -->
-  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <!-- Contenedor Principal (Filtros + Grid de Productos) -->
+  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6">
+    
+    <!-- Sidebar de Filtros -->
+    <aside class="w-full md:w-64 flex-shrink-0">
+      <div class="bg-white p-5 rounded-lg border border-gray-200 sticky top-4">
+        <h2 class="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Filtros</h2>
+        
+        <!-- Artículos -->
+        <div class="mb-6">
+          <h3 class="font-semibold text-gray-800 mb-3">Artículos</h3>
+          <div class="space-y-2">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Rollos</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Kits</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Pinturas</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Vestimenta</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Categorías -->
+        <div>
+          <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
+          <div class="space-y-2">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Paraguas</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Mochilas</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Termos</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Otros Accesorios</span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Grid de Productos -->
+    <div class="flex-grow">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       
       <!-- Producto 1 -->
       <div class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
@@ -279,6 +335,7 @@
         </div>
       </div>
 
+      </div>
     </div>
   </div>
 </main>
