@@ -31,4 +31,8 @@ app.get('/detalle_reserva', (request, response) => {
   response.render('detalle_reserva', { title: 'Detalle de Reserva' });
 });
 
+app.get('/info_perfil', (request, response) => {
+  response.render('info_perfil', { title: 'Información del Perfil' });
+});
+
 app.listen(3000);
