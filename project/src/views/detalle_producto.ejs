@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('partials/head') %>
+  <title>DeltronNXT DC3000 - Detalles del Producto</title>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('partials/navbar_cliente') %>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+    
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center text-sm text-gray-500 mb-6 flex-wrap">
+      <a href="/catalogo" class="hover:text-[#007185] transition-colors">Catálogo</a>
+      <span class="material-icons text-sm mx-1">chevron_right</span>
+      <a href="#" class="hover:text-[#007185] transition-colors">Automotriz</a>
+      <span class="material-icons text-sm mx-1">chevron_right</span>
+      <span class="text-gray-900 font-medium">DeltronNXT DC3000</span>
+    </nav>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 lg:p-10 items-start">
+        
+        <!-- Imagen -->
+        <div class="flex justify-center items-center bg-gray-50 rounded-lg p-6 border border-gray-100 h-full max-h-[450px]">
+          <img src="https://placehold.co/600x600/ffffff/cccccc?text=DC3000" alt="DeltronNXT DC3000" class="max-w-full max-h-[320px] object-contain mix-blend-multiply rounded-md">
+        </div>
+
+        <!-- Detalles -->
+        <div class="flex flex-col">
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 leading-tight">DeltronNXT DC3000 (3.75 L)</h1>
+          
+          <div class="flex items-center text-sm mb-4">
+            <div class="flex text-[#FFA41C]">
+              <span class="material-icons" style="font-size: 20px;">star</span>
+              <span class="material-icons" style="font-size: 20px;">star</span>
+              <span class="material-icons" style="font-size: 20px;">star</span>
+              <span class="material-icons" style="font-size: 20px;">star</span>
+              <span class="material-icons" style="font-size: 20px;">star_half</span>
+            </div>
+            <span class="text-[#007185] ml-2 hover:underline cursor-pointer">1,245 valoraciones</span>
+          </div>
+
+          <div class="border-t border-b border-gray-200 py-4 mb-6">
+            <div class="flex items-start text-gray-900">
+              <span class="text-sm font-medium mt-1">$</span>
+              <span class="text-4xl font-semibold">2,399</span>
+              <span class="text-sm font-medium mt-1">00</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-1">Precio con IVA incluido</p>
+          </div>
+
+          <!-- Selector de unidad -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Unidad de venta</label>
+            <div class="inline-flex items-center border-2 border-[#007185] bg-blue-50 text-[#007185] rounded-md px-4 py-2 text-sm font-medium cursor-default">
+              Litros (3.75 L)
+            </div>
+          </div>
+
+          <!-- Selector de cantidad -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
+            <div class="flex items-center w-32 border border-gray-300 rounded-md shadow-sm">
+              <button class="w-10 h-10 flex justify-center items-center text-gray-600 hover:bg-gray-100 rounded-l-md transition-colors" type="button">
+                <span class="material-icons text-sm">remove</span>
+              </button>
+              <input type="text" value="1" class="w-12 h-10 text-center border-x border-gray-300 text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#007185]" aria-label="Cantidad">
+              <button class="w-10 h-10 flex justify-center items-center text-gray-600 hover:bg-gray-100 rounded-r-md transition-colors" type="button">
+                <span class="material-icons text-sm">add</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex flex-col gap-3">
+            <button class="w-full bg-[#2B6398] hover:bg-[#1e466b] border border-[#1e466b] rounded-full py-3 px-6 text-white font-medium transition-colors shadow-sm flex justify-center items-center gap-2 text-lg">
+              <span class="material-icons">shopping_cart</span>
+              Agregar al carrito
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Descripción del producto -->
+    <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-10">
+      <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Descripción del producto</h2>
+      <div class="prose max-w-none text-gray-700">
+        <p class="mb-4">
+          El barniz transparente <strong class="text-gray-900">DeltronNXT DC3000</strong> es un recubrimiento de alto desempeño diseñado específicamente para reparaciones rápidas de paneles y trabajos puntuales. Ofrece un tiempo de secado ultra rápido, permitiendo un pulido eficiente en menos tiempo que los barnices convencionales.
+        </p>
+        <p class="mb-4">
+          Formulado con la última tecnología en resinas, proporciona un brillo excepcional y una excelente retención del mismo, asegurando un acabado de calidad original (OEM).
+        </p>
+        <h3 class="text-lg font-semibold text-gray-900 mt-6 mb-3">Características principales:</h3>
+        <ul class="list-disc pl-5 space-y-2">
+          <li>Secado ultrarrápido (fuera de polvo en minutos).</li>
+          <li>Listo para pulir en corto tiempo, reduciendo los tiempos de ciclo en el taller.</li>
+          <li>Excelente nivelación y brillo superior.</li>
+          <li>Fácil aplicación y excelente resistencia a los rayos UV.</li>
+          <li>Compatible con la línea de bases color Deltron.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Valoraciones -->
+    <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-10">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200 gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-gray-900">Valoraciones de clientes</h2>
+          <div class="flex items-center mt-2">
+            <div class="flex text-[#FFA41C]">
+              <span class="material-icons">star</span>
+              <span class="material-icons">star</span>
+              <span class="material-icons">star</span>
+              <span class="material-icons">star</span>
+              <span class="material-icons">star_half</span>
+            </div>
+            <span class="ml-2 font-medium text-gray-900">4.5 de 5</span>
+            <span class="ml-2 text-gray-500 text-sm">(1,245 globales)</span>
+          </div>
+        </div>
+        <button class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-full py-2 px-6 transition-colors text-sm shadow-sm flex items-center gap-2">
+          <span class="material-icons text-sm">edit</span>
+          Añadir una reseña
+        </button>
+      </div>
+
+      <!-- Comentarios -->
+      <div class="space-y-6">
+        <!-- Comentario 1 -->
+        <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+          <div class="flex items-center mb-2">
+            <div class="w-8 h-8 rounded-full bg-[#007185] flex items-center justify-center text-white font-bold mr-3 text-sm">
+              M
+            </div>
+            <span class="font-medium text-gray-900">Miguel Ángel S.</span>
+            <span class="text-gray-500 text-xs ml-4">Hace 2 semanas</span>
+          </div>
+          <div class="flex items-center mb-2">
+            <div class="flex text-[#FFA41C] text-sm mr-2">
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+            </div>
+            <h4 class="font-bold text-sm text-gray-900">Excelente brillo y secado muy rápido</h4>
+          </div>
+          <p class="text-gray-700 text-sm">
+            He usado este barniz en mi taller durante los últimos meses y ha mejorado enormemente nuestros tiempos de entrega. Seca rapidísimo y el acabado es espectacular. Totalmente recomendado para reparaciones express.
+          </p>
+        </div>
+
+        <!-- Comentario 2 -->
+        <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+          <div class="flex items-center mb-2">
+            <div class="w-8 h-8 rounded-full bg-[#2B6398] flex items-center justify-center text-white font-bold mr-3 text-sm">
+              R
+            </div>
+            <span class="font-medium text-gray-900">Roberto Carlos</span>
+            <span class="text-gray-500 text-xs ml-4">Hace 1 mes</span>
+          </div>
+          <div class="flex items-center mb-2">
+            <div class="flex text-[#FFA41C] text-sm mr-2">
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star_border</span>
+            </div>
+            <h4 class="font-bold text-sm text-gray-900">Muy buen producto, aunque rinde un poco menos</h4>
+          </div>
+          <p class="text-gray-700 text-sm">
+            La calidad es indiscutible, el nivelado es muy bueno, pero me di cuenta que hay que aplicar un poco más para lograr el espesor deseado en comparación con el D800. Aún así es mi favorito para trabajos de 1 a 2 piezas.
+          </p>
+        </div>
+
+        <!-- Comentario 3 -->
+        <div class="border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+          <div class="flex items-center mb-2">
+            <div class="w-8 h-8 rounded-full bg-gray-500 flex items-center justify-center text-white font-bold mr-3 text-sm">
+              T
+            </div>
+            <span class="font-medium text-gray-900">Taller Automotriz Los Pinos</span>
+            <span class="text-gray-500 text-xs ml-4">Hace 2 meses</span>
+          </div>
+          <div class="flex items-center mb-2">
+            <div class="flex text-[#FFA41C] text-sm mr-2">
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+              <span class="material-icons" style="font-size: 16px;">star</span>
+            </div>
+            <h4 class="font-bold text-sm text-gray-900">El mejor para reparaciones rápidas</h4>
+          </div>
+          <p class="text-gray-700 text-sm">
+            Nuestros clientes están contentos con los tiempos de entrega. Pulimos a las pocas horas de aplicar. Compraremos más.
+          </p>
+        </div>
+
+        <div class="mt-4 pt-4 text-center">
+          <button class="text-[#007185] hover:text-[#2B6398] hover:underline text-sm font-medium">Ver las 1,245 valoraciones</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
