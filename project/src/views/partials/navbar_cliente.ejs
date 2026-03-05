@@ -1,0 +1,45 @@
+<nav class="bg-[#262F3E] py-2">
+    <div class="flex items-center justify-between">
+        <!-- Logo del sistema -->
+        <div>
+            <img/>
+        </div>
+        <!-- Botón de Reservas -->
+        <div class="ml-4">
+            <button class="bg-white text-[#262F3E] px-4 py-2 rounded-md hover:bg-gray-200">Reservas</button>
+        </div>
+        <!-- Barra de búsqueda -->
+        <div class="flex w-96">
+            <input 
+                type="text" 
+                placeholder="Buscar" 
+                class="flex-1 px-4 py-2 rounded-l-lg outline-none"
+            />
+            <button class="bg-[#2B6398] hover:bg-[#24537e] border-l-0 px-3 flex items-center justify-center rounded-r-lg">
+                <span class="material-icons text-white" style="font-size:1.5rem">search</span>
+            </button>
+        </div>
+        <!-- Botón de cambio de cuenta -->
+        <div class="flex mr-4 items-center justify-center gap-8">
+            <div class="relative">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="bg-white text-[#262F3E] px-4 py-2 rounded-md hover:bg-gray-200 flex items-center gap-1">
+                    Cambiar cuenta
+                    <span class="material-icons text-base">arrow_drop_down</span>
+                </button>
+                <div class="hidden absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg z-50">
+                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100 rounded-t-md">Cuenta 1</a>
+                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100">Cuenta 2</a>
+                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100 rounded-b-md">Cuenta 3</a>
+                </div>
+            </div>
+            <!-- Botón de perfil -->
+            <button class="text-white hover:text-gray-300 flex items-center justify-center">
+                <span class="material-icons" style="font-size:2.8rem">account_circle</span>
+            </button>
+            <!-- Botón de carrito -->
+            <button class="text-white hover:text-gray-300 flex items-center justify-center">
+                <span class="material-icons" style="font-size:2.8rem">shopping_cart</span>
+            </button>
+        </div>
+    </div>
+</nav>  
