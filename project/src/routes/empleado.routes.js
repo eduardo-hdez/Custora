@@ -9,6 +9,10 @@ router.get('/catalogo', (request, response) => {
   response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
 });
 
+router.get('/detalle-producto', (request, response) => {
+  response.render('empleado/detalle-producto', { title: 'Detalle de Producto' });
+});
+
 router.get('/gestion-productos', (request, response) => {
   response.render('empleado/gestion-productos', { title: 'Gestión de Productos' });
 });
