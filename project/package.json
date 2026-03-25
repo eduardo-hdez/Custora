@@ -2,6 +2,7 @@
   "name": "custora",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "app.js",
   "scripts": {
     "dev": "concurrently \"node --watch app.js\" \"npx tailwindcss -i ./src/input.css -o ./public/output.css --watch\"",

@@ -1,6 +1,6 @@
-import supabase from '../config/supabase.js'
+import supabase from '../config/supabase.js';
 
-module.exports = class Carrito {
+export default class Carrito {
     constructor(id_carrito, id_concesionaria) {
         this.id_carrito = id_carrito;
         this.id_concesionaria = id_concesionaria;
