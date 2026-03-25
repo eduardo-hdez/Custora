@@ -1,0 +1,10 @@
+{
+  "name": "kas-b2b-preorder-catalog-system",
+  "private": true,
+  "description": "Raíz del repo: la app Node vive en /project. Usa estos scripts desde aquí o entra en project/ y usa npm normalmente.",
+  "scripts": {
+    "dev": "npm run dev --prefix project",
+    "install:project": "npm install --prefix project",
+    "postinstall": "npm install --prefix project"
+  }
+}

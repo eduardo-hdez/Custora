@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('../partials/navbar-empleado') %>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+    <div class="mb-6">
+      <a href="/empleado/campanas" class="inline-flex items-center gap-1 text-sm text-[#007185] hover:text-[#005d6e] hover:underline">
+        <span class="material-icons text-[18px]">arrow_back</span>
+        Volver a campañas
+      </a>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Banners</h1>
+      <p class="text-sm text-gray-600 mb-1">Campaña <span class="font-mono font-medium text-gray-900"><%= campanaId %></span></p>
+      <p class="text-sm text-gray-500">Gestión de banners para esta campaña (pendiente de integración).</p>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

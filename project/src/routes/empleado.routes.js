@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const campanaController = require('../../../controllers/campana.controller');
+
 router.get('/', (request, response) => {
   response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
 });
@@ -28,5 +30,11 @@ router.get('/detalle-reserva', (request, response) => {
 router.get('/reporte', (request, response) => {
   response.render('empleado/reporte', { title: 'Reporte' });
 });
+
+router.get('/campanas', campanaController.renderCampanas);
+
+router.get('/campanas/nueva', campanaController.renderNuevaCampana);
+
+router.get('/campanas/:id/banners', campanaController.renderBannersCampana);
 
 module.exports = router;
