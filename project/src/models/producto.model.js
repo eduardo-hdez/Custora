@@ -1,7 +1,7 @@
 import supabase from '../config/supabase.js'
 
 export default class Producto {
-    constructor(id, nombre, descripcion, precio, foto, pesoUnidad, unidadVenta) {
+    constructor(id, nombre, descripcion, precio, foto, pesoUnidad, unidadVenta, idCampania) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -9,6 +9,7 @@ export default class Producto {
         this.foto = foto;
         this.pesoUnidad = pesoUnidad;
         this.unidadVenta = unidadVenta;
+        this.idCampania = idCampania;
     }
 
     save() {
