@@ -19,7 +19,8 @@ router.get('/gestion-productos', (request, response) => {
 });
 
 router.get('/gestion-productos/anadir-producto', (request, response) => {
-  response.render('empleado/anadir-producto', { title: 'Añadir Producto' });
+  const success = request.query.success === '1';
+  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success });
 });
 
 router.post('/gestion-productos/anadir-producto', productoController.post_anadirProducto);

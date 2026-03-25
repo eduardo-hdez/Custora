@@ -10,7 +10,7 @@ export const post_anadirProducto = (request, response, next) => {
                 console.log(error);
                 throw error;
             }
-            return response.redirect('/empleado/gestion-productos/anadir-producto');
+            return response.redirect('/empleado/gestion-productos/anadir-producto?success=1');
         })
         .catch((error) => {
             console.log(error);
