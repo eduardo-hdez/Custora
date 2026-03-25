@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const productoController = require('../controllers/producto.controller');
 
 router.get('/', (request, response) => {
   response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
@@ -20,6 +21,8 @@ router.get('/gestion-productos', (request, response) => {
 router.get('/gestion-productos/anadir-producto', (request, response) => {
   response.render('empleado/anadir-producto', { title: 'Añadir Producto' });
 });
+
+router.post('/gestion-productos/anadir-producto', productoController.post_anadirProducto);
 
 router.get('/tabla-reservas', (request, response) => {
   response.render('empleado/tabla-reservas', { title: 'Tabla de Reservas' });

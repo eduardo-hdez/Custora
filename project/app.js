@@ -10,6 +10,8 @@ app.set('views', path.join(__dirname, 'src/views'));
 const clienteRoutes = require('./src/routes/cliente.routes');
 const empleadoRoutes = require('./src/routes/empleado.routes');
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/cliente', clienteRoutes);
 app.use('/empleado', empleadoRoutes);
 
