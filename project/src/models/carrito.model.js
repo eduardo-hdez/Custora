@@ -1,9 +1,23 @@
 import supabase from '../config/supabase.js';
+import {randomUUID} from 'crypto';
 
 export default class Carrito {
   constructor(id_carrito, id_concesionaria) {
     this.id_carrito = id_carrito;
     this.id_concesionaria = id_concesionaria;
+  }
+
+  static async createNewCart(id_concesionaria) {
+    const id_carrito = randomUUID();
+    const carrito = new Carrito(id_carrito, id_concesionaria);
+
+    const {data, error} = await supabase
+        .from('carrito')
+        .insert({id_carrito: carrito.id_carrito, id_concesionaria: carrito.id_concesionaria})
+        .select('id_carrito, id_concesionaria')
+        .single();
+
+    return {data, error};
   }
 
   static async getCartById(id_concesionaria) {
