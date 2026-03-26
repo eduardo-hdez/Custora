@@ -38,6 +38,7 @@ router.get('/reporte', (request, response) => {
 router.get('/campanas', campanaController.renderCampanas);
 
 router.get('/campanas/nueva', campanaController.renderNuevaCampana);
+router.post('/campanas/nueva', campanaController.crearCampanaPost);
 
 router.get('/campanas/:id/banners', campanaController.renderBannersCampana);
 

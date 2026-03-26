@@ -24,11 +24,11 @@ async function renderCampanas(request, response) {
     const campanasDb = await campanaModel.listarCampanas();
 
     const campanas = campanasDb.map((item) => ({
-      id: item.id_campaña,
-      nombre: item.nombre_campaña,
-      fechaInicio: toISODate(item.fecha_inicio),
-      fechaFin: toISODate(item.fecha_fin),
-      estadoCalculado: clasificarCampana(item.fecha_inicio, item.fecha_fin),
+      id: item.id,
+      nombre: item.nombre,
+      fechaInicio: toISODate(item.fechaInicio),
+      fechaFin: toISODate(item.fechaFin),
+      estadoCalculado: clasificarCampana(item.fechaInicio, item.fechaFin),
     }));
 
     return response.render('empleado/campaña', {
