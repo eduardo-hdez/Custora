@@ -1,4 +1,4 @@
-const campanaModel = require('../models/campana.model');
+import campanaModel from'../models/campana.model.js';
 
 function toISODate(value) {
   if (!value) return '';
@@ -123,7 +123,7 @@ async function crearCampanaPost(request, response) {
       nombre: nombreCampana,
       fechaInicio: fi,
       fechaFin: ff,
-      banners,
+      banner: banners, 
       tiempoCancelacion,
     });
     return response.redirect('/empleado/campanas');
@@ -146,7 +146,8 @@ function renderBannersCampana(request, response) {
   });
 }
 
-module.exports = {
+
+export default {
   renderCampanas,
   renderNuevaCampana,
   crearCampanaPost,

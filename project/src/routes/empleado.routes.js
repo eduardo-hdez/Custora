@@ -1,6 +1,6 @@
 import express from 'express';
 import * as productoController from '../controllers/producto.controller.js';
-import campanaController from '../../../controllers/campana.controller.js';
+import campanaController from '../controllers/campana.controller.js';
 
 const router = express.Router();
 
