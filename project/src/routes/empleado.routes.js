@@ -15,9 +15,7 @@ router.get('/detalle-producto', (request, response) => {
   response.render('empleado/detalle-producto', { title: 'Detalle de Producto' });
 });
 
-router.get('/gestion-productos', (request, response) => {
-  response.render('empleado/gestion-productos', { title: 'Gestión de Productos' });
-});
+router.get('/gestion-productos', productoController.renderGestionProductos);
 
 router.get('/gestion-productos/anadir-producto', (request, response) => {
   const success = request.query.success === '1';
