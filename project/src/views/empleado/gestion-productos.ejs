@@ -28,7 +28,9 @@
               class="bg-[#007185] hover:bg-[#005d6e] text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
               Añadir Producto
             </a>
-            <button type="button" id="btnAbrirConfirmacion">
+            <button type="button" id="btnAbrirConfirmacion"
+              class="bg-white border border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-200 px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
+              <span class="material-icons text-sm">remove_circle_outline</span>
               Deshabilitar seleccionados
             </button>
           </div>
@@ -123,18 +125,18 @@
                             </td>
                             <td class="p-4">
                               <div class="flex items-center justify-center gap-2">
-                                <button
+                                <button type="button"
                                   class="text-[#007185] hover:text-[#005d6e] hover:bg-teal-50 p-1.5 rounded-full transition-colors"
                                   title="Editar producto">
                                   <span class="material-icons text-[20px]">edit</span>
                                 </button>
-                                <button
-                                  class="text-red-600 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-full transition-colors"
+                                <button type="button"
+                                  class="btn-eliminar-producto text-red-600 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-full transition-colors"
                                   title="Eliminar producto">
                                   <span class="material-icons text-[20px]">delete</span>
                                 </button>
                                 <input type="checkbox" name="productosSeleccionados" value="<%= producto.id_producto %>"
-                                  class="checkbox-producto">
+                                  class="checkbox-producto w-4 h-4 ml-1 text-[#007185] bg-white border-gray-300 rounded focus:ring-[#007185] cursor-pointer">
                               </div>
                             </td>
                           </tr>
@@ -183,9 +185,52 @@
       </div>
     </main>
 
+    <!-- Modal de confirmación -->
+    <div id="modalConfirmacion" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+      <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
+        <span class="material-icons text-red-600 text-5xl mb-4">error_outline</span>
+        <h3 class="mb-6 text-lg font-medium text-gray-800">¿Seguro que quieres deshabilitar los artículos seleccionados del catálogo activo?</h3>
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+          <button id="btnCancelarModal" type="button" class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+            Cancelar
+          </button>
+          <button id="btnConfirmarModal" type="button" class="order-1 sm:order-2 flex-1 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+            Deshabilitar
+          </button>
+        </div>
+      </div>
+    </div>
+
     <%- include('../partials/footer') %>
       <script>
-        document.getElementById('btnAbrirConfirmacion').addEventListener('click', () => {
+        const modalConfirmacion = document.getElementById('modalConfirmacion');
+        const btnCancelarModal = document.getElementById('btnCancelarModal');
+        const btnConfirmarModal = document.getElementById('btnConfirmarModal');
+        const formDeshabilitar = document.getElementById('form-deshabilitar');
+
+        // Funciones del modal
+        function mostrarModal() {
+          modalConfirmacion.classList.remove('hidden');
+        }
+
+        function ocultarModal() {
+          modalConfirmacion.classList.add('hidden');
+        }
+
+        btnCancelarModal.addEventListener('click', ocultarModal);
+        
+        btnConfirmarModal.addEventListener('click', () => {
+          formDeshabilitar.submit();
+        });
+
+        // Cerrar modal al hacer clic en el overlay (fuera de la caja blanca)
+        modalConfirmacion.addEventListener('click', (e) => {
+          if (e.target === modalConfirmacion) {
+            ocultarModal();
+          }
+        });
+
+        function confirmarDeshabilitacion() {
           const seleccionados = document.querySelectorAll('.checkbox-producto:checked');
 
           if (seleccionados.length === 0) {
@@ -193,11 +238,28 @@
             return;
           }
 
-          const confirmado = confirm('¿Seguro que quieres deshabilitar los productos seleccionados del catálogo actual?');
+          mostrarModal();
+        }
 
-          if (confirmado) {
-            document.getElementById('form-deshabilitar').submit();
-          }
+        document.getElementById('btnAbrirConfirmacion').addEventListener('click', confirmarDeshabilitacion);
+
+        document.querySelectorAll('.btn-eliminar-producto').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            // Desmarcar todos primero para asegurar que solo se elimine este
+            document.querySelectorAll('.checkbox-producto').forEach(cb => cb.checked = false);
+            
+            // Encontrar el checkbox de la misma fila
+            const row = e.target.closest('tr');
+            if (row) {
+              const checkbox = row.querySelector('.checkbox-producto');
+              if (checkbox) {
+                checkbox.checked = true;
+              }
+            }
+            
+            // Disparar confirmación
+            confirmarDeshabilitacion();
+          });
         });
       </script>
 </body>
