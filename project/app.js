@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import session from 'express-session';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 import 'dotenv/config';
 import authRoutes from './src/routes/auth.routes.js';
 import clienteRoutes from './src/routes/cliente.routes.js';
@@ -13,18 +13,18 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { httpOnly: true },
+  cookie: {httpOnly: true},
 }));
 
 // Hacer que la variable este disponible en todas las vistas

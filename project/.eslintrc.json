@@ -1,0 +1,21 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "extends": ["eslint:recommended", "google"],
+  "rules": {
+    "require-jsdoc": "off",
+    "valid-jsdoc": "off",
+    "max-len": "off",
+    "camelcase": "off",
+    "new-cap": "off"
+  },
+  "ignorePatterns": ["node_modules/", "public/", "dist/", "coverage/"]
+}
+

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {fileURLToPath} from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -66,9 +66,9 @@ const regexPaginacion = /Mostrando <span class="font-medium">\d+<\/span> a <span
 const newPaginacion = `Mostrando <span class="font-medium">1</span> a <span class="font-medium"><%= productos ? productos.length : 0 %></span> de <span class="font-medium"><%= productos ? productos.length : 0 %></span> resultados`;
 
 if (content.match(regexPaginacion)) {
-    content = content.replace(regexPaginacion, newPaginacion);
+  content = content.replace(regexPaginacion, newPaginacion);
 } else {
-    console.log("Pagination regex not found");
+  console.log('Pagination regex not found');
 }
 
 fs.writeFileSync(filePath, content, 'utf-8');

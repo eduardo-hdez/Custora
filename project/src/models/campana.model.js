@@ -1,5 +1,5 @@
 async function getSupabase() {
-  const { default: supabase } = await import('../config/supabase.js');
+  const {default: supabase} = await import('../config/supabase.js');
   return supabase;
 }
 
@@ -8,11 +8,11 @@ async function listarCampanas() {
   let data = null;
   let error = null;
 
-  
-  ({ data, error } = await supabase
-    .from('campana')
-    .select('*')
-    .order('fecha_inicio', { ascending: false }));
+
+  ({data, error} = await supabase
+      .from('campana')
+      .select('*')
+      .order('fecha_inicio', {ascending: false}));
 
   if (error) throw error;
 
@@ -28,9 +28,9 @@ function buildInsertRow(payload) {
   const fechaInicio = payload.fechaInicio;
   const fechaFin = payload.fechaFin;
   const banner =
-    payload.banner && String(payload.banner).trim() !== ''
-      ? String(payload.banner).trim()
-      : null;
+    payload.banner && String(payload.banner).trim() !== '' ?
+      String(payload.banner).trim() :
+      null;
 
   let tiempoCancelacion = null;
   if (
@@ -44,25 +44,25 @@ function buildInsertRow(payload) {
   }
 
   return {
-    
-      id_campana: payload.id,
-      nombre_campana: payload.nombre,
-      fecha_inicio: fechaInicio,
-      fecha_fin: fechaFin,
-      banner,
-      tiempo_cancelacion: tiempoCancelacion,
-    
-    };
-  }
+
+    id_campana: payload.id,
+    nombre_campana: payload.nombre,
+    fecha_inicio: fechaInicio,
+    fecha_fin: fechaFin,
+    banner,
+    tiempo_cancelacion: tiempoCancelacion,
+
+  };
+}
 
 
 async function crearCampana(payload) {
   const supabase = await getSupabase();
   const row = buildInsertRow(payload);
-  const { error } = await supabase.from('campana').insert(row);
+  const {error} = await supabase.from('campana').insert(row);
   if (error) throw error;
   return true;
 }
 
 
-export default{ listarCampanas, crearCampana };
+export default {listarCampanas, crearCampana};
