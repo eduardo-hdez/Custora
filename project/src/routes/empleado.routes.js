@@ -1,7 +1,8 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import * as productoController from '../controllers/producto.controller.js';
+import campanaController from '../../../controllers/campana.controller.js';
 
-const campanaController = require('../../../controllers/campana.controller');
+const router = express.Router();
 
 router.get('/', (request, response) => {
   response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
@@ -20,8 +21,11 @@ router.get('/gestion-productos', (request, response) => {
 });
 
 router.get('/gestion-productos/anadir-producto', (request, response) => {
-  response.render('empleado/anadir-producto', { title: 'Añadir Producto' });
+  const success = request.query.success === '1';
+  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success });
 });
+
+router.post('/gestion-productos/anadir-producto', productoController.anadirProducto);
 
 router.get('/tabla-reservas', (request, response) => {
   response.render('empleado/tabla-reservas', { title: 'Tabla de Reservas' });
@@ -42,4 +46,4 @@ router.post('/campanas/nueva', campanaController.crearCampanaPost);
 
 router.get('/campanas/:id/banners', campanaController.renderBannersCampana);
 
-module.exports = router;
+export default router;
