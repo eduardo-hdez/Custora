@@ -29,6 +29,7 @@ export async function postLogin(request, response) {
 
   request.session.idUsuario = user.id_usuario;
   request.session.idRol = user.id_rol;
+  request.session.correo = correo;
 
   if (user.id_rol === ROL_CLIENTE) {
     const {data: poseer} = await Concesionaria.findByUsuario(user.id_usuario);
