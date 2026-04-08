@@ -22,7 +22,8 @@ router.get('/gestion-productos', productoController.renderGestionProductos);
 
 router.get('/gestion-productos/anadir-producto', (request, response) => {
   const success = request.query.success === '1';
-  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success });
+  const error = request.query.error === '1';
+  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success, error });
 });
 
 router.post('/gestion-productos/anadir-producto', productoController.anadirProducto);

@@ -68,6 +68,7 @@ export function anadirProducto(request, response, next) {
     })
     .catch((error) => {
       console.log(error);
+      return response.redirect('/empleado/gestion-productos/anadir-producto?error=1');
     });
 }
 
