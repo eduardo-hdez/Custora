@@ -54,7 +54,13 @@ export async function renderCatalogoCliente(request, response) {
   }
 }
 
-export function anadirProducto(request, response, next) {
+export async function renderAnadirProducto(request, response) {
+  const success = request.query.success === '1';
+  const error = request.query.error === '1';
+  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success, error });
+}
+
+export function postAnadirProducto(request, response, next) {
   const producto = new Producto(request.body.idProducto, request.body.nombreProducto,
     request.body.descripcion, request.body.precio, request.body.foto,
     request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampania); //instancia de la clase

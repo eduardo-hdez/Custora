@@ -20,13 +20,9 @@ router.get('/detalle-producto', (request, response) => {
 
 router.get('/gestion-productos', productoController.renderGestionProductos);
 
-router.get('/gestion-productos/anadir-producto', (request, response) => {
-  const success = request.query.success === '1';
-  const error = request.query.error === '1';
-  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success, error });
-});
+router.get('/gestion-productos/anadir-producto', productoController.renderAnadirProducto);
 
-router.post('/gestion-productos/anadir-producto', productoController.anadirProducto);
+router.post('/gestion-productos/anadir-producto', productoController.postAnadirProducto);
 
 router.post('/gestion-productos/deshabilitar', productoController.deshabilitarProductos);
 
