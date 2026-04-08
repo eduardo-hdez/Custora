@@ -79,6 +79,8 @@ export function postAnadirProducto(request, response, next) {
 }
 
 export async function renderGestionProductos(request, response) {
+  const success = request.query.success === '1';
+  const errorDeshabilitar = request.query.errorDeshabilitar === '1';
   try {
     const { data, error } = await Producto.fetchAllGestion();
     if (error) {
@@ -87,13 +89,17 @@ export async function renderGestionProductos(request, response) {
     response.render('empleado/gestion-productos', {
       title: 'Gestión de Productos',
       productos: data || [],
-      error: null
+      errorRecuperacion: null,
+      errorDeshabilitar,
+      success
     });
   } catch (error) {
     response.status(500).render('empleado/gestion-productos', {
       title: 'Gestión de Productos',
       productos: [],
-      error: 1
+      errorRecuperacion: 1,
+      errorDeshabilitar,
+      success
     });
   }
 }
@@ -114,12 +120,11 @@ export async function deshabilitarProductos(request, response) {
 
     if (error) {
       console.error(error);
-      return response.redirect('/empleado/gestion-productos?error=deshabilitar');
+      throw error;
     }
-    return response.redirect('/empleado/gestion-productos?success=deshabilitados');
+    return response.redirect('/empleado/gestion-productos?success=1');
 
   } catch (error) {
-    console.error(error);
-    return response.redirect('/empleado/gestion-productos?error=deshabilitar');
+    return response.redirect('/empleado/gestion-productos?errorDeshabilitar=1');
   }
 }
