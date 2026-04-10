@@ -57,7 +57,7 @@ export async function renderCatalogoCliente(request, response) {
 export function anadirProducto(request, response, next) {
   const producto = new Producto(request.body.idProducto, request.body.nombreProducto,
       request.body.descripcion, request.body.precio, request.body.foto,
-      request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampania); // instancia de la clase
+      request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampana); // instancia de la clase
   producto.save()
       .then(({data, error}) => {
         if (error) {

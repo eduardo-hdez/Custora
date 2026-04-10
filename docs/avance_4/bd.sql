@@ -56,10 +56,10 @@ CREATE TABLE public.producto (
   foto_producto text NOT NULL,
   peso_unidad double precision NOT NULL,
   unidad_venta_producto text NOT NULL,
-  id_campaña bigint NOT NULL,
+  id_campana bigint NOT NULL,
   habilitado boolean NOT NULL DEFAULT true,
   CONSTRAINT producto_pkey PRIMARY KEY (id_producto),
-  CONSTRAINT producto_id_campaña_fkey FOREIGN KEY (id_campaña) REFERENCES public.campana(id_campana)
+  CONSTRAINT producto_id_campaña_fkey FOREIGN KEY (id_campana) REFERENCES public.campana(id_campana)
 );
 CREATE TABLE public.productos_reservados (
   folio text NOT NULL,
@@ -90,11 +90,12 @@ CREATE TABLE public.reserva (
   estado_reserva boolean NOT NULL DEFAULT true,
   id_concesionaria bigint NOT NULL,
   id_sucursal bigint NOT NULL,
-  id_campaña bigint NOT NULL,
+  fecha_hora_reserva timestamp with time zone NOT NULL DEFAULT now(),
+  id_campana bigint NOT NULL,
   CONSTRAINT reserva_pkey PRIMARY KEY (folio),
   CONSTRAINT reserva_id_concesionaria_fkey FOREIGN KEY (id_concesionaria) REFERENCES public.concesionaria(id_concesionaria),
   CONSTRAINT reserva_id_sucursal_fkey FOREIGN KEY (id_sucursal) REFERENCES public.sucursal(id_sucursal),
-  CONSTRAINT reserva_id_campaña_fkey FOREIGN KEY (id_campaña) REFERENCES public.campana(id_campana)
+  CONSTRAINT reserva_id_campana_fkey FOREIGN KEY (id_campana) REFERENCES public.campana(id_campana)
 );
 CREATE TABLE public.rol (
   id_rol text NOT NULL,

@@ -13,11 +13,11 @@ export default class Reserva {
     return `F-${ultimo + 1}`;
   }
 
-  static async crear(folio, id_concesionaria, id_sucursal, id_campaña) {
+  static async crear(folio, id_concesionaria, id_sucursal, id_campana) {
     const fecha_reserva = new Date().toISOString().slice(0, 10);
     const {data, error} = await supabase
         .from('reserva')
-        .insert({folio, fecha_reserva, estado_reserva: true, id_concesionaria, id_sucursal, id_campaña})
+        .insert({folio, fecha_reserva, estado_reserva: true, id_concesionaria, id_sucursal, id_campana})
         .select()
         .single();
     return {data, error};
