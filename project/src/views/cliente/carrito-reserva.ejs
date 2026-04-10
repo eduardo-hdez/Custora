@@ -38,9 +38,9 @@
           </a>
         </div>
       <% } else { %>
-        <div class="flex flex-col lg:flex-row gap-8">
+        <div class="flex flex-col lg:flex-row lg:items-start gap-8">
           <!-- Lista de Productos -->
-          <div class="flex-grow flex flex-col gap-4">
+          <div class="flex-grow flex flex-col gap-4 min-w-0">
             <% items.forEach(ps => { %>
               <%
                 const p = ps.producto;
@@ -50,39 +50,67 @@
                 const foto = p?.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen';
                 const idProducto = p?.id_producto;
               %>
-              <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-6 relative">
-                <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-md p-2 flex items-center justify-center">
+              <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
+                <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-md p-2 flex items-center justify-center mx-auto sm:mx-0">
                   <img src="<%= foto %>" alt="<%= nombre %>" class="max-h-full max-w-full object-contain mix-blend-multiply">
                 </div>
 
-                <div class="flex-grow w-full flex flex-col h-full justify-between">
-                  <div class="flex justify-between items-start w-full gap-4">
-                    <div>
-                      <h3 class="font-bold text-lg text-gray-900 leading-tight"><%= nombre %></h3>
+                <div class="flex-1 min-w-0 flex flex-col gap-4">
+                  <div class="flex flex-row justify-between items-start gap-3 w-full">
+                    <div class="min-w-0 flex-1">
+                      <h3 class="font-bold text-lg text-gray-900 leading-tight break-words"><%= nombre %></h3>
                       <% if (unidad) { %>
                         <p class="text-sm text-gray-500 mt-1">Unidad de venta: <span class="font-medium text-gray-700"><%= unidad %></span></p>
                       <% } %>
                     </div>
-                    <span class="text-xl font-bold text-gray-900 text-right">
+                    <span class="text-xl font-bold text-gray-900 text-right flex-shrink-0 tabular-nums">
                       $<%= (precioUnitario * ps.cantidad).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
                     </span>
                   </div>
 
-                  <div class="flex flex-col sm:flex-row justify-between items-center w-full mt-4 sm:mt-auto gap-4">
-                    <span class="text-sm text-gray-500">
-                      $<%= precioUnitario.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> c/u &nbsp;·&nbsp; Cantidad: <%= ps.cantidad %>
-                    </span>
-
-                    <div class="flex items-center gap-3 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100">
+                  <div class="flex flex-col sm:flex-row sm:flex-nowrap gap-3 pt-3 border-t border-gray-100 sm:items-center sm:justify-between">
+                    <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-gray-500">
+                      <span class="whitespace-nowrap">
+                        $<%= precioUnitario.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> c/u
+                      </span>
                       <% if (idProducto) { %>
-                        <form method="POST" action="/cliente/carrito/eliminar" class="inline-flex">
+                        <span class="text-gray-300 hidden sm:inline" aria-hidden="true">·</span>
+                        <div class="inline-flex items-center gap-0 rounded-md border border-gray-200 bg-gray-50 flex-shrink-0">
+                          <form method="POST" action="/cliente/carrito/actualizar/<%= idProducto %>" class="inline-flex m-0">
+                            <input type="hidden" name="accion" value="-">
+                            <button type="submit"
+                              class="p-1.5 rounded-l-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                              title="Disminuir cantidad"
+                              aria-label="Disminuir cantidad">
+                              <span class="material-icons text-lg leading-none">remove</span>
+                            </button>
+                          </form>
+                          <span class="min-w-[2rem] text-center font-medium text-gray-800 tabular-nums px-1"><%= ps.cantidad %></span>
+                          <form method="POST" action="/cliente/carrito/actualizar/<%= idProducto %>" class="inline-flex m-0">
+                            <input type="hidden" name="accion" value="+">
+                            <button type="submit"
+                              class="p-1.5 rounded-r-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                              title="Aumentar cantidad"
+                              aria-label="Aumentar cantidad">
+                              <span class="material-icons text-lg leading-none">add</span>
+                            </button>
+                          </form>
+                        </div>
+                      <% } else { %>
+                        <span>· Cantidad: <%= ps.cantidad %></span>
+                      <% } %>
+                    </div>
+
+                    <div class="flex items-center gap-3 justify-end sm:justify-end sm:flex-shrink-0">
+                      <% if (idProducto) { %>
+                        <form method="POST" action="/cliente/carrito/eliminar" class="inline-flex m-0">
                           <input type="hidden" name="id_producto" value="<%= idProducto %>">
                           <button type="submit" class="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-md transition-colors flex items-center justify-center" title="Quitar del carrito" aria-label="Quitar del carrito">
                             <span class="material-icons text-xl">delete_outline</span>
                           </button>
                         </form>
                       <% } %>
-                      <a href="/cliente/detalle-producto/<%= idProducto %>" class="text-[#2B6398] hover:text-[#1e466b] text-sm font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-blue-50">
+                      <a href="/cliente/detalle-producto/<%= idProducto %>" class="text-[#2B6398] hover:text-[#1e466b] text-sm font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded hover:bg-blue-50 whitespace-nowrap">
                         <span class="material-icons text-base">visibility</span>
                         Ver artículo
                       </a>
@@ -94,8 +122,8 @@
           </div>
 
           <!-- Resumen -->
-          <div class="w-full lg:w-[380px] flex-shrink-0">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 sticky top-6">
+          <div class="w-full lg:w-[380px] flex-shrink-0 lg:sticky lg:top-6 lg:self-start">
+            <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
               <h2 class="text-xl font-bold text-gray-900 mb-6">Resumen de la Reserva</h2>
 
               <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">

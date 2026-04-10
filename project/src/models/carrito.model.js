@@ -27,6 +27,7 @@ export default class Carrito {
           id_carrito,
           id_concesionaria,
           productos_seleccionados (
+            id_producto,
             cantidad,
             producto (
               id_producto,
@@ -38,6 +39,7 @@ export default class Carrito {
           )
         `)
         .eq('id_concesionaria', id_concesionaria)
+        .order('id_producto', {referencedTable: 'productos_seleccionados', ascending: true})
         .maybeSingle();
     return {data, error};
   }
@@ -63,6 +65,18 @@ export default class Carrito {
     const {data, error} = await supabase
         .from('productos_seleccionados')
         .insert({id_carrito, id_producto, cantidad});
+    return {data, error};
+  }
+
+  static async updateCartItemQuantity(id_carrito, id_producto, cantidad) {
+    if (cantidad <= 0) {
+      return Carrito.removeFromCart(id_carrito, id_producto);
+    }
+    const {data, error} = await supabase
+        .from('productos_seleccionados')
+        .update({cantidad})
+        .eq('id_carrito', id_carrito)
+        .eq('id_producto', id_producto);
     return {data, error};
   }
 }

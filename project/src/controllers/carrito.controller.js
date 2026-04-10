@@ -25,7 +25,11 @@ export async function agregarProductoCarrito(request, response) {
   if (errorCart || !carrito?.id_carrito) return response.redirect('/cliente/catalogo');
 
   const productosEnCarrito = Array.isArray(carrito.productos_seleccionados) ? carrito.productos_seleccionados : [];
-  const yaEstaEnCarrito = productosEnCarrito.some((ps) => ps.producto?.id_producto === idProducto);
+  const idAgregar = String(idProducto);
+  const yaEstaEnCarrito = productosEnCarrito.some((ps) => {
+    const idLinea = ps.id_producto ?? ps.producto?.id_producto;
+    return idLinea != null && String(idLinea) === idAgregar;
+  });
 
   if (!yaEstaEnCarrito) {
     const {error: errorInsert} = await Carrito.insertToCart(carrito.id_carrito, idProducto, cantidad);
@@ -47,6 +51,40 @@ export async function eliminarProductoCarrito(request, response) {
 
   const {error: errorRemove} = await Carrito.removeFromCart(carrito.id_carrito, idProducto);
   if (errorRemove) return response.redirect('/cliente/carrito-reserva');
+
+  return response.redirect('/cliente/carrito-reserva');
+}
+
+export async function actualizarCantidadProducto(request, response) {
+  const idConcesionaria = request.session.idConcesionaria;
+  if (!idConcesionaria) return response.redirect('/login');
+
+  const idProducto = request.params.id_producto;
+  const accion = request.body.accion;
+  if (!idProducto || (accion !== '+' && accion !== '-')) {
+    return response.redirect('/cliente/carrito-reserva');
+  }
+
+  const {data: carrito, error} = await Carrito.getCartById(idConcesionaria);
+  if (error || !carrito?.id_carrito) return response.redirect('/cliente/carrito-reserva');
+
+  const items = Array.isArray(carrito.productos_seleccionados) ? carrito.productos_seleccionados : [];
+  const idParam = String(idProducto);
+  const line = items.find((ps) => {
+    const idLinea = ps.id_producto ?? ps.producto?.id_producto;
+    return idLinea != null && String(idLinea) === idParam;
+  });
+  const cantidadActual = line ? Math.max(0, Number(line.cantidad) || 0) : 0;
+  if (cantidadActual === 0) return response.redirect('/cliente/carrito-reserva');
+
+  const nuevaCantidad = accion === '+' ? cantidadActual + 1 : cantidadActual - 1;
+  const idProductoDb = line.id_producto ?? line.producto?.id_producto ?? idProducto;
+  const {error: errorUpdate} = await Carrito.updateCartItemQuantity(
+      carrito.id_carrito,
+      idProductoDb,
+      nuevaCantidad,
+  );
+  if (errorUpdate) return response.redirect('/cliente/carrito-reserva');
 
   return response.redirect('/cliente/carrito-reserva');
 }
