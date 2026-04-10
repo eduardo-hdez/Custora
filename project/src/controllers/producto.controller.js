@@ -11,7 +11,7 @@ export async function renderDetalleProductoCliente(request, response) {
       return response.status(404).render('cliente/detalle-producto', {
         title: 'Producto no encontrado',
         producto: null,
-        errorDetalle: 'El producto solicitado no existe o ya no está disponible.'
+        errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
       });
     }
 
@@ -21,13 +21,13 @@ export async function renderDetalleProductoCliente(request, response) {
     return response.render('cliente/detalle-producto', {
       title: nombre,
       producto: data,
-      errorDetalle: null
+      errorDetalle: null,
     });
   } catch (err) {
     return response.status(500).render('cliente/detalle-producto', {
       title: 'Error',
       producto: null,
-      errorDetalle: 'No se pudo cargar el producto en este momento.'
+      errorDetalle: 'No se pudo cargar el producto en este momento.',
     });
   }
 }
@@ -43,13 +43,13 @@ export async function renderCatalogoCliente(request, response) {
     response.render('cliente/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: data || [],
-      errorCatalogo: null
+      errorCatalogo: null,
     });
   } catch (error) {
     response.status(500).render('cliente/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: [],
-      errorCatalogo: 'No se pudo cargar el catálogo en este momento.'
+      errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
     });
   }
 }
@@ -63,7 +63,7 @@ export async function renderAnadirProducto(request, response) {
 export function postAnadirProducto(request, response, next) {
   const producto = new Producto(request.body.idProducto, request.body.nombreProducto,
     request.body.descripcion, request.body.precio, request.body.foto,
-    request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampania); //instancia de la clase
+    request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampana); // instancia de la clase
   producto.save()
     .then(({ data, error }) => {
       if (error) {
@@ -91,7 +91,7 @@ export async function renderGestionProductos(request, response) {
       productos: data || [],
       errorRecuperacion: null,
       errorModificar,
-      success
+      success,
     });
   } catch (error) {
     response.status(500).render('empleado/gestion-productos', {
@@ -116,7 +116,7 @@ export async function deshabilitarProductos(request, response) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const { data, error } = await Producto.deshabilitar(productosSeleccionados);
+    const { error } = await Producto.deshabilitar(productosSeleccionados);
 
     if (error) {
       console.error(error);

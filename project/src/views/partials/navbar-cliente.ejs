@@ -21,17 +21,24 @@
         </div>
         <!-- Botón de cambio de cuenta -->
         <div class="flex mr-4 items-center justify-center gap-8">
+            <% if (concesionarias.length > 1) { %>
             <div class="relative">
                 <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="bg-white text-[#262F3E] px-4 py-2 rounded-md hover:bg-gray-200 flex items-center gap-1">
-                    Cambiar cuenta
+                    <%= idConcesionaria ?? 'Cuenta' %>
                     <span class="material-icons text-base">arrow_drop_down</span>
                 </button>
-                <div class="hidden absolute right-0 mt-1 w-48 bg-white rounded-md shadow-lg z-50">
-                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100 rounded-t-md">Cuenta 1</a>
-                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100">Cuenta 2</a>
-                    <a href="#" class="block px-4 py-2 text-[#262F3E] hover:bg-gray-100 rounded-b-md">Cuenta 3</a>
+                <div class="hidden absolute right-0 mt-1 w-56 bg-white rounded-md shadow-lg z-50">
+                    <% concesionarias.forEach((c, i) => { %>
+                    <form action="/cliente/cambiar-cuenta" method="POST">
+                        <input type="hidden" name="idConcesionaria" value="<%= c %>">
+                        <button type="submit" class="w-full text-left px-4 py-2 text-[#262F3E] hover:bg-gray-100 <%= i === 0 ? 'rounded-t-md' : '' %> <%= i === concesionarias.length - 1 ? 'rounded-b-md' : '' %> <%= c === idConcesionaria ? 'font-semibold' : '' %>">
+                            <%= c %>
+                        </button>
+                    </form>
+                    <% }) %>
                 </div>
             </div>
+            <% } %>
             <!-- Botón de perfil -->
             <a href="/cliente/info-perfil" class="text-white hover:text-gray-300 flex items-center justify-center">
                 <span class="material-icons" style="font-size:2.8rem">account_circle</span>

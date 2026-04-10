@@ -1,4 +1,4 @@
-import campanaModel from'../models/campana.model.js';
+import campanaModel from '../models/campana.model.js';
 
 function toISODate(value) {
   if (!value) return '';
@@ -85,9 +85,9 @@ async function crearCampanaPost(request, response) {
     fechaFin: ff,
     banners: banners != null ? String(banners) : '',
     tiempoCancelacion:
-      tiempoCancelacion !== undefined && tiempoCancelacion !== null
-        ? String(tiempoCancelacion)
-        : '',
+      tiempoCancelacion !== undefined && tiempoCancelacion !== null ?
+        String(tiempoCancelacion) :
+        '',
   };
 
   if (!idCampana || !nombreCampana || !fi || !ff) {
@@ -123,7 +123,7 @@ async function crearCampanaPost(request, response) {
       nombre: nombreCampana,
       fechaInicio: fi,
       fechaFin: ff,
-      banner: banners, 
+      banner: banners,
       tiempoCancelacion,
     });
     return response.redirect('/empleado/campanas');

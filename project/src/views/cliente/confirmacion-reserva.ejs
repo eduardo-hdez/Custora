@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('../partials/navbar-cliente') %>
+
+  <main class="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16 flex-grow">
+    <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-10 text-center">
+      <span class="material-icons text-6xl text-green-500 mb-4">check_circle</span>
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">¡Reserva confirmada!</h1>
+      <p class="text-gray-500 mb-6">Tu reserva ha sido registrada exitosamente.</p>
+
+      <div class="flex flex-col items-center gap-6">
+        <div class="bg-gray-50 border border-gray-200 rounded-md px-6 py-3">
+          <span class="text-sm text-gray-500">Folio de reserva</span>
+          <p class="text-xl font-bold text-[#2B6398] tracking-wide"><%= folio %></p>
+        </div>
+
+        <a href="/cliente/catalogo" class="inline-flex items-center gap-2 bg-[#2B6398] hover:bg-[#1e466b] text-white font-medium py-2.5 px-6 rounded-md transition-colors">
+          <span class="material-icons text-base">storefront</span>
+          Volver al catálogo
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

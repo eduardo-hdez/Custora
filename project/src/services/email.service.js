@@ -1,0 +1,77 @@
+import {Resend} from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function enviarConfirmacionReserva(_correo, folio, productos) {
+  const filasProductos = productos.map((ps) => {
+    const nombre = ps.producto?.nombre_producto ?? 'Producto';
+    const precio = Number(ps.producto?.precio_producto ?? 0);
+    const subtotal = precio * ps.cantidad;
+    const fmt = (n) => n.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    return `
+      <tr>
+        <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #111827;">${nombre}</td>
+        <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #6b7280; text-align: center;">${ps.cantidad}</td>
+        <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #111827; text-align: right;">$${fmt(precio)}</td>
+        <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #111827; text-align: right; font-weight: 600;">$${fmt(subtotal)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const subtotalTotal = productos.reduce((acc, ps) => acc + Number(ps.producto?.precio_producto ?? 0) * ps.cantidad, 0);
+  const iva = subtotalTotal * 0.16;
+  const total = subtotalTotal + iva;
+  const fmt = (n) => n.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const {error} = await resend.emails.send({
+    from: 'Reservas <onboarding@resend.dev>',
+    to: 'a01707225@tec.mx', // TODO: cambiar a `_correo` cuando se verifique un dominio
+    subject: `Confirmación de reserva ${folio}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color: #111827;">
+
+        <div style="background: #2B6398; padding: 32px 24px; border-radius: 8px 8px 0 0; text-align: center;">
+          <h1 style="margin: 0; color: #ffffff; font-size: 22px;">¡Reserva confirmada!</h1>
+          <p style="margin: 8px 0 0; color: #bfdbfe; font-size: 14px;">Tu reserva ha sido registrada exitosamente.</p>
+        </div>
+
+        <div style="background: #ffffff; padding: 24px; border: 1px solid #e5e7eb; border-top: none;">
+
+          <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px 24px; margin-bottom: 24px; text-align: center;">
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">Folio de reserva</p>
+            <p style="margin: 4px 0 0; font-size: 26px; font-weight: 700; color: #2B6398; letter-spacing: 1px;">${folio}</p>
+          </div>
+
+          <h2 style="font-size: 15px; color: #374151; margin: 0 0 12px;">Productos reservados</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <thead>
+              <tr style="background: #f9fafb;">
+                <th style="padding: 10px 8px; text-align: left; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Producto</th>
+                <th style="padding: 10px 8px; text-align: center; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Cant.</th>
+                <th style="padding: 10px 8px; text-align: right; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Precio u.</th>
+                <th style="padding: 10px 8px; text-align: right; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filasProductos}
+            </tbody>
+          </table>
+
+          <div style="margin-top: 16px; padding-top: 12px; border-top: 2px solid #e5e7eb; text-align: right; font-size: 14px;">
+            <p style="margin: 4px 0; color: #6b7280;">Subtotal: <span style="color: #111827;">$${fmt(subtotalTotal)}</span></p>
+            <p style="margin: 4px 0; color: #6b7280;">IVA (16%): <span style="color: #111827;">$${fmt(iva)}</span></p>
+            <p style="margin: 12px 0 0; font-size: 17px; font-weight: 700; color: #111827;">Total: $${fmt(total)}</p>
+          </div>
+
+          <p style="margin: 24px 0 0; font-size: 13px; color: #9ca3af; text-align: center;">
+            Guarda este folio para dar seguimiento a tu reserva.
+          </p>
+        </div>
+
+      </div>
+    `,
+  });
+
+  if (error) console.error('[email] enviarConfirmacionReserva error:', error);
+}
