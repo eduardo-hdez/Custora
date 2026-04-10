@@ -128,3 +128,28 @@ export async function deshabilitarProductos(request, response) {
     return response.redirect('/empleado/gestion-productos?errorModificar=1');
   }
 }
+
+export async function rehabilitarProductos(request, response) {
+  try {
+    let productosSeleccionados = request.body.productosSeleccionados || [];
+
+    if (!Array.isArray(productosSeleccionados)) {
+      productosSeleccionados = [productosSeleccionados];
+    }
+
+    if (productosSeleccionados.length === 0) {
+      return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
+    }
+
+    const { error } = await Producto.rehabilitar(productosSeleccionados);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+    return response.redirect('/empleado/gestion-productos?success=rehabilitar');
+
+  } catch (error) {
+    return response.redirect('/empleado/gestion-productos?errorModificar=1');
+  }
+}
