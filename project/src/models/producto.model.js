@@ -53,4 +53,11 @@ export default class Producto {
             .in('id_producto', ids);
         return { data, error };
     }
+    static async rehabilitar(ids) {
+        const { data, error } = await supabase
+            .from('producto')
+            .update({ habilitado: true })
+            .in('id_producto', ids);
+        return { data, error };
+    }
 }

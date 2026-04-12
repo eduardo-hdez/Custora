@@ -115,7 +115,7 @@
                       </div>
 
                       <!-- Tabla de Productos -->
-                      <form action="/empleado/gestion-productos/deshabilitar" method="POST" id="form-deshabilitar">
+                      <form method="POST" id="form-habilitado">
                         <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                           <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">
@@ -202,7 +202,7 @@
                                                 title="Deshabilitar producto">
                                                 <span class="material-icons text-[20px]">visibility_off</span>
                                               </button>
-                                              <input type="checkbox" name="productosSeleccionados"
+                                              <input type="checkbox" name="productosDeshabilitar"
                                                 value="<%= producto.id_producto %>"
                                                 class="checkbox-deshabilitar w-4 h-4 ml-1 text-[#007185] bg-white border-gray-300 rounded focus:ring-[#007185] cursor-pointer">
                                               <% } else { %>
@@ -211,6 +211,9 @@
                                                   title="Rehabilitar producto">
                                                   <span class="material-icons text-[20px]">visibility</span>
                                                 </button>
+                                                <input type="checkbox" name="productosRehabilitar"
+                                                  value="<%= producto.id_producto %>"
+                                                  class="checkbox-rehabilitar w-4 h-4 ml-1 text-[#007185] bg-white border-gray-300 rounded focus:ring-[#007185] cursor-pointer">
                                                 <% } %>
                                           </div>
                                         </td>
@@ -262,7 +265,7 @@
                       </div>
     </main>
 
-    <!-- Modal de confirmación -->
+    <!-- Modal de confirmación para deshabilitar productos-->
     <div id="modalDeshabilitar" tabindex="-1" aria-hidden="true"
       class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
       <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
@@ -281,9 +284,29 @@
         </div>
       </div>
     </div>
+    <!-- Modal de confirmación para rehabilitar productos-->
+    <div id="modalRehabilitar" tabindex="-1" aria-hidden="true"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+      <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
+        <span class="material-icons text-green-600 text-5xl mb-4">check_circle_outline</span>
+        <h3 class="mb-6 text-lg font-medium text-gray-800">¿Seguro que quieres rehabilitar los artículos seleccionados
+          para que aparezcan en el catálogo activo?</h3>
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+          <button id="btnCancelarRehabilitar" type="button"
+            class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+            Cancelar
+          </button>
+          <button id="btnConfirmarRehabilitar" type="button"
+            class="order-1 sm:order-2 flex-1 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+            Rehabilitar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <%- include('../partials/footer') %>
       <script>
+        //Modal informativo de error en la recuperación de datos de los productos
         const modalErrorGestion = document.getElementById('modalErrorGestion');
         const btnModalErrorGestion = document.getElementById('btnModalErrorGestion');
 
@@ -298,6 +321,7 @@
             }
           });
         }
+        //Modal informativo de error en la modificación del estado de los productos (deshabilitar o rehabilitar)
         const modalErrorModificar = document.getElementById('modalErrorModificar');
         const btnModalErrorModificar = document.getElementById('btnModalErrorModificar');
 
@@ -312,11 +336,11 @@
             }
           });
         }
-
+        //Modal de confirmación y envío para deshabilitar productos
         const modalDeshabilitar = document.getElementById('modalDeshabilitar');
         const btnCancelarDeshabilitar = document.getElementById('btnCancelarDeshabilitar');
         const btnConfirmarDeshabilitar = document.getElementById('btnConfirmarDeshabilitar');
-        const formDeshabilitar = document.getElementById('form-deshabilitar');
+        const formHabilitado = document.getElementById('form-habilitado');
 
         function mostrarModalDeshabilitar() {
           modalDeshabilitar.classList.remove('hidden');
@@ -329,11 +353,11 @@
         btnCancelarDeshabilitar.addEventListener('click', ocultarModalDeshabilitar);
 
         btnConfirmarDeshabilitar.addEventListener('click', () => {
-          formDeshabilitar.submit();
+          formHabilitado.action = "/empleado/gestion-productos/deshabilitar"
+          formHabilitado.submit();
         });
 
-        // Cerrar modal al hacer clic en el overlay (fuera de la caja blanca)
-        modalDeshabilitar.addEventListener('click', (e) => {
+        modalDeshabilitar.addEventListener('click', (e) => { // Cerrar modal al hacer clic en el overlay (fuera de la caja blanca)
           if (e.target === modalDeshabilitar) {
             ocultarModalDeshabilitar();
           }
@@ -343,7 +367,7 @@
           const seleccionados = document.querySelectorAll('.checkbox-deshabilitar:checked');
 
           if (seleccionados.length === 0) {
-            alert('Selecciona al menos un producto.');
+            alert('Selecciona al menos un producto que esté habilitado y desees deshabilitar.');
             return;
           }
 
@@ -354,19 +378,68 @@
 
         document.querySelectorAll('.btn-deshabilitar-producto').forEach(btn => {
           btn.addEventListener('click', (e) => {
-            // Desmarcar todos primero para asegurar que solo se elimine este
-            document.querySelectorAll('.checkbox-deshabilitar').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.checkbox-deshabilitar').forEach(cb => cb.checked = false); // Desmarcar todos primero para asegurar que solo se elimine este
 
-            // Encontrar el checkbox de la misma fila
-            const row = e.currentTarget.closest('tr');
+            const row = e.currentTarget.closest('tr'); // Encontrar el checkbox de la misma fila
             if (row) {
               const checkbox = row.querySelector('.checkbox-deshabilitar');
               if (checkbox) {
                 checkbox.checked = true;
               }
             }
-            // Disparar confirmación
-            confirmarDeshabilitacion();
+
+            confirmarDeshabilitacion(); // Disparar confirmación
+          });
+        });
+        //Modal de confirmación y envío para rehabilitar productos
+        const modalRehabilitar = document.getElementById('modalRehabilitar');
+        const btnCancelarRehabilitar = document.getElementById('btnCancelarRehabilitar');
+        const btnConfirmarRehabilitar = document.getElementById('btnConfirmarRehabilitar');
+
+        function mostrarModalRehabilitar() {
+          modalRehabilitar.classList.remove('hidden');
+        }
+
+        function ocultarModalRehabilitar() {
+          modalRehabilitar.classList.add('hidden');
+        }
+
+        btnCancelarRehabilitar.addEventListener('click', ocultarModalRehabilitar);
+
+        btnConfirmarRehabilitar.addEventListener('click', () => {
+          formHabilitado.action = "/empleado/gestion-productos/rehabilitar"
+          formHabilitado.submit();
+        });
+        modalRehabilitar.addEventListener('click', (e) => {
+          if (e.target === modalRehabilitar) {
+            ocultarModalRehabilitar();
+          }
+        });
+
+        function confirmarRehabilitacion() {
+          const seleccionados = document.querySelectorAll('.checkbox-rehabilitar:checked');
+
+          if (seleccionados.length === 0) {
+            alert('Selecciona al menos un producto que esté deshabilitado y desees rehabilitar.');
+            return;
+          }
+
+          mostrarModalRehabilitar();
+        }
+
+        document.getElementById('btnRehabilitar').addEventListener('click', confirmarRehabilitacion);
+
+        document.querySelectorAll('.btn-rehabilitar-producto').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.checkbox-rehabilitar').forEach(cb => cb.checked = false);
+            const row = e.currentTarget.closest('tr');
+            if (row) {
+              const checkbox = row.querySelector('.checkbox-rehabilitar');
+              if (checkbox) {
+                checkbox.checked = true;
+              }
+            }
+            confirmarRehabilitacion();
           });
         });
       </script>
