@@ -1,7 +1,7 @@
 import express from 'express';
 import * as productoController from '../controllers/producto.controller.js';
 import * as carritoController from '../controllers/carrito.controller.js';
-import {confirmarReserva} from '../controllers/reserva.controller.js';
+import {confirmarReserva, getHistorialReservas, postCancelarReserva} from '../controllers/reserva.controller.js';
 import {postCambiarCuenta} from '../controllers/cuenta.controller.js';
 import {requireRol, ROL_CLIENTE} from '../middleware/auth.middleware.js';
 
@@ -17,10 +17,8 @@ router.post('/carrito/agregar', carritoController.agregarProductoCarrito);
 router.post('/carrito/eliminar', carritoController.eliminarProductoCarrito);
 router.post('/carrito/actualizar/:id_producto', carritoController.actualizarCantidadProducto);
 router.post('/reserva/confirmar', confirmarReserva);
-
-router.get('/historial-reservas', (request, response) => {
-  response.render('cliente/historial-reservas', {title: 'Historial de Reservas'});
-});
+router.get('/historial-reservas', getHistorialReservas);
+router.post('/reserva/:folio/cancelar', postCancelarReserva);
 
 router.get('/detalle-reserva', (request, response) => {
   response.render('cliente/detalle-reserva', {title: 'Detalle de Reserva'});
