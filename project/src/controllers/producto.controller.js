@@ -11,7 +11,7 @@ export async function renderDetalleProductoCliente(request, response) {
       return response.status(404).render('cliente/detalle-producto', {
         title: 'Producto no encontrado',
         producto: null,
-        errorDetalle: 'El producto solicitado no existe o ya no está disponible.'
+        errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
       });
     }
 
@@ -21,13 +21,13 @@ export async function renderDetalleProductoCliente(request, response) {
     return response.render('cliente/detalle-producto', {
       title: nombre,
       producto: data,
-      errorDetalle: null
+      errorDetalle: null,
     });
   } catch (err) {
     return response.status(500).render('cliente/detalle-producto', {
       title: 'Error',
       producto: null,
-      errorDetalle: 'No se pudo cargar el producto en este momento.'
+      errorDetalle: 'No se pudo cargar el producto en este momento.',
     });
   }
 }
@@ -43,21 +43,27 @@ export async function renderCatalogoCliente(request, response) {
     response.render('cliente/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: data || [],
-      errorCatalogo: null
+      errorCatalogo: null,
     });
   } catch (error) {
     response.status(500).render('cliente/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: [],
-      errorCatalogo: 'No se pudo cargar el catálogo en este momento.'
+      errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
     });
   }
 }
 
-export function anadirProducto(request, response, next) {
+export async function renderAnadirProducto(request, response) {
+  const success = request.query.success === '1';
+  const error = request.query.error === '1';
+  response.render('empleado/anadir-producto', { title: 'Añadir Producto', success, error });
+}
+
+export function postAnadirProducto(request, response, next) {
   const producto = new Producto(request.body.idProducto, request.body.nombreProducto,
     request.body.descripcion, request.body.precio, request.body.foto,
-    request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampania); //instancia de la clase
+    request.body.pesoUnidad, request.body.unidadVenta, request.body.idCampana); // instancia de la clase
   producto.save()
     .then(({ data, error }) => {
       if (error) {
@@ -68,27 +74,32 @@ export function anadirProducto(request, response, next) {
     })
     .catch((error) => {
       console.log(error);
+      return response.redirect('/empleado/gestion-productos/anadir-producto?error=1');
     });
 }
 
 export async function renderGestionProductos(request, response) {
+  const success = request.query.success;
+  const errorModificar = request.query.errorModificar === '1';
   try {
-    const { data, error } = await Producto.fetchAll();
-
+    const { data, error } = await Producto.fetchAllGestion();
     if (error) {
       throw error;
     }
-
     response.render('empleado/gestion-productos', {
       title: 'Gestión de Productos',
       productos: data || [],
-      errorCatalogo: null
+      errorRecuperacion: null,
+      errorModificar,
+      success,
     });
   } catch (error) {
     response.status(500).render('empleado/gestion-productos', {
       title: 'Gestión de Productos',
       productos: [],
-      errorCatalogo: 'No se pudieron cargar los productos en este momento.'
+      errorRecuperacion: 1,
+      errorModificar,
+      success
     });
   }
 }
@@ -105,16 +116,15 @@ export async function deshabilitarProductos(request, response) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const { data, error } = await Producto.deshabilitar(productosSeleccionados);
+    const { error } = await Producto.deshabilitar(productosSeleccionados);
 
     if (error) {
       console.error(error);
-      return response.redirect('/empleado/gestion-productos?error=deshabilitar');
+      throw error;
     }
-    return response.redirect('/empleado/gestion-productos?success=deshabilitados');
+    return response.redirect('/empleado/gestion-productos?success=deshabilitar');
 
   } catch (error) {
-    console.error(error);
-    return response.redirect('/empleado/gestion-productos?error=deshabilitar');
+    return response.redirect('/empleado/gestion-productos?errorModificar=1');
   }
 }

@@ -1,8 +1,8 @@
-import { rateLimit } from 'express-rate-limit';
+import {rateLimit} from 'express-rate-limit';
 
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  limit: 5,                 // max 5 peticiones
+  limit: 5, // max 5 peticiones
   standardHeaders: 'draft-8',
   legacyHeaders: false,
   handler: (req, res) => {

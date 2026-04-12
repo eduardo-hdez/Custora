@@ -1,7 +1,7 @@
 import supabase from '../config/supabase.js';
 
 export default class Producto {
-    constructor(id, nombre, descripcion, precio, foto, pesoUnidad, unidadVenta, idCampania) {
+    constructor(id, nombre, descripcion, precio, foto, pesoUnidad, unidadVenta, idCampana) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -9,7 +9,7 @@ export default class Producto {
         this.foto = foto;
         this.pesoUnidad = pesoUnidad;
         this.unidadVenta = unidadVenta;
-        this.idCampania = idCampania;
+        this.idCampana = idCampana;
     }
 
     save() {
@@ -23,21 +23,27 @@ export default class Producto {
                 foto_producto: this.foto,
                 peso_unidad: this.pesoUnidad,
                 unidad_venta_producto: this.unidadVenta,
-                id_campaña: this.idCampania
+                id_campana: this.idCampana,
             }]);
+    }
+
+    static async fetchAllGestion() {
+        const { data, error } = await supabase
+            .rpc('get_productos_campania')    //campaña actual (hardcodeada)
+        return { data, error }
     }
 
     static async fetchAll() {
         const { data, error } = await supabase
-            .rpc('get_catalogo_productos_habilitados')
-        return { data, error }
+            .rpc('get_catalogo_productos_habilitados');
+        return { data, error };
     }
 
     static async findById(id) {
         const { data, error } = await supabase
             .rpc('get_producto_habilitado', { id_producto: id })
-            .single()
-        return { data, error }
+            .single();
+        return { data, error };
     }
 
     static async deshabilitar(ids) {
