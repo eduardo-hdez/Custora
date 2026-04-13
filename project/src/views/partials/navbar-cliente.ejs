@@ -6,16 +6,18 @@
         </div>
         <!-- Botón de Reservas -->
         <div class="ml-4">
-            <a href="/cliente/historial-reservas" class="bg-white text-[#262F3E] px-4 py-2 rounded-md hover:bg-gray-200 inline-block">Reservas</a>
+            <a href="/cliente/historial-reservas" class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out inline-flex items-center justify-center">
+                Reservas
+            </a>
         </div>
         <!-- Barra de búsqueda -->
-        <div class="flex w-96">
+        <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
             <input 
                 type="text" 
                 placeholder="Buscar" 
-                class="flex-1 px-4 py-2 rounded-l-lg outline-none"
+                class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400"
             />
-            <button class="bg-[#2B6398] hover:bg-[#24537e] border-l-0 px-3 flex items-center justify-center rounded-r-lg">
+            <button class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
                 <span class="material-icons text-white" style="font-size:1.5rem">search</span>
             </button>
         </div>
@@ -23,34 +25,39 @@
         <div class="flex mr-4 items-center justify-center gap-8">
             <% if (concesionarias.length > 1) { %>
             <div class="relative">
-                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="bg-white text-[#262F3E] px-4 py-2 rounded-md hover:bg-gray-200 flex items-center gap-1">
+                <button onclick="this.nextElementSibling.classList.toggle('hidden')" class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-2">
                     <%= idConcesionaria ?? 'Cuenta' %>
                     <span class="material-icons text-base">arrow_drop_down</span>
                 </button>
-                <div class="hidden absolute right-0 mt-1 w-56 bg-white rounded-md shadow-lg z-50">
-                    <% concesionarias.forEach((c, i) => { %>
-                    <form action="/cliente/cambiar-cuenta" method="POST">
-                        <input type="hidden" name="idConcesionaria" value="<%= c %>">
-                        <button type="submit" class="w-full text-left px-4 py-2 text-[#262F3E] hover:bg-gray-100 <%= i === 0 ? 'rounded-t-md' : '' %> <%= i === concesionarias.length - 1 ? 'rounded-b-md' : '' %> <%= c === idConcesionaria ? 'font-semibold' : '' %>">
-                            <%= c %>
-                        </button>
-                    </form>
-                    <% }) %>
+                <div class="hidden absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
+                    <div class="py-2">
+                        <% concesionarias.forEach((c, i) => { %>
+                        <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+                            <input type="hidden" name="idConcesionaria" value="<%= c %>">
+                            <button type="submit" class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= c === idConcesionaria ? 'font-bold bg-slate-50' : 'font-medium' %>">
+                                <% if (c === idConcesionaria) { %>
+                                <span class="absolute left-0 top-0 bottom-0 w-1 bg-[#2B6398]"></span>
+                                <% } %>
+                                <span class="truncate"><%= c %></span>
+                            </button>
+                        </form>
+                        <% }) %>
+                    </div>
                 </div>
             </div>
             <% } %>
             <!-- Botón de perfil -->
-            <a href="/cliente/info-perfil" class="text-white hover:text-gray-300 flex items-center justify-center">
+            <a href="/cliente/info-perfil" class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200">
                 <span class="material-icons" style="font-size:2.8rem">account_circle</span>
             </a>
             <!-- Boton de logout -->
-            <form action="/logout" method="POST">
-                <button type="submit" class="text-white hover:text-gray-300 flex items-center justify-center" aria-label="Cerrar sesion">
-                    <span class="material-icons" style="font-size:2.2rem">logout</span>
+            <form action="/logout" method="POST" class="flex items-center justify-center">
+                <button type="submit" class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200" aria-label="Cerrar sesion">
+                    <span class="material-icons" style="font-size:2.4rem">logout</span>
                 </button>
             </form>
             <!-- Botón de carrito -->
-            <a href="/cliente/carrito-reserva" class="text-white hover:text-gray-300 flex items-center justify-center">
+            <a href="/cliente/carrito-reserva" class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200">
                 <span class="material-icons" style="font-size:2.8rem">shopping_cart</span>
             </a>
         </div>
