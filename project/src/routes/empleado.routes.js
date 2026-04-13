@@ -8,7 +8,7 @@ router.use(requireRol([ROL_EMPLEADO]));
 
 router.get('/', productoController.renderCatalogoEmpleado);
 router.get('/catalogo', productoController.renderCatalogoEmpleado);
-
+router.post('/catalogo-productos/deshabilitar',productoController.deshabilitarProductosCatalogo);
 
 router.get('/detalle-producto', (request, response) => {
   response.render('empleado/detalle-producto', { title: 'Detalle de Producto' });

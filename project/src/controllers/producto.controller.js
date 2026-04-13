@@ -54,7 +54,6 @@ export async function renderCatalogoCliente(request, response) {
 }
 
 export async function renderCatalogoEmpleado(request,response){
-  console.log('✅ renderCatalogoEmpleado ejecutándose');
   
   try {
     const { data, error } = await Producto.fetchAll();
@@ -151,5 +150,32 @@ export async function deshabilitarProductos(request, response) {
 
   } catch (error) {
     return response.redirect('/empleado/gestion-productos?errorModificar=1');
+  }
+
+
+}
+
+export async function deshabilitarProductosCatalogo(request, response) {
+  try {
+    let productosSeleccionados = request.body.productosSeleccionados || [];
+
+    if (!Array.isArray(productosSeleccionados)) {
+      productosSeleccionados = [productosSeleccionados];
+    }
+
+    if (productosSeleccionados.length === 0) {
+      return response.redirect('/empleado/catalogo?error=sin-seleccion');
+    }
+
+    const { error } = await Producto.deshabilitar(productosSeleccionados);
+
+    if (error) {
+      console.error(error);
+      throw error;
+    }
+    return response.redirect('/empleado/catalogo?success=deshabilitar');
+
+  } catch (error) {
+    return response.redirect('/empleado/catalogo?errorModificar=1');
   }
 }
