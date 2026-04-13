@@ -7,257 +7,128 @@
   <%- include('../partials/navbar-cliente') %>
 
   <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    <!-- Breadcrumb -->
     <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
       <a href="/" class="hover:text-[#2B6398] transition-colors">Inicio</a>
       <span class="material-icons text-sm">chevron_right</span>
       <span class="text-gray-900 font-medium">Historial de Reservas</span>
     </div>
 
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h1 class="text-2xl font-bold text-gray-900">Mis Reservas</h1>
-      
-      <div class="flex items-center gap-3 w-full sm:w-auto">
-        <label for="sucursal-filter" class="text-sm font-medium text-gray-700 whitespace-nowrap">Filtrar por sucursal:</label>
-        <select id="sucursal-filter" class="w-full sm:w-auto border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-[#2B6398] focus:border-[#2B6398] bg-white outline-none cursor-pointer shadow-sm">
-          <option value="todas">Todas las sucursales</option>
-          <option value="centro">Centro</option>
-          <option value="norte">Norte (Industrial)</option>
-          <option value="sur">Sur</option>
-          <option value="este">Este</option>
-        </select>
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Mis Reservas</h1>
+
+    <% if (successMessage) { %>
+      <div class="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+        <%= successMessage %>
       </div>
-    </div>
+    <% } %>
+
+    <% if (errorMessage) { %>
+      <div class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <%= errorMessage %>
+      </div>
+    <% } %>
+
+    <% if (!reservas || reservas.length === 0) { %>
+      <div class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
+        No tienes reservas registradas.
+      </div>
+    <% } %>
 
     <div class="flex flex-col gap-6">
-      
-      <!-- Reserva 1 -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <!-- Header de la carta (Estilo Amazon) -->
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Reserva realizada</span>
-              <span class="text-gray-900">4 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-900 font-medium">$12,154.48 <span class="text-xs font-normal text-gray-500">(con IVA)</span></span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-[#2B6398] hover:underline cursor-pointer">Centro</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Peso Total</span>
-              <span class="text-gray-900">14.5 kg</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10492</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="/cliente/detalle-reserva" class="text-[#2B6398] hover:text-orange-600 hover:underline">Ver detalle de reserva</a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contenido de la carta -->
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span class="material-icons text-green-600">check_circle</span>
-                Reserva Confirmada
-              </h3>
-              <p class="text-sm text-orange-600 font-medium mt-2 items-center gap-1.5 bg-orange-50 px-3 py-1.5 rounded-md inline-flex border border-orange-100">
-                <span class="material-icons text-[18px]">timer</span>
-                Tiempo restante para cancelar: 1h 30m
-              </p>
-            </div>
-            <button class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 hover:text-red-600 hover:border-red-300">
-              Cancelar Reserva
-            </button>
-          </div>
-
-          <!-- Lista de productos en vertical -->
-          <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=DC3000" alt="DeltronNXT DC3000" class="max-h-full max-w-full object-contain">
+      <% (reservas || []).forEach((reserva) => { %>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+          <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
+            <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
+              <div class="flex flex-col">
+                <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Reserva realizada</span>
+                <span class="text-gray-900"><%= new Date(reserva.fechaReserva).toLocaleString('es-MX') %></span>
               </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#2B6398] hover:text-orange-600 hover:underline">DeltronNXT DC3000</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad de venta: 3.75 Litros • Cantidad: 2</span>
-                <div class="flex flex-wrap gap-2 items-center mt-3">
-                  <button class="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors">Ver artículo</button>
+              <div class="flex flex-col">
+                <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
+                <span class="text-gray-900 font-medium">$<%= reserva.total.toFixed(2) %></span>
+              </div>
+              <div class="flex flex-col">
+                <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
+                <span class="text-gray-900"><%= reserva.sucursal %></span>
+              </div>
+              <div class="flex flex-col">
+                <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Peso Total</span>
+                <span class="text-gray-900"><%= reserva.pesoTotal.toFixed(2) %> kg</span>
+              </div>
+            </div>
+            <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
+              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
+              <span class="text-gray-900 font-medium"><%= reserva.folio %></span>
+            </div>
+          </div>
+
+          <div class="p-4 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
+              <div>
+                <h3 class="text-lg font-bold <%= reserva.estadoReserva ? 'text-gray-900' : 'text-red-700' %> flex items-center gap-2">
+                  <span class="material-icons <%= reserva.estadoReserva ? 'text-green-600' : 'text-red-600' %>"><%= reserva.estadoReserva ? 'check_circle' : 'cancel' %></span>
+                  <%= reserva.estadoTexto %>
+                </h3>
+                <% if (reserva.estadoReserva && reserva.puedeCancelar) { %>
+                  <p class="text-sm text-orange-600 font-medium mt-2 items-center gap-1.5 bg-orange-50 px-3 py-1.5 rounded-md inline-flex border border-orange-100">
+                    <span class="material-icons text-[18px]">schedule</span>
+                    Tiempo restante: <strong><%= reserva.minutosRestantesFormato %></strong>
+                  </p>
+                <% } else if (reserva.estadoReserva) { %>
+                  <p class="text-sm text-red-600 font-medium mt-2 flex items-center gap-1.5">
+                    <span class="material-icons text-[18px]">lock</span>
+                    Plazo de cancelación expirado
+                  </p>
+                <% } else { %>
+                  <p class="text-sm text-gray-500 mt-2 flex items-center gap-1.5">
+                    <span class="material-icons text-[18px]">calendar_today</span>
+                    Cancelada el <%= reserva.fechaCancelacion ? new Date(reserva.fechaCancelacion).toLocaleString('es-MX') : 'N/D' %>
+                  </p>
+                <% } %>
+              </div>
+              <% if (reserva.estadoReserva && reserva.puedeCancelar) { %>
+                <form method="POST" action="/cliente/reserva/<%= reserva.folio %>/cancelar" onsubmit="return confirm('¿Está seguro de que desea cancelar esta reserva? Esta acción no se puede deshacer.');">
+                  <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-red-50 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 hover:border-red-400 transition-colors flex items-center justify-center gap-2">
+                    <span class="material-icons text-[18px]">delete_outline</span>
+                    Cancelar Reserva
+                  </button>
+                </form>
+              <% } %>
+            </div>
+
+            <div class="flex flex-col gap-6">
+              <% reserva.productos.forEach((producto, idx) => { %>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
+                    <img src="<%= producto.foto %>" alt="<%= producto.nombre %>" class="max-h-full max-w-full object-contain">
+                  </div>
+                  <div class="flex flex-col flex-grow">
+                    <span class="text-base font-medium text-[#2B6398]"><%= producto.nombre %></span>
+                    <span class="text-sm text-gray-500 mt-1">Unidad de venta: <%= producto.unidad %> - Cantidad: <%= producto.cantidad %></span>
+                  </div>
                 </div>
-              </div>
-            </div>
-            
-            <hr class="border-gray-100">
-
-            <!-- Producto 2 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Turbo+Finish" alt="Turbo Finish" class="max-h-full max-w-full object-contain">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Turbo Finish - Barniz de poliuretano</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad de venta: 0.788 Litros • Cantidad: 1</span>
-                <div class="flex flex-wrap gap-2 items-center mt-3">
-                  <button class="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors">Ver artículo</button>
-                </div>
-              </div>
-            </div>
-
-            <hr class="border-gray-100">
-
-            <!-- Producto 3 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Top+Cars" alt="Top Cars DMD1684" class="max-h-full max-w-full object-contain">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Top Cars DMD1684 Base Color</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad de venta: Pieza • Cantidad: 1</span>
-                <div class="flex flex-wrap gap-2 items-center mt-3">
-                  <button class="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors">Ver artículo</button>
-                </div>
-              </div>
+                <% if (idx < reserva.productos.length - 1) { %>
+                  <hr class="border-gray-100">
+                <% } %>
+              <% }) %>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- Reserva 2 -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Reserva realizada</span>
-              <span class="text-gray-900">4 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-900 font-medium">$3,450.00 <span class="text-xs font-normal text-gray-500">(con IVA)</span></span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-[#2B6398] hover:underline cursor-pointer">Centro</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Peso Total</span>
-              <span class="text-gray-900">5.2 kg</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10491</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="#" class="text-[#2B6398] hover:text-orange-600 hover:underline">Ver detalle de reserva</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span class="material-icons text-green-600">check_circle</span>
-                Reserva Confirmada
-              </h3>
-              <p class="text-sm text-orange-600 font-medium mt-2 items-center gap-1.5 bg-orange-50 px-3 py-1.5 rounded-md inline-flex border border-orange-100">
-                <span class="material-icons text-[18px]">timer</span>
-                Tiempo restante para cancelar: 45m
-              </p>
-            </div>
-            <button class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 hover:text-red-600 hover:border-red-300">
-              Cancelar Reserva
-            </button>
-          </div>
-
-          <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Top+Cars" alt="Top Cars DMD1684" class="max-h-full max-w-full object-contain">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Top Cars DMD1684 Base Color</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad de venta: Pieza • Cantidad: 4</span>
-                <div class="flex flex-wrap gap-2 items-center mt-3">
-                  <button class="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors">Ver artículo</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reserva 3 (Cancelada) -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col opacity-90">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Reserva realizada</span>
-              <span class="text-gray-900">3 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-500 font-medium line-through">$8,990.50</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-[#2B6398] hover:underline cursor-pointer">Norte (Industrial)</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Peso Total</span>
-              <span class="text-gray-900">1.6 kg</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10480</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="#" class="text-[#2B6398] hover:text-orange-600 hover:underline">Ver detalle de reserva</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                <span class="material-icons text-red-600">cancel</span>
-                Reserva Cancelada
-              </h3>
-              <p class="text-sm text-gray-500 mt-1">Esta reserva fue cancelada el 3 de Marzo de 2026.</p>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 opacity-70">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Turbo+Finish" alt="Turbo Finish" class="max-h-full max-w-full object-contain grayscale">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Turbo Finish - Barniz de poliuretano</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad de venta: 0.788 Litros • Cantidad: 2</span>
-                <div class="flex flex-wrap gap-2 items-center mt-3">
-                  <button class="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-full text-xs font-medium shadow-sm hover:bg-gray-50 transition-colors">Ver artículo</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <% }) %>
     </div>
   </main>
 
   <%- include('../partials/footer') %>
+
+  <script>
+    // Verificar parámetros de éxito/error y mostrar notificación
+    document.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      
+      if (params.has('success')) {
+        // Remover el parámetro de la URL sin recarga
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    });
+  </script>
 </body>
 </html>

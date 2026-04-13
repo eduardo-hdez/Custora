@@ -3,6 +3,75 @@ import Carrito from '../models/carrito.model.js';
 import Campana from '../models/campana.model.js';
 import {enviarConfirmacionReserva} from '../services/email.service.js';
 
+function getFechaBaseReserva(reserva) {
+  return reserva?.fecha_hora_reserva || reserva?.fecha_reserva;
+}
+
+function getCampanaId(reserva) {
+  return reserva?.id_campana ?? reserva?.['id_campana'] ?? null;
+}
+
+function calcularCancelacion(reserva, minutosVentana) {
+  const ahora = Date.now();
+  const fechaBase = getFechaBaseReserva(reserva);
+  const fechaReservaMs = fechaBase ? new Date(fechaBase).getTime() : Number.NaN;
+  const minutos = Math.min(Number(minutosVentana) || 20, 20);
+  const limiteMs = Number.isFinite(fechaReservaMs) ? (fechaReservaMs + (minutos * 60 * 1000)) : 0;
+  const restanteMs = limiteMs - ahora;
+  const puedeCancelar = Boolean(reserva?.estado_reserva) && restanteMs > 0;
+  
+  const minutosRestantesTotal = Math.max(0, Math.ceil(restanteMs / 60000));
+  const horasRestantes = Math.floor(minutosRestantesTotal / 60);
+  const minutosRestantes = minutosRestantesTotal % 60;
+  
+  return {
+    puedeCancelar,
+    minutosVentana: minutos,
+    minutosRestantes: minutosRestantesTotal,
+    horasRestantes,
+    minutosRestantesFormato: horasRestantes > 0 ? `${horasRestantes}h ${minutosRestantes}m` : `${minutosRestantes} min`,
+  };
+}
+
+function mapReservaView(reserva) {
+  const productos = Array.isArray(reserva.productos) ? reserva.productos : [];
+  let total = 0;
+  let pesoTotal = 0;
+
+  const productosView = productos.map((item) => {
+    const producto = item.producto || {};
+    const cantidad = Number(item.unidades_reservadas) || 0;
+    const precio = Number(producto.precio_producto) || 0;
+    const peso = Number(producto.peso_unidad) || 0;
+    total += precio * cantidad;
+    pesoTotal += peso * cantidad;
+    return {
+      id: producto.id_producto,
+      nombre: producto.nombre_producto || 'Producto',
+      unidad: producto.unidad_venta_producto || 'Unidad',
+      foto: producto.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Producto',
+      cantidad,
+    };
+  });
+
+  const estadoReserva = reserva.estado_reserva === true || reserva.estado_reserva === 1 || String(reserva.estado_reserva).toLowerCase() === 'true';
+  const estadoTexto = estadoReserva ? 'Reserva Confirmada' : 'Reserva Cancelada';
+  const cancelacion = calcularCancelacion(reserva, reserva.tiempo_cancelacion);
+
+  return {
+    folio: reserva.folio,
+    estadoReserva,
+    estadoTexto,
+    fechaReserva: reserva.fecha_hora_reserva || reserva.fecha_reserva || '',
+    fechaCancelacion: reserva.fecha_cancelacion || null,
+    sucursal: reserva.nombre_sucursal || 'N/D',
+    total,
+    pesoTotal,
+    productos: productosView,
+    ...cancelacion,
+  };
+}
+
 export async function confirmarReserva(request, response) {
   const idConcesionaria = request.session.idConcesionaria;
   if (!idConcesionaria) return response.redirect('/login');
@@ -41,4 +110,78 @@ export async function confirmarReserva(request, response) {
     title: 'Reserva Confirmada',
     folio,
   });
+}
+
+export async function getHistorialReservas(request, response) {
+  const idConcesionaria = request.session.idConcesionaria;
+  if (!idConcesionaria) return response.redirect('/login');
+
+  const {data, error} = await Reserva.listarPorCliente(idConcesionaria);
+  if (error) {
+    console.error('[reserva] listarPorCliente error:', error);
+    return response.render('cliente/historial-reservas', {
+      title: 'Historial de Reservas',
+      reservas: [],
+      errorMessage: 'No se pudo cargar el historial de reservas.',
+      successMessage: null,
+    });
+  }
+
+  const reservas = (data || []).map(mapReservaView);
+  const successMessage = request.query.success || null;
+  const errorMessage = null;
+
+  return response.render('cliente/historial-reservas', {
+    title: 'Historial de Reservas',
+    reservas,
+    successMessage,
+    errorMessage,
+  });
+}
+
+export async function postCancelarReserva(request, response) {
+  const idConcesionaria = request.session.idConcesionaria;
+  if (!idConcesionaria) return response.redirect('/login');
+
+  const folio = request.params.folio;
+  if (!folio) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const {data: reserva, error} = await Reserva.obtenerPorFolio(folio);
+  if (error || !reserva) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  if (String(reserva.id_concesionaria) !== String(idConcesionaria)) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  if (!reserva.estado_reserva) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const idCampana = getCampanaId(reserva);
+  if (!idCampana) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const {data: minutosConfigurados, error: errorCampana} = await Reserva.obtenerTiempoCancelacion(idCampana);
+  if (errorCampana) {
+    console.error('[reserva] obtenerTiempoCancelacion error:', errorCampana);
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const {puedeCancelar} = calcularCancelacion(reserva, minutosConfigurados);
+  if (!puedeCancelar) {
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const {error: errorCancelar} = await Reserva.cancelarPorFolio(folio);
+  if (errorCancelar) {
+    console.error('[reserva] cancelarPorFolio error:', errorCancelar);
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  return response.redirect('/cliente/historial-reservas?success=Cancelacion%20exitosa');
 }
