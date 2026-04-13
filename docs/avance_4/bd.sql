@@ -57,10 +57,9 @@ CREATE TABLE public.producto (
   peso_unidad double precision NOT NULL,
   unidad_venta_producto text NOT NULL,
   id_campana bigint NOT NULL,
-  id_campana bigint NOT NULL,
   habilitado boolean NOT NULL DEFAULT true,
   CONSTRAINT producto_pkey PRIMARY KEY (id_producto),
-  CONSTRAINT producto_id_campana_fkey FOREIGN KEY (id_campana) REFERENCES public.campana(id_campana)
+  CONSTRAINT producto_id_campaña_fkey FOREIGN KEY (id_campana) REFERENCES public.campana(id_campana)
 );
 CREATE TABLE public.productos_reservados (
   folio text NOT NULL,
@@ -87,9 +86,8 @@ CREATE TABLE public.rbac (
 );
 CREATE TABLE public.reserva (
   folio text NOT NULL,
-  fecha_reserva text NOT NULL,
+  fecha_reserva date NOT NULL,
   estado_reserva boolean NOT NULL DEFAULT true,
-  fecha_cancelacion text,
   id_concesionaria bigint NOT NULL,
   id_sucursal bigint NOT NULL,
   fecha_hora_reserva timestamp with time zone NOT NULL DEFAULT now(),
