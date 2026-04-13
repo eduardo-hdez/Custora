@@ -6,13 +6,9 @@ import campanaController from '../controllers/campana.controller.js';
 const router = express.Router();
 router.use(requireRol([ROL_EMPLEADO]));
 
-router.get('/', (request, response) => {
-  response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
-});
+router.get('/', productoController.renderCatalogoEmpleado);
+router.get('/catalogo', productoController.renderCatalogoEmpleado);
 
-router.get('/catalogo', (request, response) => {
-  response.render('empleado/catalogo-productos', { title: 'Catalogo de Productos' });
-});
 
 router.get('/detalle-producto', (request, response) => {
   response.render('empleado/detalle-producto', { title: 'Detalle de Producto' });

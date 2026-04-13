@@ -1,5 +1,4 @@
 import Producto from '../models/producto.model.js';
-
 export async function renderDetalleProductoCliente(request, response) {
   const { id } = request.params;
 
@@ -47,6 +46,32 @@ export async function renderCatalogoCliente(request, response) {
     });
   } catch (error) {
     response.status(500).render('cliente/catalogo-productos', {
+      title: 'Catálogo de Productos',
+      productos: [],
+      errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
+    });
+  }
+}
+
+export async function renderCatalogoEmpleado(request,response){
+  console.log('✅ renderCatalogoEmpleado ejecutándose');
+  
+  try {
+    const { data, error } = await Producto.fetchAll();
+    console.log('data:', data);
+    console.log('error:', error);
+
+    if (error) {
+      throw error;
+    }
+
+    response.render('empleado/catalogo-productos', {
+      title: 'Catálogo de Productos',
+      productos: data || [],
+      errorCatalogo: null,
+    });
+  } catch (error) {
+    response.status(500).render('empleado/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: [],
       errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
