@@ -80,7 +80,7 @@ export function postAnadirProducto(request, response, next) {
 
 export async function renderGestionProductos(request, response) {
   const success = request.query.success;
-  const errorModificar = request.query.errorModificar === '1';
+  const errorHabilitado = request.query.errorHabilitado === '1';
   try {
     const { data, error } = await Producto.fetchAllGestion();
     if (error) {
@@ -90,7 +90,7 @@ export async function renderGestionProductos(request, response) {
       title: 'Gestión de Productos',
       productos: data || [],
       errorRecuperacion: null,
-      errorModificar,
+      errorHabilitado,
       success,
     });
   } catch (error) {
@@ -98,7 +98,7 @@ export async function renderGestionProductos(request, response) {
       title: 'Gestión de Productos',
       productos: [],
       errorRecuperacion: 1,
-      errorModificar,
+      errorHabilitado,
       success
     });
   }
@@ -106,17 +106,17 @@ export async function renderGestionProductos(request, response) {
 
 export async function deshabilitarProductos(request, response) {
   try {
-    let productosSeleccionados = request.body.productosSeleccionados || [];
+    let productosDeshabilitar = request.body.productosDeshabilitar || [];
 
-    if (!Array.isArray(productosSeleccionados)) {
-      productosSeleccionados = [productosSeleccionados];
+    if (!Array.isArray(productosDeshabilitar)) {
+      productosDeshabilitar = [productosDeshabilitar];
     }
 
-    if (productosSeleccionados.length === 0) {
+    if (productosDeshabilitar.length === 0) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const { error } = await Producto.deshabilitar(productosSeleccionados);
+    const { error } = await Producto.deshabilitar(productosDeshabilitar);
 
     if (error) {
       console.error(error);
@@ -125,23 +125,23 @@ export async function deshabilitarProductos(request, response) {
     return response.redirect('/empleado/gestion-productos?success=deshabilitar');
 
   } catch (error) {
-    return response.redirect('/empleado/gestion-productos?errorModificar=1');
+    return response.redirect('/empleado/gestion-productos?errorHabilitado=1');
   }
 }
 
 export async function rehabilitarProductos(request, response) {
   try {
-    let productosSeleccionados = request.body.productosSeleccionados || [];
+    let productosRehabilitar = request.body.productosRehabilitar || [];
 
-    if (!Array.isArray(productosSeleccionados)) {
-      productosSeleccionados = [productosSeleccionados];
+    if (!Array.isArray(productosRehabilitar)) {
+      productosRehabilitar = [productosRehabilitar];
     }
 
-    if (productosSeleccionados.length === 0) {
+    if (productosRehabilitar.length === 0) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const { error } = await Producto.rehabilitar(productosSeleccionados);
+    const { error } = await Producto.rehabilitar(productosRehabilitar);
 
     if (error) {
       console.error(error);
@@ -150,6 +150,6 @@ export async function rehabilitarProductos(request, response) {
     return response.redirect('/empleado/gestion-productos?success=rehabilitar');
 
   } catch (error) {
-    return response.redirect('/empleado/gestion-productos?errorModificar=1');
+    return response.redirect('/empleado/gestion-productos?errorHabilitado=1');
   }
 }
