@@ -92,6 +92,7 @@ CREATE TABLE public.reserva (
   id_sucursal bigint NOT NULL,
   fecha_hora_reserva timestamp with time zone NOT NULL DEFAULT now(),
   id_campana bigint NOT NULL,
+  fecha_cancelacion timestamp with time zone,
   CONSTRAINT reserva_pkey PRIMARY KEY (folio),
   CONSTRAINT reserva_id_concesionaria_fkey FOREIGN KEY (id_concesionaria) REFERENCES public.concesionaria(id_concesionaria),
   CONSTRAINT reserva_id_sucursal_fkey FOREIGN KEY (id_sucursal) REFERENCES public.sucursal(id_sucursal),
