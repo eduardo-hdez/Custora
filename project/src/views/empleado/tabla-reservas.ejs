@@ -1,278 +1,277 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <%- include('../partials/head') %>
 </head>
+
 <body class="bg-gray-50 flex flex-col min-h-screen">
   <%- include('../partials/navbar-empleado') %>
 
-  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h1 class="text-2xl font-bold text-gray-900">Tabla de Reservas</h1>
-    </div>
+    <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
 
-    <!-- Filtros de Búsqueda -->
-    <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-8">
-      <h2 class="text-base font-semibold text-gray-800 mb-4 border-b pb-2">Filtros de Búsqueda</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-        <div class="w-full">
-          <label for="concesionaria-filter" class="block text-sm font-medium text-gray-700 mb-1">Concesionaria</label>
-          <select id="concesionaria-filter" class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer">
-            <option value="todas">Todas las concesionarias</option>
-            <option value="auto-grupo">Auto Grupo S.A. de C.V.</option>
-            <option value="motors-sur">Motors del Sur</option>
-            <option value="excelencia-automotriz">Excelencia Automotriz</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label for="cuenta-filter" class="block text-sm font-medium text-gray-700 mb-1">Cuenta</label>
-          <select id="cuenta-filter" class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer">
-            <option value="todas">Todas las cuentas</option>
-            <option value="principal">Principal</option>
-            <option value="mantenimiento">Mantenimiento y Reparación</option>
-            <option value="pintura">Taller de Pintura</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <label for="sucursal-filter" class="block text-sm font-medium text-gray-700 mb-1">Sucursal</label>
-          <select id="sucursal-filter" class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer">
-            <option value="todas">Todas las sucursales</option>
-            <option value="centro">Centro</option>
-            <option value="norte">Norte (Industrial)</option>
-            <option value="sur">Sur</option>
-            <option value="este">Este</option>
-          </select>
-        </div>
-        <div class="w-full">
-          <button class="w-full bg-[#007185] hover:bg-[#005d6e] text-white px-6 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2">
-            <span class="material-icons text-[18px]">filter_list</span> Filtrar Resultados
-          </button>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl font-bold text-gray-900">Tabla de Reservas</h1>
+      </div>
+
+      <!-- Filtros de Búsqueda -->
+      <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-8">
+        <h2 class="text-base font-semibold text-gray-800 mb-4 border-b pb-2">Filtros de Búsqueda</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
+          <div class="lg:col-span-3 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-icons text-gray-400 text-sm">search</span>
+            </div>
+            <input type="text" id="busquedaFolio" placeholder="Buscar por folio..."
+              class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
+          </div>
+          <div class="lg:col-span-3 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-icons text-gray-400 text-sm">search</span>
+            </div>
+            <input type="text" id="busquedaConcesionaria" placeholder="Buscar por concesionaria..."
+              class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
+          </div>
+          <div class="lg:col-span-3 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-icons text-gray-400 text-sm">search</span>
+            </div>
+            <input type="text" id="busquedaSucursal" placeholder="Buscar por sucursal..."
+              class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
+          </div>
+          <div class="lg:col-span-2">
+            <label for="filtroEstado" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+            <select id="filtroEstado"
+              class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-8 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer">
+              <option value="todas">Todos los estados</option>
+              <option value="confirmada">Confirmadas</option>
+              <option value="cancelada">Canceladas</option>
+            </select>
+          </div>
+          <div class="lg:col-span-2">
+            <label for="filtroFecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+            <input type="date" id="filtroFecha"
+              class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-3 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer text-gray-700">
+          </div>
+          <div class="lg:col-span-2">
+            <button id="botonFiltrar"
+              class="w-full bg-[#007185] hover:bg-[#005d6e] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm flex items-center justify-center gap-2 max-h-[38px] truncate">
+              <span class="material-icons text-[18px]">filter_list</span> Filtrar
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Lista de Reservas -->
-    <div class="flex flex-col gap-6">
-      
-      <!-- Reserva 1 (Más Reciente) -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Fecha de Reserva</span>
-              <span class="text-gray-900">5 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-900 font-medium">$5,198.00</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Concesionaria / Cuenta</span>
-              <span class="text-[#007185] font-medium hover:underline cursor-pointer">Auto Grupo S.A. de C.V.</span>
-              <span class="text-xs text-gray-500">Taller de Pintura</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-gray-900 font-medium">Centro</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10502</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="/empleado/detalle-reserva" class="text-[#007185] hover:text-[#005d6e] hover:underline">Ver detalles</a>
+      <% if (errorRecuperacion) { %>
+        <div id="modalErrorRecuperacion" tabindex="-1" aria-hidden="true"
+          class="<%= errorRecuperacion ? '' : 'hidden' %> fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+          <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
+            <span class="material-icons text-red-600 text-5xl mb-4">error_outline</span>
+            <h3 class="mb-6 text-lg font-medium text-gray-800">Lo siento, ocurrió un error al recuperar las reservas
+              del catálogo actual de la
+              base de datos. Por favor intenta más tarde.</h3>
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
+              <a href="/empleado">
+                <button id="btnModalErrorRecuperacion" type="button"
+                  class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+                  Aceptar
+                </button>
+              </a>
             </div>
           </div>
         </div>
-
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span class="material-icons text-green-600">check_circle</span>
-                Confirmada
-              </h3>
-            </div>
-          </div>
-
+        <% } %>
+          <!-- Lista de Reservas -->
           <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=DC3000" alt="DeltronNXT DC3000" class="max-h-full max-w-full object-contain mix-blend-multiply">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">DeltronNXT DC3000</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad: 3.75 L • Cantidad: 1</span>
-              </div>
-              <div class="flex items-center text-gray-900 font-medium whitespace-nowrap">
-                $2,399.00
-              </div>
-            </div>
-            
-            <hr class="border-gray-100">
+            <% if (!reservas || reservas.length===0) { %>
+              <tr>
+                <td colspan="6" class="p-4 text-center text-gray-600">
+                  La campaña actual (seleccionada) no cuenta con reservas registradas por el
+                  momento.
+                </td>
+              </tr>
+              <% } else { %>
+                <% reservas.forEach((reserva)=> { %>
+                  <!-- Reserva 1 (Más Reciente) -->
+                  <div
+                    class="card-reserva bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col"
+                    data-folio="<%= reserva.folio %>" data-concesionaria="<%= reserva.nombre_concesionaria %>"
+                    data-sucursal="<%= reserva.nombre_sucursal %>"
+                    data-estado="<%= reserva.estado_reserva ? 'confirmada' : 'cancelada' %>"
+                    data-fecha-reserva="<%= reserva.fecha_reserva %>">
+                    <div
+                      class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
+                      <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
+                        <div class="flex flex-col">
+                          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Fecha de
+                            Reserva</span>
+                          <span class="text-gray-900">
+                            <%= reserva.fecha_reserva %>
+                          </span>
+                        </div>
+                        <div class="flex flex-col">
+                          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
+                          <span class="text-gray-900 font-medium">
+                            $<%= (reserva.precio_reserva).toLocaleString('en-US', {minimumFractionDigits: 2}) %>
+                          </span>
+                        </div>
+                        <div class="flex flex-col">
+                          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Concesionaria
+                            /
+                            Cuenta</span>
+                          <span class="text-[#007185] font-medium hover:underline cursor-pointer">
+                            <%= reserva.nombre_concesionaria %>
+                          </span>
+                        </div>
+                        <div class="flex flex-col">
+                          <span
+                            class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
+                          <span class="text-gray-900 font-medium">
+                            <%= reserva.nombre_sucursal %>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
+                        <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Folio</span>
+                        <span class="text-gray-900 font-medium">
+                          <%= reserva.folio %>
+                        </span>
+                        <div class="flex items-center gap-2 mt-1">
+                          <a href="/empleado/detalle-reserva"
+                            class="text-[#007185] hover:text-[#005d6e] hover:underline">Ver detalles</a>
+                        </div>
+                      </div>
+                    </div>
+                    <% if (reserva.estado_reserva) { %>
+                      <div class="p-4 sm:p-6">
+                        <div
+                          class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
+                          <div>
+                            <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                              <span class="material-icons text-green-600">check_circle</span>
+                              Confirmada
+                            </h3>
+                          </div>
+                        </div>
+                        <% } else { %>
+                          <div class="p-4 sm:p-6">
+                            <div
+                              class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
+                              <div>
+                                <h3 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                                  <span class="material-icons text-red-600">cancel</span>
+                                  Cancelada
+                                </h3>
+                              </div>
+                            </div>
+                            <% } %>
 
-            <!-- Producto 2 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Speedhide" alt="Speedhide Max Prime" class="max-h-full max-w-full object-contain mix-blend-multiply">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">Speedhide Max Prime 6-0000 (Interior)</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad: Pieza • Cantidad: 1</span>
-              </div>
-              <div class="flex items-center text-gray-900 font-medium whitespace-nowrap">
-                $2,799.00
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                              <div class="flex flex-col gap-6">
+                                <% reserva.productos.forEach((producto, index)=> { %>
+                                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                    <div
+                                      class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
+                                      <img src="<%= producto.foto_producto %>" alt="<%= producto.nombre_producto %>"
+                                        class="max-h-full max-w-full object-contain mix-blend-multiply">
+                                    </div>
+                                    <div class="flex flex-col flex-grow">
+                                      <a href="#"
+                                        class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">
+                                        <%= producto.nombre_producto %>
+                                      </a>
+                                      <span class="text-sm text-gray-500 mt-1">Unidad: <%=
+                                          producto.unidad_venta_producto %>
+                                          • Cantidad: <%= producto.unidades_reservadas %></span>
+                                    </div>
+                                    <div class="flex items-center text-gray-900 font-medium whitespace-nowrap">
+                                      $<%= (producto.precio_producto).toLocaleString('en-US', {minimumFractionDigits:
+                                        2}) %>
+                                    </div>
+                                  </div>
+                                  <% if (index < reserva.productos.length - 1) { %>
+                                    <hr class="border-gray-100">
+                                    <% } %>
+                                      <% }); %>
+                              </div>
+                          </div>
+                      </div>
+                      <% }); %>
+                        <% } %>
+                  </div>
+    </main>
 
-      <!-- Reserva 2 -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Fecha de Reserva</span>
-              <span class="text-gray-900">4 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-900 font-medium">$6,319.00</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Concesionaria / Cuenta</span>
-              <span class="text-[#007185] font-medium hover:underline cursor-pointer">Motors del Sur</span>
-              <span class="text-xs text-gray-500">Mantenimiento y Reparación</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-gray-900 font-medium">Norte (Industrial)</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10499</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="#" class="text-[#007185] hover:text-[#005d6e] hover:underline">Ver detalles</a>
-            </div>
-          </div>
-        </div>
+    <%- include('../partials/footer') %>
+      <script>
+        // Script de modal informativo de error en la recuperación de datos de las reservas
+        const modalErrorRecuperacion = document.getElementById('modalErrorRecuperacion');
+        const btnModalErrorRecuperacion = document.getElementById('btnModalErrorRecuperacion');
 
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-                <span class="material-icons text-green-600">check_circle</span>
-                Confirmada
-              </h3>
-            </div>
-            <div class="flex gap-2 w-full sm:w-auto">
-              <button class="flex-1 sm:flex-none px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 transition-colors">
-                Descargar Comprobante
-              </button>
-            </div>
-          </div>
+        if (modalErrorRecuperacion && btnModalErrorRecuperacion) {
+          function ocultarModalRecuperacion() {
+            modalErrorRecuperacion.classList.add('hidden');
+          }
+          btnModalErrorRecuperacion.addEventListener('click', ocultarModalRecuperacion);
+          modalErrorRecuperacion.addEventListener('click', (e) => {
+            if (e.target === modalErrorRecuperacion) {
+              ocultarModalRecuperacion();
+            }
+          });
+        }
+        // Script de filtros de búsqueda
+        document.getElementById('botonFiltrar').addEventListener('click', aplicarFiltros);
+        const reservas = document.querySelectorAll('.card-reserva');
+        const busquedaFolio = document.getElementById('busquedaFolio');
+        const busquedaConcesionaria = document.getElementById('busquedaConcesionaria');
+        const busquedaSucursal = document.getElementById('busquedaSucursal');
+        const filtroEstado = document.getElementById('filtroEstado');
+        const filtroFecha = document.getElementById('filtroFecha');
 
-          <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=DMD1684" alt="DeltronNXT DMD1684" class="max-h-full max-w-full object-contain mix-blend-multiply">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">DeltronNXT DMD1684 - Blanco</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad: 3.785 L • Cantidad: 1</span>
-              </div>
-              <div class="flex items-center text-gray-900 font-medium whitespace-nowrap">
-                $1,489.00
-              </div>
-            </div>
-            
-            <hr class="border-gray-100">
+        // También filtramos si el usuario presiona Enter en los inputs de búsqueda
+        [busquedaConcesionaria, busquedaSucursal, busquedaFolio].forEach(input => {
+          input.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') aplicarFiltros();
+          });
+        });
 
-            <!-- Producto 2 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Turbo+Finish" alt="Turbo Finish" class="max-h-full max-w-full object-contain mix-blend-multiply">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">Turbo Finish - Barniz de poliuretano</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad: 0.788 L • Cantidad: 1</span>
-              </div>
-              <div class="flex items-center text-gray-900 font-medium whitespace-nowrap">
-                $4,830.00
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        function convertirFecha(fechaTexto) { //convertir dato de fecha de texto a formato aaaa-mm-dd para comparar
+          if (!fechaTexto) return '';
+          const partes = fechaTexto.split('/');
+          if (partes.length === 3) {
+            const dia = partes[0].padStart(2, '0');
+            const mes = partes[1].padStart(2, '0');
+            const anio = partes[2];
+            return `${anio}-${mes}-${dia}`;
+          }
+          return fechaTexto;
+        }
+        // Función para aplicar filtros
+        function aplicarFiltros() {
+          const inputFolio = busquedaFolio.value.trim().toLowerCase();
+          const inputConcesionaria = busquedaConcesionaria.value.trim().toLowerCase();
+          const inputSucursal = busquedaSucursal.value.trim().toLowerCase();
+          const estadoSeleccionado = filtroEstado.value;
+          const fechaSeleccionada = filtroFecha.value;
 
-      <!-- Reserva 3 (Cancelada) -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col opacity-80">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Fecha de Reserva</span>
-              <span class="text-gray-900">2 de Marzo de 2026</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Total</span>
-              <span class="text-gray-500 font-medium line-through">$1,700.00</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Concesionaria / Cuenta</span>
-              <span class="text-[#007185] font-medium hover:underline cursor-pointer">Excelencia Automotriz</span>
-              <span class="text-xs text-gray-500">Principal</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Sucursal</span>
-              <span class="text-gray-900 font-medium">Sur</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start md:items-end text-sm w-full md:w-auto">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Pedido #</span>
-            <span class="text-gray-900 font-medium">RES-10485</span>
-            <div class="flex items-center gap-2 mt-1">
-              <a href="#" class="text-[#007185] hover:text-[#005d6e] hover:underline">Ver detalles</a>
-            </div>
-          </div>
-        </div>
+          reservas.forEach(reserva => {
+            if (!reserva.hasAttribute('data-estado')) return;
 
-        <div class="p-4 sm:p-6">
-          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4 border-b border-gray-100 pb-6">
-            <div>
-              <h3 class="text-lg font-bold text-red-700 flex items-center gap-2">
-                <span class="material-icons text-red-600">cancel</span>
-                Cancelada
-              </h3>
-              <p class="text-sm text-gray-500 mt-1">Esta reserva fue cancelada por el cliente el 2 de Marzo de 2026.</p>
-            </div>
-          </div>
+            const folioReserva = reserva.dataset.folio ? reserva.dataset.folio.toLowerCase() : '';
+            const cumpleFolio = !inputFolio || folioReserva.includes(inputFolio);
 
-          <div class="flex flex-col gap-6">
-            <!-- Producto 1 -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 opacity-70">
-              <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-                <img src="https://placehold.co/400x400/ffffff/cccccc?text=Top+Cars+DMD1684" alt="Top Cars DMD1684" class="max-h-full max-w-full object-contain mix-blend-multiply grayscale">
-              </div>
-              <div class="flex flex-col flex-grow">
-                <a href="#" class="text-base font-medium text-[#007185] hover:text-[#005d6e] hover:underline">Top Cars DMD1684 Base Color</a>
-                <span class="text-sm text-gray-500 mt-1">Unidad: 1 L • Cantidad: 2</span>
-              </div>
-              <div class="flex items-center text-gray-500 font-medium whitespace-nowrap line-through">
-                $1,700.00
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            const nombreConcesionaria = reserva.dataset.concesionaria ? reserva.dataset.concesionaria.toLowerCase() : '';
+            const cumpleConcesionaria = !inputConcesionaria || nombreConcesionaria.includes(inputConcesionaria);
 
-    </div>
-  </main>
+            const nombreSucursal = reserva.dataset.sucursal ? reserva.dataset.sucursal.toLowerCase() : '';
+            const cumpleSucursal = !inputSucursal || nombreSucursal.includes(inputSucursal);
 
-  <%- include('../partials/footer') %>
+            const cumpleEstado = !estadoSeleccionado || estadoSeleccionado === 'todas' || reserva.dataset.estado === estadoSeleccionado;
+
+            const fechaReserva = convertirFecha(reserva.dataset.fechaReserva);
+            const cumpleFecha = !fechaSeleccionada || fechaReserva === fechaSeleccionada;
+
+            reserva.style.display = cumpleFolio && cumpleConcesionaria && cumpleSucursal && cumpleEstado && cumpleFecha ? '' : 'none';
+          });
+        }
+      </script>
 </body>
+
 </html>

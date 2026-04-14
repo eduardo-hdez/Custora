@@ -1,7 +1,7 @@
 import Reserva from '../models/reserva.model.js';
 import Carrito from '../models/carrito.model.js';
 import Campana from '../models/campana.model.js';
-import {enviarConfirmacionReserva} from '../services/email.service.js';
+import { enviarConfirmacionReserva } from '../services/email.service.js';
 
 function getFechaBaseReserva(reserva) {
   return reserva?.fecha_hora_reserva || reserva?.fecha_reserva;
@@ -19,11 +19,11 @@ function calcularCancelacion(reserva, minutosVentana) {
   const limiteMs = Number.isFinite(fechaReservaMs) ? (fechaReservaMs + (minutos * 60 * 1000)) : 0;
   const restanteMs = limiteMs - ahora;
   const puedeCancelar = Boolean(reserva?.estado_reserva) && restanteMs > 0;
-  
+
   const minutosRestantesTotal = Math.max(0, Math.ceil(restanteMs / 60000));
   const horasRestantes = Math.floor(minutosRestantesTotal / 60);
   const minutosRestantes = minutosRestantesTotal % 60;
-  
+
   return {
     puedeCancelar,
     minutosVentana: minutos,
@@ -79,7 +79,7 @@ export async function confirmarReserva(request, response) {
   const idSucursal = request.body.id_sucursal;
   if (!idSucursal) return response.redirect('/cliente/carrito-reserva');
 
-  const {data: carrito, error: errorCarrito} = await Carrito.getCartById(idConcesionaria);
+  const { data: carrito, error: errorCarrito } = await Carrito.getCartById(idConcesionaria);
   if (errorCarrito || !carrito?.id_carrito) return response.redirect('/cliente/carrito-reserva');
 
   const productos = Array.isArray(carrito.productos_seleccionados) ? carrito.productos_seleccionados : [];
@@ -90,13 +90,13 @@ export async function confirmarReserva(request, response) {
     Campana.getCampanaActiva(),
   ]);
 
-  const {error: errorReserva} = await Reserva.crear(folio, idConcesionaria, idSucursal, campana?.id_campana);
+  const { error: errorReserva } = await Reserva.crear(folio, idConcesionaria, idSucursal, campana?.id_campana);
   if (errorReserva) {
     console.error('[reserva] crear error:', errorReserva);
     return response.redirect('/cliente/carrito-reserva');
   }
 
-  const {error: errorProductos} = await Reserva.insertarProductos(folio, productos);
+  const { error: errorProductos } = await Reserva.insertarProductos(folio, productos);
   if (errorProductos) {
     console.error('[reserva] insertarProductos error:', errorProductos);
     return response.redirect('/cliente/carrito-reserva');
@@ -116,7 +116,7 @@ export async function getHistorialReservas(request, response) {
   const idConcesionaria = request.session.idConcesionaria;
   if (!idConcesionaria) return response.redirect('/login');
 
-  const {data, error} = await Reserva.listarPorCliente(idConcesionaria);
+  const { data, error } = await Reserva.listarPorCliente(idConcesionaria);
   if (error) {
     console.error('[reserva] listarPorCliente error:', error);
     return response.render('cliente/historial-reservas', {
@@ -148,7 +148,7 @@ export async function postCancelarReserva(request, response) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  const {data: reserva, error} = await Reserva.obtenerPorFolio(folio);
+  const { data: reserva, error } = await Reserva.obtenerPorFolio(folio);
   if (error || !reserva) {
     return response.redirect('/cliente/historial-reservas');
   }
@@ -166,22 +166,69 @@ export async function postCancelarReserva(request, response) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  const {data: minutosConfigurados, error: errorCampana} = await Reserva.obtenerTiempoCancelacion(idCampana);
+  const { data: minutosConfigurados, error: errorCampana } = await Reserva.obtenerTiempoCancelacion(idCampana);
   if (errorCampana) {
     console.error('[reserva] obtenerTiempoCancelacion error:', errorCampana);
     return response.redirect('/cliente/historial-reservas');
   }
 
-  const {puedeCancelar} = calcularCancelacion(reserva, minutosConfigurados);
+  const { puedeCancelar } = calcularCancelacion(reserva, minutosConfigurados);
   if (!puedeCancelar) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  const {error: errorCancelar} = await Reserva.cancelarPorFolio(folio);
+  const { error: errorCancelar } = await Reserva.cancelarPorFolio(folio);
   if (errorCancelar) {
     console.error('[reserva] cancelarPorFolio error:', errorCancelar);
     return response.redirect('/cliente/historial-reservas');
   }
 
   return response.redirect('/cliente/historial-reservas?success=Cancelacion%20exitosa');
+}
+
+export async function renderTablaReservas(request, response) {
+  try {
+    const { data, error } = await Reserva.fetchAll();
+    if (error) {
+      throw error;
+    }
+
+    const agrupadasMap = new Map();
+    if (data) {
+      for (const row of data) {
+        if (!agrupadasMap.has(row.folio)) {
+          agrupadasMap.set(row.folio, {
+            folio: row.folio,
+            fecha_reserva: row.fecha_reserva,
+            precio_reserva: row.precio_reserva,
+            estado_reserva: row.estado_reserva,
+            nombre_concesionaria: row.nombre_concesionaria,
+            nombre_sucursal: row.nombre_sucursal,
+            productos: []
+          });
+        }
+        agrupadasMap.get(row.folio).productos.push({
+          id_producto: row.id_producto,
+          nombre_producto: row.nombre_producto,
+          precio_producto: row.precio_producto,
+          foto_producto: row.foto_producto,
+          unidad_venta_producto: row.unidad_venta_producto,
+          unidades_reservadas: row.unidades_reservadas
+        });
+      }
+    }
+    const agrupadas = Array.from(agrupadasMap.values());
+
+    response.render('empleado/tabla-reservas', {
+      title: 'Tabla de Reservas',
+      reservas: agrupadas,
+      errorRecuperacion: null,
+    });
+  } catch (error) {
+    response.status(500).render('empleado/tabla-reservas', {
+      title: 'Tabla de Reservas',
+      reservas: [],
+      errorRecuperacion: 1,
+    });
+  }
 }
