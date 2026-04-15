@@ -122,7 +122,7 @@ export async function postAnadirProducto(request, response) {
     const file = request.file;
     if (!file) {
       request.session[SESSION_ANADIR_PRODUCTO_ERROR] =
-          'Selecciona una imagen del producto (JPG, PNG, WebP o GIF).';
+          'Selecciona una imagen del producto (JPEG, JPG, PNG).';
       return response.redirect('/empleado/gestion-productos/anadir-producto');
     }
 

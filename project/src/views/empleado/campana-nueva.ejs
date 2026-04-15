@@ -24,13 +24,13 @@
       <% } %>
 
       <% const f = form || {}; %>
-      <form method="post" action="/empleado/campanas/nueva" class="space-y-5">
+      <form method="post" action="/empleado/campanas/nueva" enctype="multipart/form-data" class="space-y-5">
         <div>
           <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">ID campaña</label>
           <input type="text" id="idCampana" name="idCampana" required
             value="<%= f.idCampana || '' %>"
             class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
-            placeholder="Id de camapaña (numérico)" autocomplete="off" />
+            placeholder="(Numérico)" autocomplete="off" />
         </div>
         <div>
           <label for="nombreCampana" class="block text-sm font-medium text-gray-700 mb-1">Nombre de la campaña</label>
@@ -53,28 +53,26 @@
               class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" />
           </div>
         </div>
-        <div>
-          <label for="banners" class="block text-sm font-medium text-gray-700 mb-1">Banners</label>
-          <textarea id="banners" name="banners" rows="4"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
-            placeholder="URLs (una por línea), rutas o notas para los banners."><%= f.banners || '' %></textarea>
+        <div class="space-y-4">
+          <div>
+            <label for="bannerImagen" class="block text-sm font-medium text-gray-700 mb-1">Banner (imagen)</label>
+            <input type="file" id="bannerImagen" name="bannerImagen" accept="image/jpeg,image/png,image/webp,image/gif"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+          </div>
         </div>
         <div>
-          <label for="tiempoCancelacion" class="block text-sm font-medium text-gray-700 mb-1">Tiempo de cancelación (horas)</label>
+          <label for="tiempoCancelacion" class="block text-sm font-medium text-gray-700 mb-1">Tiempo de cancelación (minutos)</label>
           <input type="number" id="tiempoCancelacion" name="tiempoCancelacion" min="0" step="1"
             value="<%= f.tiempoCancelacion || '' %>"
             class="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
-            placeholder="Opcional, ej. 48" />
-          <p class="mt-1 text-xs text-gray-500">Ventana en horas antes del cierre para permitir cancelaciones (opcional).</p>
+            placeholder="ej. 15" />
+          <p class="mt-1 text-xs text-gray-500">Ventana en minutos antes del cierre para permitir cancelaciones.</p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">
           <button type="submit" class="inline-flex items-center justify-center gap-2 bg-[#007185] hover:bg-[#005d6e] text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors">
             <span class="material-icons text-sm">save</span>
             Crear campaña
           </button>
-          <a href="/empleado/campanas" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors">
-            Cancelar
-          </a>
         </div>
       </form>
     </div>

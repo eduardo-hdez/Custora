@@ -1,4 +1,7 @@
 import campanaModel from '../models/campana.model.js';
+import {uploadCampanaBanner} from '../utils/campanaBannerStorage.js';
+
+const SESSION_NUEVA_CAMPANA_ERROR = 'nuevaCampanaError';
 
 function toISODate(value) {
   if (!value) return '';
@@ -63,9 +66,13 @@ async function renderCampanas(request, response) {
 }
 
 function renderNuevaCampana(request, response) {
+  const errorFromSession = request.session[SESSION_NUEVA_CAMPANA_ERROR] ?? null;
+  if (errorFromSession != null) {
+    delete request.session[SESSION_NUEVA_CAMPANA_ERROR];
+  }
   return response.render('empleado/campaña-nueva', {
     title: 'Nueva campaña',
-    error: null,
+    error: errorFromSession,
     form: {},
   });
 }
@@ -77,6 +84,7 @@ async function crearCampanaPost(request, response) {
   const ff = String(request.body.fechaFin ?? '').trim();
   const banners = request.body.banners;
   const tiempoCancelacion = request.body.tiempoCancelacion;
+  const bannerFile = request.file;
 
   const form = {
     idCampana,
@@ -118,12 +126,22 @@ async function crearCampanaPost(request, response) {
   }
 
   try {
+    let bannerFinal = banners;
+    if (bannerFile) {
+      const {publicUrl} = await uploadCampanaBanner(
+          bannerFile.buffer,
+          bannerFile.mimetype,
+          idCampana,
+      );
+      bannerFinal = publicUrl;
+    }
+
     await campanaModel.crearCampana({
       id: idCampana,
       nombre: nombreCampana,
       fechaInicio: fi,
       fechaFin: ff,
-      banner: banners,
+      banner: bannerFinal,
       tiempoCancelacion,
     });
     return response.redirect('/empleado/campanas');
