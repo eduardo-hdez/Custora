@@ -1,4 +1,5 @@
 import Producto from '../models/producto.model.js';
+import Campana from '../models/campana.model.js';
 import {uploadProductoImagen} from '../utils/productoImagenStorage.js';
 
 const SESSION_ANADIR_PRODUCTO_ERROR = 'anadirProductoError';
@@ -83,6 +84,9 @@ export async function renderCatalogoEmpleado(request, response) {
 export async function renderAnadirProducto(request, response) {
   const success = request.query.success === '1';
   let errorMessage = request.session[SESSION_ANADIR_PRODUCTO_ERROR] ?? null;
+  let campanas = [];
+  let idCampanaActiva = null;
+
   if (errorMessage != null) {
     delete request.session[SESSION_ANADIR_PRODUCTO_ERROR];
   }
@@ -90,10 +94,28 @@ export async function renderAnadirProducto(request, response) {
     errorMessage =
         'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
   }
+
+  try {
+    const [campanasDb, campanaActiva] = await Promise.all([
+      Campana.listarCampanas(),
+      Campana.getCampanaActiva(),
+    ]);
+
+    campanas = campanasDb || [];
+    idCampanaActiva = campanaActiva?.id_campana ?? null;
+  } catch (error) {
+    console.error('Error al cargar campañas para añadir producto:', error.message);
+    if (!errorMessage) {
+      errorMessage = 'No se pudieron cargar las campañas disponibles. Intenta de nuevo.';
+    }
+  }
+
   response.render('empleado/anadir-producto', {
     title: 'Añadir Producto',
     success,
     errorMessage,
+    campanas,
+    idCampanaActiva,
   });
 }
 
