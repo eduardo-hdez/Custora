@@ -43,5 +43,6 @@ export async function postLogin(request, response) {
 }
 
 export function postLogout(request, response) {
-  request.session.destroy(() => response.redirect('/login'));
+  request.session = null;
+  response.redirect('/login');
 }

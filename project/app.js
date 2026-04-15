@@ -3,7 +3,7 @@ import compression from 'compression';
 import express from 'express';
 import helmet from 'helmet';
 import path from 'path';
-import session from 'express-session';
+import cookieSession from 'cookie-session';
 import { fileURLToPath } from 'url';
 import authRoutes from './src/routes/auth.routes.js';
 import clienteRoutes from './src/routes/cliente.routes.js';
@@ -30,11 +30,19 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { httpOnly: true, maxAge: 1000 * 60 * 30 } // 30 minutos
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  app.set('trust proxy', 1);
+}
+
+app.use(cookieSession({
+  name: 'session',
+  keys: [process.env.SESSION_SECRET],
+  maxAge: 1000 * 60 * 30, // 30 minutos
+  httpOnly: true,
+  sameSite: 'lax',
+  secure: isProduction,
 }));
 
 // Hacer que la variable este disponible en todas las vistas
