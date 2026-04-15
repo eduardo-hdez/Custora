@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('../partials/navbar-empleado') %>
+
+  <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+    <div class="mb-6">
+      <a href="/empleado/campanas" class="inline-flex items-center gap-1 text-sm text-[#007185] hover:text-[#005d6e] hover:underline">
+        <span class="material-icons text-[18px]">arrow_back</span>
+        Volver a campañas
+      </a>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 max-w-2xl">
+      <!-- 1. Título actualizado -->
+      <h1 class="text-2xl font-bold text-gray-900 mb-2">Editar campaña</h1>
+      <p class="text-sm text-gray-500 mb-6">Modifica los campos que necesites</p>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <!-- 2. Action apunta a la ruta de editar -->
+      <form method="post" action="/empleado/campanas/<%= encodeURIComponent(campana.id) %>/editar" class="space-y-5">
+
+        <div>
+          <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">ID campaña</label>
+          <!-- 3. ID deshabilitado, no se puede cambiar -->
+          <input type="text" id="idCampana" name="idCampana"
+            value="<%= campana.idCampana %>"
+            disabled
+            class="w-full rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-gray-500 shadow-sm cursor-not-allowed" />
+        </div>
+        <div>
+          <label for="nombreCampana" class="block text-sm font-medium text-gray-700 mb-1">Nombre de la campaña</label>
+          <input type="text" id="nombreCampana" name="nombreCampana" required
+            value="<%= campana.nombreCampana %>"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="fechaInicio" class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio</label>
+            <input type="date" id="fechaInicio" name="fechaInicio" required
+              value="<%= campana.fechaInicio %>"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" />
+          </div>
+          <div>
+            <label for="fechaFin" class="block text-sm font-medium text-gray-700 mb-1">Fecha final</label>
+            <input type="date" id="fechaFin" name="fechaFin" required
+              value="<%= campana.fechaFin %>"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" />
+          </div>
+        </div>
+        <div>
+          <label for="banners" class="block text-sm font-medium text-gray-700 mb-1">Banners</label>
+          <textarea id="banners" name="banners" rows="4"
+            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
+            placeholder="URLs (una por línea)"><%= campana.banners %></textarea>
+        </div>
+        <div>
+          <label for="tiempoCancelacion" class="block text-sm font-medium text-gray-700 mb-1">Tiempo de cancelación (horas)</label>
+          <input type="number" id="tiempoCancelacion" name="tiempoCancelacion" min="0" step="1"
+            value="<%= campana.tiempoCancelacion %>"
+            class="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
+            placeholder="Opcional, ej. 48" />
+        </div>
+        <div class="flex flex-wrap gap-3 pt-2">
+          <button type="submit" class="inline-flex items-center justify-center gap-2 bg-[#007185] hover:bg-[#005d6e] text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors">
+            <span class="material-icons text-sm">save</span>
+            Guardar cambios
+          </button>
+          <a href="/empleado/campanas" class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium transition-colors">
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
