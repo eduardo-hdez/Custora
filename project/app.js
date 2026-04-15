@@ -1,5 +1,7 @@
 import 'dotenv/config';
+import compression from 'compression';
 import express from 'express';
+import helmet from 'helmet';
 import path from 'path';
 import session from 'express-session';
 import { fileURLToPath } from 'url';
@@ -12,6 +14,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(helmet());
+app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
