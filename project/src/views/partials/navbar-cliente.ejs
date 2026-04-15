@@ -31,14 +31,14 @@
         <!-- Botón de cambio de cuenta -->
         <div class="flex items-center justify-around flex-1 px-4">
             <% if (concesionarias.length> 1) { %>
-                <div class="relative">
-                    <button onclick="this.nextElementSibling.classList.toggle('hidden')"
-                        class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-2">
+                <details class="relative group">
+                    <summary
+                        class="list-none bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-2 cursor-pointer">
                         <%= idConcesionaria ?? 'Cuenta' %>
-                            <span class="material-icons text-base">arrow_drop_down</span>
-                    </button>
+                        <span class="material-icons text-base">arrow_drop_down</span>
+                    </summary>
                     <div
-                        class="hidden absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
+                        class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
                         <div class="py-2">
                             <% concesionarias.forEach((c, i)=> { %>
                                 <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
@@ -56,7 +56,7 @@
                                 <% }) %>
                         </div>
                     </div>
-                </div>
+                </details>
                 <% } %>
                     <!-- Grupo de Iconos -->
                     <div class="flex items-center gap-8">
