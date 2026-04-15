@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "concurrently \"node --watch app.js\" \"npx tailwindcss -i ./src/input.css -o ./public/output.css --watch\"",
+    "dev": "concurrently \"node --watch server.js\" \"npx tailwindcss -i ./src/input.css -o ./public/output.css --watch\"",
+    "build": "npx tailwindcss -i ./src/input.css -o ./public/output.css --minify",
+    "start": "node server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
