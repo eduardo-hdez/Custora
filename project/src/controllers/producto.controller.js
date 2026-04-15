@@ -60,8 +60,6 @@ export async function renderCatalogoCliente(request, response) {
 export async function renderCatalogoEmpleado(request, response) {
   try {
     const {data, error} = await Producto.fetchAll();
-    console.log('data:', data);
-    console.log('error:', error);
 
     if (error) {
       throw error;
