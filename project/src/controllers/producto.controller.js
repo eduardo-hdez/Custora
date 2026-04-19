@@ -192,6 +192,14 @@ export async function deshabilitarProductos(request, response) {
     }
 
     if (productosDeshabilitar.length === 0) {
+      // Respuesta AJAX
+      if (request.xhr || request.headers.accept?.includes('application/json')) {
+        return response.status(400).json({
+          success: false,
+          error: 'No hay productos seleccionados',
+        });
+      }
+      // Fallback para formularios tradicionales
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
@@ -201,8 +209,27 @@ export async function deshabilitarProductos(request, response) {
       console.error(error);
       throw error;
     }
+
+    // Respuesta AJAX
+    if (request.xhr || request.headers.accept?.includes('application/json')) {
+      return response.json({
+        success: true,
+        message: 'Producto(s) deshabilitado(s) exitosamente',
+        productos: productosDeshabilitar,
+      });
+    }
+
+    // Fallback para formularios tradicionales
     return response.redirect('/empleado/gestion-productos?success=deshabilitar');
   } catch (error) {
+    // Respuesta AJAX
+    if (request.xhr || request.headers.accept?.includes('application/json')) {
+      return response.status(500).json({
+        success: false,
+        error: 'Error al deshabilitar productos',
+      });
+    }
+    // Fallback para formularios tradicionales
     return response.redirect('/empleado/gestion-productos?errorHabilitado=1');
   }
 }
@@ -216,6 +243,14 @@ export async function rehabilitarProductos(request, response) {
     }
 
     if (productosRehabilitar.length === 0) {
+      // Respuesta AJAX
+      if (request.xhr || request.headers.accept?.includes('application/json')) {
+        return response.status(400).json({
+          success: false,
+          error: 'No hay productos seleccionados',
+        });
+      }
+      // Fallback para formularios tradicionales
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
@@ -225,8 +260,27 @@ export async function rehabilitarProductos(request, response) {
       console.error(error);
       throw error;
     }
+
+    // Respuesta AJAX
+    if (request.xhr || request.headers.accept?.includes('application/json')) {
+      return response.json({
+        success: true,
+        message: 'Producto(s) rehabilitado(s) exitosamente',
+        productos: productosRehabilitar,
+      });
+    }
+
+    // Fallback para formularios tradicionales
     return response.redirect('/empleado/gestion-productos?success=rehabilitar');
   } catch (error) {
+    // Respuesta AJAX
+    if (request.xhr || request.headers.accept?.includes('application/json')) {
+      return response.status(500).json({
+        success: false,
+        error: 'Error al rehabilitar productos',
+      });
+    }
+    // Fallback para formularios tradicionales
     return response.redirect('/empleado/gestion-productos?errorHabilitado=1');
   }
 }

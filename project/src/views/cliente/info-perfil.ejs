@@ -67,15 +67,15 @@
           <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Sucursales Disponibles</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Sucursal 1 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group">
+            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group border-[#2B6398] bg-blue-50 shadow-md" data-cuenta-id="1">
               <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
+                <span class="material-icons text-[#2B6398] group-hover:text-[#2B6398]">store</span>
                 <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Centro</span>
               </div>
               <p class="text-xs text-gray-500">Calle Principal #123, Zona Centro</p>
             </div>
             <!-- Sucursal 2 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group">
+            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="2">
               <div class="flex items-center gap-2 mb-2">
                 <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
                 <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Norte (Industrial)</span>
@@ -83,7 +83,7 @@
               <p class="text-xs text-gray-500">Parque Industrial Norte, Lote 45</p>
             </div>
             <!-- Sucursal 3 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group">
+            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="3">
               <div class="flex items-center gap-2 mb-2">
                 <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
                 <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Sur</span>
@@ -91,7 +91,7 @@
               <p class="text-xs text-gray-500">Av. Las Torres #789, Zona Sur</p>
             </div>
             <!-- Sucursal 4 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group">
+            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="4">
               <div class="flex items-center gap-2 mb-2">
                 <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
                 <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Este</span>
@@ -150,5 +150,7 @@
   </main>
 
   <%- include('../partials/footer') %>
+
+  <script type="module" src="/js/cambiar-cuenta.js"></script>
 </body>
 </html>
