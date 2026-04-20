@@ -49,32 +49,24 @@ export default class Reserva {
     return { data, error };
   }
 
-  static async crearCompleta(folio, id_concesionaria, id_sucursal, id_campana, productos) {
-    const { data: reservaData, error: errorReserva } = await Reserva.crear(
-      folio,
-      id_concesionaria,
-      id_sucursal,
-      id_campana,
-    );
+  // Transacción: Crea la reserva y sus productos con rpc.
+  static async crearConProductos(folio, id_concesionaria, id_sucursal, id_campana, productos) {
+    const ahora = new Date();
+    const ids = productos.map((ps) => ps.producto.id_producto);
+    const unidades = productos.map((ps) => ps.cantidad);
 
-    if (errorReserva) return { data: null, error: errorReserva };
+    const { data, error } = await supabase.rpc('crear_reserva_completa', {
+      p_folio: folio,
+      p_id_concesionaria: id_concesionaria,
+      p_id_sucursal: id_sucursal,
+      p_id_campana: id_campana,
+      p_fecha_reserva: ahora.toISOString().slice(0, 10),
+      p_fecha_hora_reserva: ahora.toISOString(),
+      p_ids_producto: ids,
+      p_unidades: unidades,
+    });
 
-    const { data, error } = await Reserva.insertarProductos(folio, productos);
-    return { data: data ?? reservaData, error };
-  }
-  // transacción
-  static async crearCompleta(folio, id_concesionaria, id_sucursal, id_campana, productos) {
-    const { data: reservaData, error: errorReserva } = await Reserva.crear(
-      folio,
-      id_concesionaria,
-      id_sucursal,
-      id_campana,
-    );
-
-    if (errorReserva) return { data: null, error: errorReserva };
-
-    const { data, error } = await Reserva.insertarProductos(folio, productos);
-    return { data: data ?? reservaData, error };
+    return { data, error };
   }
 
   static async fetchAll() {
