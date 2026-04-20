@@ -90,15 +90,17 @@ export async function confirmarReserva(request, response) {
     Campana.getCampanaActiva(),
   ]);
 
-  const { error: errorReserva } = await Reserva.crear(folio, idConcesionaria, idSucursal, campana?.id_campana);
-  if (errorReserva) {
-    console.error('[reserva] crear error:', errorReserva);
-    return response.redirect('/cliente/carrito-reserva');
-  }
-
-  const { error: errorProductos } = await Reserva.insertarProductos(folio, productos);
-  if (errorProductos) {
-    console.error('[reserva] insertarProductos error:', errorProductos);
+  // Transacción atómica: crea la reserva y sus productos en un solo RPC.
+  // Si cualquier paso falla, Postgres revierte todo automáticamente.
+  const { error: errorTransaccion } = await Reserva.crearCompleta(
+    folio,
+    idConcesionaria,
+    idSucursal,
+    campana?.id_campana,
+    productos,
+  );
+  if (errorTransaccion) {
+    console.error('[reserva] crearCompleta error:', errorTransaccion);
     return response.redirect('/cliente/carrito-reserva');
   }
 

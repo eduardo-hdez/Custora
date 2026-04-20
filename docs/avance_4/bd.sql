@@ -116,3 +116,47 @@ CREATE TABLE public.usuario (
   contraseña text NOT NULL,
   CONSTRAINT usuario_pkey PRIMARY KEY (id_usuario)
 );
+
+-- =============================================================
+-- Función: crear_reserva_completa
+-- Descripción: Inserta la reserva y sus productos de forma
+--   atómica. Si algo falla, Postgres revierte todo.
+-- =============================================================
+-- IMPORTANTE: Ejecutar este bloque en el SQL Editor de Supabase
+--   para reemplazar la función anterior.
+-- =============================================================
+
+-- Paso 1: eliminar la versión anterior (firma distinta)
+DROP FUNCTION IF EXISTS crear_reserva_completa(TEXT,INT,INT,INT,TEXT,TEXT,JSONB);
+
+-- Paso 2: crear la nueva versión con arreglos
+CREATE OR REPLACE FUNCTION crear_reserva_completa(
+  p_folio              TEXT,
+  p_id_concesionaria   INT,
+  p_id_sucursal        INT,
+  p_id_campana         INT,
+  p_fecha_reserva      TEXT,
+  p_fecha_hora_reserva TEXT,
+  p_ids_producto       INT[],
+  p_unidades           INT[]
+)
+RETURNS VOID
+LANGUAGE sql
+AS $$
+  INSERT INTO reserva (
+    folio, fecha_reserva, fecha_hora_reserva,
+    estado_reserva, id_concesionaria, id_sucursal, id_campana
+  ) VALUES (
+    p_folio,
+    p_fecha_reserva::DATE,
+    p_fecha_hora_reserva::TIMESTAMPTZ,
+    TRUE,
+    p_id_concesionaria,
+    p_id_sucursal,
+    p_id_campana
+  );
+
+  INSERT INTO productos_reservados (folio, id_producto, unidades_reservadas)
+  SELECT p_folio, id_prod, unidades
+  FROM unnest(p_ids_producto, p_unidades) AS t(id_prod, unidades);
+$$;

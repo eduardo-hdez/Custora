@@ -49,6 +49,20 @@ export default class Reserva {
     return { data, error };
   }
 
+  static async crearCompleta(folio, id_concesionaria, id_sucursal, id_campana, productos) {
+    const { data: reservaData, error: errorReserva } = await Reserva.crear(
+      folio,
+      id_concesionaria,
+      id_sucursal,
+      id_campana,
+    );
+
+    if (errorReserva) return { data: null, error: errorReserva };
+
+    const { data, error } = await Reserva.insertarProductos(folio, productos);
+    return { data: data ?? reservaData, error };
+  }
+
   static async fetchAll() {
     const { data, error } = await supabase
       .rpc('get_reservas_campania');
@@ -56,6 +70,13 @@ export default class Reserva {
   }
 
   static async listarPorCliente(id_concesionaria) {
+
+
+
+
+
+
+
     const { data: reservas, error } = await supabase
       .from('reserva')
       .select('*')
