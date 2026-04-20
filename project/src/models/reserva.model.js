@@ -48,6 +48,20 @@ export default class Reserva {
     const { data, error } = await supabase.from('productos_reservados').insert(rows);
     return { data, error };
   }
+
+  static async crearCompleta(folio, id_concesionaria, id_sucursal, id_campana, productos) {
+    const { data: reservaData, error: errorReserva } = await Reserva.crear(
+      folio,
+      id_concesionaria,
+      id_sucursal,
+      id_campana,
+    );
+
+    if (errorReserva) return { data: null, error: errorReserva };
+
+    const { data, error } = await Reserva.insertarProductos(folio, productos);
+    return { data: data ?? reservaData, error };
+  }
   // transacción
   static async crearCompleta(folio, id_concesionaria, id_sucursal, id_campana, productos) {
     const { data: reservaData, error: errorReserva } = await Reserva.crear(
@@ -70,8 +84,6 @@ export default class Reserva {
   }
 
   static async listarPorCliente(id_concesionaria) {
-
-
     const { data: reservas, error } = await supabase
       .from('reserva')
       .select('*')
