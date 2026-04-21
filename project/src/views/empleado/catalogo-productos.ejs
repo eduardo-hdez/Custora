@@ -101,7 +101,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <% productos.forEach((producto) => { %>
             <% const idProducto = producto.id_producto; %>
-            <% const urlDetalle = idProducto != null && idProducto !== '' ? `/cliente/detalle-producto/${idProducto}` : null; %>
+            <% const urlDetalle = idProducto != null && idProducto !== '' ? `/empleado/detalle-producto/${idProducto}` : null; %>
             <div class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
               <a href="<%= urlDetalle || '#' %>" class="relative w-full aspect-square bg-gray-50 rounded-md mb-3 flex items-center justify-center p-4 block<%= urlDetalle ? '' : ' pointer-events-none opacity-70' %>" aria-disabled="<%= urlDetalle ? 'false' : 'true' %>">
                 <img
