@@ -1,0 +1,83 @@
+<%#
+  Tarjeta — Demanda de Productos
+  Muestra top 3 más solicitados y top 3 menos solicitados.
+  Variables esperadas:
+    - productosMasSolicitados:   Array<{ nombreProducto, totalUnidades }>  (hasta 3)
+    - productosMenosSolicitados: Array<{ nombreProducto, totalUnidades }>  (hasta 3)
+%>
+
+<section class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden mb-8">
+
+  <header class="flex items-center gap-3 px-6 sm:px-8 py-5 bg-gray-50 border-b border-gray-200">
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#007185]/10 text-[#007185]">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+        <path d="M21 8v13H3V8"></path>
+        <path d="M1 3h22v5H1z"></path>
+        <path d="M10 12h4"></path>
+      </svg>
+    </span>
+    <h2 class="text-xl font-extrabold text-gray-900">Demanda de Productos</h2>
+  </header>
+
+  <div class="px-6 sm:px-8 py-6">
+
+    <div class="mb-6">
+      <div class="flex items-center gap-2 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-green-700">
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+        <h3 class="text-sm font-bold tracking-wider text-green-700 uppercase">Más Solicitados</h3>
+      </div>
+
+      <% if (!productosMasSolicitados || productosMasSolicitados.length === 0) { %>
+        <p class="text-sm text-gray-500 italic">Sin datos.</p>
+      <% } else { %>
+        <ul class="divide-y divide-gray-100">
+          <% productosMasSolicitados.forEach((p, i) => { %>
+            <li class="flex items-baseline justify-between py-2.5">
+              <span class="text-gray-900 font-medium">
+                <span class="text-gray-500 mr-1"><%= i + 1 %>.</span>
+                <%= p.nombreProducto %>
+              </span>
+              <span class="text-gray-500 text-sm whitespace-nowrap">
+                <%= p.totalUnidades.toLocaleString('es-MX') %> unid.
+              </span>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+
+    <hr class="border-gray-200 my-6" />
+
+    <div>
+      <div class="flex items-center gap-2 mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-red-700">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <polyline points="19 12 12 19 5 12"></polyline>
+        </svg>
+        <h3 class="text-sm font-bold tracking-wider text-red-700 uppercase">Menos Solicitados</h3>
+      </div>
+
+      <% if (!productosMenosSolicitados || productosMenosSolicitados.length === 0) { %>
+        <p class="text-sm text-gray-500 italic">Sin datos.</p>
+      <% } else { %>
+        <ul class="divide-y divide-gray-100">
+          <% productosMenosSolicitados.forEach((p, i) => { %>
+            <li class="flex items-baseline justify-between py-2.5">
+              <span class="text-gray-900 font-medium">
+                <span class="text-gray-500 mr-1"><%= i + 1 %>.</span>
+                <%= p.nombreProducto %>
+              </span>
+              <span class="text-gray-500 text-sm whitespace-nowrap">
+                <%= p.totalUnidades.toLocaleString('es-MX') %> unid.
+              </span>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+
+  </div>
+</section>

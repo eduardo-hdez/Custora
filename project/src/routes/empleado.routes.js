@@ -5,6 +5,7 @@ import {parseProductoMultipart} from '../middleware/uploadProducto.middleware.js
 import {parseCampanaMultipart} from '../middleware/uploadCampana.middleware.js';
 import campanaController from '../controllers/campana.controller.js';
 import * as reservaController from '../controllers/reserva.controller.js';
+import * as reporteController from '../controllers/reporte.controller.js';
 
 const router = express.Router();
 router.use(requireRol([ROL_EMPLEADO]));
@@ -35,9 +36,7 @@ router.get('/detalle-reserva', (request, response) => {
   response.render('empleado/detalle-reserva', {title: 'Detalle de Reserva'});
 });
 
-router.get('/reporte', (request, response) => {
-  response.render('empleado/reporte', {title: 'Reporte'});
-});
+router.get('/reporte', reporteController.renderReporte);
 
 router.get('/campanas', campanaController.renderCampanas);
 
