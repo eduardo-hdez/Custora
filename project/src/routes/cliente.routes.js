@@ -4,9 +4,13 @@ import * as carritoController from '../controllers/carrito.controller.js';
 import {confirmarReserva, getHistorialReservas, postCancelarReserva} from '../controllers/reserva.controller.js';
 import {postCambiarCuenta} from '../controllers/cuenta.controller.js';
 import {requireRol, ROL_CLIENTE} from '../middleware/auth.middleware.js';
+import {injectCantidadProductosCarrito} from '../middleware/carritoCantidad.middleware.js';
 
 const router = express.Router();
 router.use(requireRol([ROL_CLIENTE]));
+
+// Middleware para obtener la cantidad de productos en el carrito
+router.use(injectCantidadProductosCarrito);
 
 router.get('/', productoController.renderCatalogoCliente);
 router.get('/catalogo', productoController.renderCatalogoCliente);
