@@ -57,6 +57,36 @@ export async function renderCatalogoCliente(request, response) {
   }
 }
 
+export async function renderDetalleProductoEmpleado(request, response) {
+  const {id} = request.params;
+
+  try {
+    const {data, error} = await Producto.findById(id);
+
+    if (error || data == null) {
+      return response.status(404).render('empleado/detalle-producto', {
+        title: 'Producto no encontrado',
+        producto: null,
+        errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
+      });
+    }
+
+    const nombre = data.nombre_producto || data.nombre || 'Producto';
+
+    return response.render('empleado/detalle-producto', {
+      title: nombre,
+      producto: data,
+      errorDetalle: null,
+    });
+  } catch (err) {
+    return response.status(500).render('empleado/detalle-producto', {
+      title: 'Error',
+      producto: null,
+      errorDetalle: 'No se pudo cargar el producto en este momento.',
+    });
+  }
+}
+
 export async function renderCatalogoEmpleado(request, response) {
   try {
     const {data, error} = await Producto.fetchAll();
