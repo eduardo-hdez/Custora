@@ -119,16 +119,5 @@
 
   <%- include('../partials/footer') %>
 
-  <script>
-    // Verificar parámetros de éxito/error y mostrar notificación
-    document.addEventListener('DOMContentLoaded', function() {
-      const params = new URLSearchParams(window.location.search);
-      
-      if (params.has('success')) {
-        // Remover el parámetro de la URL sin recarga
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-    });
-  </script>
 </body>
 </html>

@@ -75,3 +75,55 @@ export async function enviarConfirmacionReserva(_correo, folio, productos) {
 
   if (error) console.error('[email] enviarConfirmacionReserva error:', error);
 }
+
+export async function enviarCancelacionReserva(_correo, folio) {
+  const fechaCancelacion = new Date().toLocaleString('es-MX', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  const {error} = await resend.emails.send({
+    from: 'Reservas <onboarding@resend.dev>',
+    to: 'a01707225@tec.mx', // TODO: usar correo real al verificar dominio
+    subject: `Cancelación de reserva ${folio}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 560px; margin: 0 auto; color: #111827;">
+        <div style="background: #b91c1c; padding: 32px 24px; border-radius: 8px 8px 0 0; text-align: center;">
+          <h1 style="margin: 0; color: #ffffff; font-size: 22px;">Reserva cancelada</h1>
+          <p style="margin: 8px 0 0; color: #fecaca; font-size: 14px;">Tu solicitud de cancelación se procesó correctamente.</p>
+        </div>
+
+        <div style="background: #ffffff; padding: 24px; border: 1px solid #e5e7eb; border-top: none;">
+          <div style="background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px 24px; margin-bottom: 20px; text-align: center;">
+            <p style="margin: 0; color: #6b7280; font-size: 13px;">Folio de reserva</p>
+            <p style="margin: 4px 0 0; font-size: 24px; font-weight: 700; color: #2B6398; letter-spacing: 1px;">${folio}</p>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
+            <tbody>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Cancelada</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha de cancelación</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaCancelacion}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 16px;">
+            <p style="margin: 0 0 8px; font-size: 13px; color: #374151; font-weight: 600;">¿Qué sigue?</p>
+            <ul style="margin: 0; padding-left: 18px; color: #4b5563; font-size: 13px; line-height: 1.6;">
+              <li>Tu reserva ya no está activa en el sistema.</li>
+              <li>Si fue un error, puedes generar una nueva reserva desde el catálogo.</li>
+              <li>Conserva el folio por si necesitas soporte.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `,
+  });
+
+  if (error) console.error('[email] enviarCancelacionReserva error:', error);
+}

@@ -2,6 +2,7 @@ import Reserva from '../models/reserva.model.js';
 import Carrito from '../models/carrito.model.js';
 import Campana from '../models/campana.model.js';
 import { enviarConfirmacionReserva } from '../services/email.service.js';
+import { enviarCancelacionReserva } from '../services/email.service.js';
 
 function getFechaBaseReserva(reserva) {
   return reserva?.fecha_hora_reserva || reserva?.fecha_reserva;
@@ -130,7 +131,8 @@ export async function getHistorialReservas(request, response) {
   }
 
   const reservas = (data || []).map(mapReservaView);
-  const successMessage = request.query.success || null;
+  const successMessage = request.session.successMessage || null;
+  request.session.successMessage = null;
   const errorMessage = null;
 
   return response.render('cliente/historial-reservas', {
@@ -179,13 +181,18 @@ export async function postCancelarReserva(request, response) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  const { error: errorCancelar } = await Reserva.cancelarPorFolio(folio);
-  if (errorCancelar) {
-    console.error('[reserva] cancelarPorFolio error:', errorCancelar);
+  const { data: reservaCancelada, error: errorCancelar } = await Reserva.cancelarPorFolio(folio);
+  if (errorCancelar || !reservaCancelada) {
+    console.error('[reserva] cancelarPorFolio error:', errorCancelar || 'No se actualizó ninguna reserva.');
     return response.redirect('/cliente/historial-reservas');
   }
 
-  return response.redirect('/cliente/historial-reservas?success=Cancelacion%20exitosa');
+  enviarCancelacionReserva(request.session.correo, folio).catch((emailError) => {
+    console.error('[reserva] enviarCancelacionReserva error:', emailError);
+  });
+
+  request.session.successMessage = 'Cancelacion exitosa';
+  return response.redirect('/cliente/historial-reservas');
 }
 
 export async function renderTablaReservas(request, response) {
