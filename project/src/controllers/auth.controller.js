@@ -43,6 +43,8 @@ export async function postLogin(request, response) {
 }
 
 export function postLogout(request, response) {
-  request.session = null;
-  response.redirect('/login');
+  request.session.destroy(() => {
+    response.clearCookie('session');
+    response.redirect('/login');
+  });
 }

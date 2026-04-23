@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import compression from 'compression';
 import express from 'express';
+import session from 'express-session';
 import helmet from 'helmet';
 import path from 'path';
-import cookieSession from 'cookie-session';
 import { fileURLToPath } from 'url';
 import authRoutes from './src/routes/auth.routes.js';
 import clienteRoutes from './src/routes/cliente.routes.js';
@@ -36,13 +36,18 @@ if (isProduction) {
   app.set('trust proxy', 1);
 }
 
-app.use(cookieSession({
+app.use(session({
   name: 'session',
-  keys: [process.env.SESSION_SECRET],
-  maxAge: 1000 * 60 * 30, // 30 minutos
-  httpOnly: true,
-  sameSite: 'lax',
-  secure: isProduction,
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  cookie: {
+    maxAge: 1000 * 60 * 15, // 15 minutos de inactividad
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: isProduction,
+  },
 }));
 
 // Hacer que la variable este disponible en todas las vistas
