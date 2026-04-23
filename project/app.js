@@ -28,11 +28,11 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
-app.use(express.urlencoded({ extended: true }));
-
 const isProduction = process.env.NODE_ENV === 'production';
+const isVercel = process.env.VERCEL === '1';
+const shouldUseSecureCookies = isProduction || isVercel;
 
-if (isProduction) {
+if (shouldUseSecureCookies) {
   app.set('trust proxy', 1);
 }
 
@@ -42,11 +42,12 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   rolling: true,
+  proxy: shouldUseSecureCookies,
   cookie: {
     maxAge: 1000 * 60 * 15, // 15 minutos de inactividad
     httpOnly: true,
     sameSite: 'lax',
-    secure: isProduction,
+    secure: shouldUseSecureCookies,
   },
 }));
 
