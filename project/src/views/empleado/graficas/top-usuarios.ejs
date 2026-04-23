@@ -11,7 +11,7 @@
           <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
         </svg>
       </span>
-      <h2 class="text-xl font-extrabold text-gray-900">Top Usuarios (Concesionarias)</h2>
+      <h2 class="text-xl font-extrabold text-gray-900">Top Concesionarias</h2>
     </div>
     <span class="text-xs font-medium text-gray-500 bg-gray-200 px-2.5 py-1 rounded-full uppercase tracking-wider">
       Ranking de Compras
@@ -19,14 +19,14 @@
   </header>
 
   <div class="px-6 sm:px-8 py-6">
-    <% if (!topUsuarios || topUsuarios.length===0) { %>
+    <% if (!topConcesionarias || topConcesionarias.length===0) { %>
       <div class="flex flex-col items-center justify-center py-12 text-gray-400">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-4 opacity-20" fill="none" viewBox="0 0 24 24"
           stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
-        <p class="text-sm italic font-medium">No hay datos de usuarios registrados.</p>
+        <p class="text-sm italic font-medium">No hay datos de concesionarias registradas.</p>
       </div>
       <% } else { %>
         <div class="overflow-x-auto">
@@ -40,7 +40,7 @@
               </tr>
             </thead>
             <tbody id="top-users-body">
-              <% topUsuarios.forEach((user, index)=> { %>
+              <% topConcesionarias.forEach((user, index)=> { %>
                 <tr class="group transition-all duration-200 <%= index >= 5 ? 'hidden' : '' %>" <%=index>= 5 ?
                   'data-extra-item="true"' : '' %>>
                   <td class="py-4 pl-4 rounded-l-xl bg-gray-50 group-hover:bg-gray-100 transition-colors">
@@ -73,11 +73,11 @@
           </table>
         </div>
 
-        <% if (topUsuarios.length> 5) { %>
+        <% if (topConcesionarias.length> 5) { %>
           <div class="mt-6 flex justify-center">
             <button id="btn-toggle-top-users"
               class="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm active:scale-95">
-              <span>Ver más usuarios</span>
+              <span>Ver más concesionarias</span>
               <svg id="icon-toggle-users" xmlns="http://www.w3.org/2000/svg"
                 class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
@@ -99,7 +99,18 @@
 
       btn.addEventListener('click', () => {
         isExpanded = !isExpanded;
-        btn.querySelector('span').textContent = isExpanded ? 'Ver menos' : 'Ver más usuarios';
+        
+        extraItems.forEach(item => {
+          if (isExpanded) {
+            item.classList.remove('hidden');
+            item.classList.add('animate-fade-in');
+          } else {
+            item.classList.add('hidden');
+            item.classList.remove('animate-fade-in');
+          }
+        });
+
+        btn.querySelector('span').textContent = isExpanded ? 'Ver menos' : 'Ver más concesionarias';
         icon.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
       });
     });
