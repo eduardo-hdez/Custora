@@ -50,8 +50,8 @@ app.use(session({
   proxy: isProduction,
   store: new PgSession({
     pool: pgPool,
+    schemaName: 'public',
     tableName: 'session',
-    createTableIfMissing: false,
   }),
   cookie: {
     maxAge: 1000 * 60 * 15, // 15 minutos de inactividad
