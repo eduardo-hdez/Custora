@@ -21,3 +21,12 @@ export async function fetchDemandaProductosRanking(limite = 3) {
     productosMenosSolicitados: normalizarRanking(menosResult.data),
   };
 }
+
+export async function fetchTopConcesionarias() {
+  const { data, error } = await supabase.rpc('get_top_concesionarias');
+  if (error) {
+    console.error('[fetchTopConcesionarias] Error:', error);
+    return [];
+  }
+  return data || [];
+}

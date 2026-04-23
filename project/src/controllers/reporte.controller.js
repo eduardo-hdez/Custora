@@ -1,4 +1,4 @@
-import { fetchDemandaProductosRanking } from '../models/reporte.model.js';
+import { fetchDemandaProductosRanking, fetchTopConcesionarias } from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
   const base = {
@@ -8,11 +8,14 @@ export async function renderReporte(request, response) {
 
   try {
     const demanda = await fetchDemandaProductosRanking(3);
+    const concesionarias = await fetchTopConcesionarias();
 
     return response.render('empleado/reporte', {
       ...base,
       errorReporte: null,
       ...demanda,
+      concesionarias,
+
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -22,6 +25,7 @@ export async function renderReporte(request, response) {
       errorReporte: 'No se pudo cargar el reporte en este momento.',
       productosMasSolicitados: [],
       productosMenosSolicitados: [],
+      concesionarias: [],
     });
   }
 }
