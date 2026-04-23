@@ -20,10 +20,6 @@ export async function postLogin(request, response) {
   try {
     const {data: user, error: userError} = await Usuario.findUserWithRole(correo);
     if (userError) {
-      console.error('[auth-login] findUserWithRole failed', {
-        message: userError.message,
-        code: userError.code,
-      });
       throw userError;
     }
 
@@ -49,12 +45,6 @@ export async function postLogin(request, response) {
 
     return response.redirect('/empleado');
   } catch (error) {
-    console.error('[auth-login] unexpected error', {
-      message: error?.message,
-      code: error?.code,
-      name: error?.name,
-      status: error?.status,
-    });
     return response.status(500).render('login', {
       title: 'Iniciar sesión',
       error: 'Ocurrio un error interno al iniciar sesion. Intenta nuevamente.',
