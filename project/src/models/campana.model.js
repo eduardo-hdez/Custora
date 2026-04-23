@@ -61,13 +61,42 @@ async function getCampanaActiva() {
   const hoy = new Date().toISOString().slice(0, 10);
   const {data, error} = await supabase
       .from('campana')
-      .select('id_campana')
+      .select('id_campana, nombre_campana, banner')
       .lte('fecha_inicio', hoy)
       .gte('fecha_fin', hoy)
       .limit(1)
       .maybeSingle();
   if (error) throw error;
   return data;
+}
+
+function urlBannerLimpia(raw) {
+  const t = String(raw ?? '').trim();
+  return t || null;
+}
+
+// Valores de vista del catálogo cuando no hay campaña o falla la carga.
+export const CATALOGO_CAMPANA_FALLBACK = Object.freeze({
+  idCampanaActiva: null,
+  nombreCampañaActiva: 'No hay campaña vigente hoy',
+  catalogoBannerUrl: null,
+});
+
+// Datos de la campaña activa listos para las vistas de catálogo (banner, nombre, id).
+async function getVistaCatalogoCampañaActiva() {
+  try {
+    const row = await getCampanaActiva();
+    if (!row) {
+      return {...CATALOGO_CAMPANA_FALLBACK};
+    }
+    return {
+      idCampanaActiva: row.id_campana ?? null,
+      nombreCampañaActiva: String(row.nombre_campana ?? 'Campaña'),
+      catalogoBannerUrl: urlBannerLimpia(row.banner),
+    };
+  } catch {
+    return {...CATALOGO_CAMPANA_FALLBACK};
+  }
 }
 
 async function crearCampana(payload) {
@@ -124,4 +153,12 @@ async function actualizarCampana(id, campos) {
   return true;
 }
 
-export default { listarCampanas, crearCampana, getCampanaActiva, obtenerCampanaPorId, actualizarCampana };
+export default {
+  listarCampanas,
+  crearCampana,
+  getCampanaActiva,
+  obtenerCampanaPorId,
+  actualizarCampana,
+  getVistaCatalogoCampañaActiva,
+  CATALOGO_CAMPANA_FALLBACK,
+};

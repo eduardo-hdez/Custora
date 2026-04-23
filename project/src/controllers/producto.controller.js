@@ -37,7 +37,10 @@ export async function renderDetalleProductoCliente(request, response) {
 
 export async function renderCatalogoCliente(request, response) {
   try {
-    const {data, error} = await Producto.fetchAll();
+    const [{data, error}, vistaCampaña] = await Promise.all([
+      Producto.fetchAll(),
+      Campana.getVistaCatalogoCampañaActiva(),
+    ]);
 
     if (error) {
       throw error;
@@ -47,12 +50,14 @@ export async function renderCatalogoCliente(request, response) {
       title: 'Catálogo de Productos',
       productos: data || [],
       errorCatalogo: null,
+      ...vistaCampaña,
     });
   } catch (error) {
     response.status(500).render('cliente/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: [],
       errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
+      ...Campana.CATALOGO_CAMPANA_FALLBACK,
     });
   }
 }
@@ -89,7 +94,10 @@ export async function renderDetalleProductoEmpleado(request, response) {
 
 export async function renderCatalogoEmpleado(request, response) {
   try {
-    const {data, error} = await Producto.fetchAll();
+    const [{data, error}, vistaCampaña] = await Promise.all([
+      Producto.fetchAll(),
+      Campana.getVistaCatalogoCampañaActiva(),
+    ]);
 
     if (error) {
       throw error;
@@ -99,12 +107,14 @@ export async function renderCatalogoEmpleado(request, response) {
       title: 'Catálogo de Productos',
       productos: data || [],
       errorCatalogo: null,
+      ...vistaCampaña,
     });
   } catch (error) {
     response.status(500).render('empleado/catalogo-productos', {
       title: 'Catálogo de Productos',
       productos: [],
       errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
+      ...Campana.CATALOGO_CAMPANA_FALLBACK,
     });
   }
 }

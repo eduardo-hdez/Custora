@@ -7,17 +7,24 @@
   <%- include('../partials/navbar-empleado') %>
 
   <main class="w-full flex flex-col items-center pb-16 flex-grow bg-white">
-  <!-- Banner principal -->
+  <!-- Banner: campaña vigente hoy (mismo criterio que reservas) -->
   <div class="w-full max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
-    <div class="w-full overflow-hidden">
-      <!-- Reemplazar src con la imagen real del banner -->
-      <img src="https://placehold.co/1200x250/000000/ffffff?text=WE+ARE+26+BANNER" alt="Banner Preventa" class="w-full h-auto object-cover md:rounded-lg">
+    <div class="w-full overflow-hidden border border-gray-100 md:rounded-lg bg-gray-50">
+      <% if (typeof catalogoBannerUrl === 'string' && catalogoBannerUrl) { %>
+        <img src="<%= catalogoBannerUrl %>" alt="Banner: <%= typeof nombreCampañaActiva !== 'undefined' ? nombreCampañaActiva : 'Campaña' %>" class="w-full h-auto object-cover" />
+      <% } else { %>
+        <div class="w-full min-h-[120px] flex items-center justify-center text-gray-500 px-4 py-8 text-sm md:text-base text-center">
+          <span class="font-medium text-gray-700"><%= typeof nombreCampañaActiva !== 'undefined' ? nombreCampañaActiva : 'Campaña activa' %></span>
+        </div>
+      <% } %>
     </div>
+    <% if (typeof idCampanaActiva !== 'undefined' && idCampanaActiva) { %>
     <div class="mt-3 flex justify-end">
-      <button class="bg-white border border-[#007185] text-[#007185] hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-colors shadow-sm">
+      <a href="/empleado/campanas/<%= encodeURIComponent(String(idCampanaActiva)) %>/editar" class="inline-flex items-center bg-white border border-[#007185] text-[#007185] hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
         <span class="material-icons text-[18px] mr-2">edit</span> Editar banner
-      </button>
+      </a>
     </div>
+    <% } %>
   </div>
   <!-- Contador -->
   <div class="w-full flex flex-col items-center py-6">
