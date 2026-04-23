@@ -1,4 +1,4 @@
-import { fetchReservas } from '../models/reporte.model.js';
+import { fetchReservas, fetchTopConcesionarias } from '../models/reporte.model.js';
 
 function calcularDemandaProductos(filas) {
   const mapa = new Map();
@@ -30,6 +30,19 @@ function calcularDemandaProductos(filas) {
   };
 }
 
+export async function topConcesionarias() {
+  try {
+    const [{ data, error }] = await Promise.all([fetchTopConcesionarias()]);
+    if (error) {
+      throw error;
+    }
+    return data || [];
+  } catch (error) {
+    console.error('[topConcesionarias] Error:', error);
+    return [];
+  }
+}
+
 export async function renderReporte(request, response) {
   const base = {
     title: 'Reporte de Reservas',
@@ -39,11 +52,14 @@ export async function renderReporte(request, response) {
   try {
     const filas = await fetchReservas();
     const demanda = calcularDemandaProductos(filas);
+    const concesionarias = await topConcesionarias();
 
     return response.render('empleado/reporte', {
       ...base,
       errorReporte: null,
       ...demanda,
+      concesionarias: concesionarias,
+
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -53,6 +69,7 @@ export async function renderReporte(request, response) {
       errorReporte: 'No se pudo cargar el reporte en este momento.',
       productosMasSolicitados: [],
       productosMenosSolicitados: [],
+      concesionarias: [],
     });
   }
 }
