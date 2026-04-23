@@ -24,8 +24,13 @@
         </div>
       <% } %>
 
+      <%
+        const lineasBanner = String(campana.banners || '').split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+        const primeraUrlBanner = lineasBanner.find((s) => /^https?:\/\//i.test(s)) || null;
+      %>
       <!-- 2. Action apunta a la ruta de editar -->
-      <form method="post" action="/empleado/campanas/<%= encodeURIComponent(campana.id) %>/editar" class="space-y-5">
+      <form method="post" enctype="multipart/form-data"
+        action="/empleado/campanas/<%= encodeURIComponent(campana.id) %>/editar" class="space-y-5">
 
         <div>
           <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">ID campaña</label>
@@ -55,18 +60,33 @@
               class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]" />
           </div>
         </div>
-        <div>
-          <label for="banners" class="block text-sm font-medium text-gray-700 mb-1">Banners</label>
-          <textarea id="banners" name="banners" rows="4"
-            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
-            placeholder="URLs (una por línea)"><%= campana.banners %></textarea>
+        <div class="space-y-2">
+          <span class="block text-sm font-medium text-gray-700">Banner actual</span>
+          <% if (primeraUrlBanner) { %>
+            <div class="rounded-lg border border-gray-200 bg-gray-50 p-2 max-w-md">
+              <img src="<%= primeraUrlBanner %>" alt="Banner actual" class="max-h-32 w-auto object-contain mx-auto" onerror="this.style.display='none'" />
+            </div>
+          <% } else { %>
+            <p class="text-sm text-gray-500">Sin banner. Puedes subir uno abajo.</p>
+          <% } %>
+        </div>
+
+        <div class="border-t border-gray-200 pt-5 space-y-3">
+          <h2 class="text-sm font-semibold text-gray-800">Cambiar banner</h2>
+          <div>
+            <label for="bannerImagen" class="block text-sm font-medium text-gray-700 mb-1">Imagen</label>
+            <input type="file" id="bannerImagen" name="bannerImagen" accept="image/jpeg,image/png,image/webp,image/gif"
+              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185] file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+            <p class="mt-1 text-xs text-gray-500">JPEG, JPG, PNG. Máx. 5 MB.</p>
+          </div>
         </div>
         <div>
-          <label for="tiempoCancelacion" class="block text-sm font-medium text-gray-700 mb-1">Tiempo de cancelación (horas)</label>
+          <label for="tiempoCancelacion" class="block text-sm font-medium text-gray-700 mb-1">Tiempo de cancelación (minutos)</label>
           <input type="number" id="tiempoCancelacion" name="tiempoCancelacion" min="0" step="1"
             value="<%= campana.tiempoCancelacion %>"
             class="w-full max-w-xs rounded-lg border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-[#007185] focus:ring-1 focus:ring-[#007185]"
-            placeholder="Opcional, ej. 48" />
+            placeholder="ej. 15" />
+          <p class="mt-1 text-xs text-gray-500">Ventana en minutos antes del cierre para permitir cancelaciones.</p>
         </div>
         <div class="flex flex-wrap gap-3 pt-2">
           <button type="submit" class="inline-flex items-center justify-center gap-2 bg-[#007185] hover:bg-[#005d6e] text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors">

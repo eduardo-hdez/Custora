@@ -1,6 +1,7 @@
 import multer from 'multer';
 
 const SESSION_NUEVA_CAMPANA_ERROR = 'nuevaCampanaError';
+const SESSION_EDITAR_CAMPANA_ERROR = 'editarCampanaError';
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -33,6 +34,17 @@ export function parseCampanaMultipart(request, response, next) {
       console.error(error);
       request.session[SESSION_NUEVA_CAMPANA_ERROR] = messageForUploadError(error);
       return response.redirect('/empleado/campanas/nueva');
+    }
+    next();
+  });
+}
+
+export function parseCampanaEditMultipart(request, response, next) {
+  upload.single('bannerImagen')(request, response, (error) => {
+    if (error) {
+      console.error(error);
+      request.session[SESSION_EDITAR_CAMPANA_ERROR] = messageForUploadError(error);
+      return response.redirect(`/empleado/campanas/${encodeURIComponent(request.params.id)}/editar`);
     }
     next();
   });

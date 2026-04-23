@@ -2,6 +2,7 @@ import campanaModel from '../models/campana.model.js';
 import {uploadCampanaBanner} from '../utils/campanaBannerStorage.js';
 
 const SESSION_NUEVA_CAMPANA_ERROR = 'nuevaCampanaError';
+const SESSION_EDITAR_CAMPANA_ERROR = 'editarCampanaError';
 
 function toISODate(value) {
   if (!value) return '';
@@ -170,9 +171,13 @@ async function renderEditarCampana(request, response) {
     if (!campana) {
       return response.status(404).redirect('/empleado/campanas');
     }
+    const errorSession = request.session[SESSION_EDITAR_CAMPANA_ERROR] ?? null;
+    if (errorSession) {
+      delete request.session[SESSION_EDITAR_CAMPANA_ERROR];
+    }
     return response.render('empleado/campaña-editar', {
       title: 'Editar campaña',
-      error: null,
+      error: errorSession,
       campana: {
         id: campana.id,
         idCampana: campana.id,
@@ -191,11 +196,21 @@ async function renderEditarCampana(request, response) {
 
 async function editarCampanaPost(request, response) {
   const id = request.params.id;
+  let existente;
+  try {
+    existente = await campanaModel.obtenerCampanaPorId(id);
+  } catch (e) {
+    return response.redirect('/empleado/campanas');
+  }
+  if (!existente) {
+    return response.status(404).redirect('/empleado/campanas');
+  }
+
   const nombreCampana = String(request.body.nombreCampana || '').trim();
   const fi = String(request.body.fechaInicio ?? '').trim();
   const ff = String(request.body.fechaFin ?? '').trim();
-  const banners = request.body.banners;
   const tiempoCancelacion = request.body.tiempoCancelacion;
+  const bannerFile = request.file;
 
   const campana = {
     id,
@@ -203,7 +218,9 @@ async function editarCampanaPost(request, response) {
     nombreCampana,
     fechaInicio: fi,
     fechaFin: ff,
-    banners: banners != null ? String(banners) : '',
+    banners: existente.banner != null && existente.banner !== undefined ?
+        String(existente.banner) :
+        '',
     tiempoCancelacion: tiempoCancelacion != null ? String(tiempoCancelacion) : '',
   };
 
@@ -231,12 +248,33 @@ async function editarCampanaPost(request, response) {
     });
   }
 
+  let banner = existente.banner != null && existente.banner !== undefined ?
+      String(existente.banner) :
+      '';
+  if (bannerFile) {
+    try {
+      const {publicUrl} = await uploadCampanaBanner(
+          bannerFile.buffer,
+          bannerFile.mimetype,
+          id,
+      );
+      banner = publicUrl;
+    } catch (err) {
+      console.error('Error al subir banner (editar campana):', err);
+      return response.status(500).render('empleado/campaña-editar', {
+        title: 'Editar campaña',
+        error: err?.message || 'No se pudo subir el banner. Intenta de nuevo.',
+        campana,
+      });
+    }
+  }
+
   try {
     await campanaModel.actualizarCampana(id, {
       nombre: nombreCampana,
       fechaInicio: fi,
       fechaFin: ff,
-      banner: banners,
+      banner,
       tiempoCancelacion,
     });
     return response.redirect('/empleado/campanas');
