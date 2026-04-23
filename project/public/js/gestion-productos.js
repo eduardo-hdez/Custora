@@ -218,3 +218,49 @@ function aplicarFiltros() {
 if (busquedaProducto) busquedaProducto.addEventListener('input', aplicarFiltros);
 if (filtroEstado) filtroEstado.addEventListener('change', aplicarFiltros);
 if (filtroUnidad) filtroUnidad.addEventListener('change', aplicarFiltros);
+
+// Script de Carga Masiva
+const inputCargaMasiva = document.getElementById('cargaMasiva');
+const labelCargaMasiva = document.getElementById('labelCargaMasiva');
+const infoCargaMasiva = document.getElementById('infoCargaMasiva');
+const nombreArchivoCarga = document.getElementById('nombreArchivoCarga');
+const btnQuitarArchivo = document.getElementById('btnQuitarArchivo');
+const btnRegistrarCarga = document.getElementById('btnRegistrarCarga');
+
+function mostrarEstadoArchivo() {
+  if (!inputCargaMasiva || !inputCargaMasiva.files.length) return;
+
+  const archivo = inputCargaMasiva.files[0];
+  nombreArchivoCarga.textContent = archivo.name;
+
+  //ocultar
+  labelCargaMasiva.classList.add('hidden');
+  infoCargaMasiva.classList.remove('hidden');
+  infoCargaMasiva.classList.add('flex');
+  btnRegistrarCarga.classList.remove('hidden');
+  btnRegistrarCarga.classList.add('flex');
+}
+
+function restaurarEstadoArchivo() {
+  if (inputCargaMasiva) inputCargaMasiva.value = '';
+  if (nombreArchivoCarga) nombreArchivoCarga.textContent = '';
+
+  //mostrar
+  if (labelCargaMasiva) labelCargaMasiva.classList.remove('hidden');
+  if (infoCargaMasiva) {
+    infoCargaMasiva.classList.add('hidden');
+    infoCargaMasiva.classList.remove('flex');
+  }
+  if (btnRegistrarCarga) {
+    btnRegistrarCarga.classList.add('hidden');
+    btnRegistrarCarga.classList.remove('flex');
+  }
+}
+
+if (inputCargaMasiva) {
+  inputCargaMasiva.addEventListener('change', mostrarEstadoArchivo);
+}
+
+if (btnQuitarArchivo) {
+  btnQuitarArchivo.addEventListener('click', restaurarEstadoArchivo);
+}
