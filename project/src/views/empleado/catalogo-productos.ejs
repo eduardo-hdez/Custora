@@ -26,14 +26,9 @@
     </div>
     <% } %>
   </div>
-  <!-- Contador -->
-  <div class="w-full flex flex-col items-center py-6">
-    <div class="text-center text-gray-800 font-medium text-sm md:text-base mb-3">
-      Tiempo de preventa restante: 4 días | 3 horas | 45 minutos | 32 segundos
-    </div>
-    <button class="bg-white border border-[#007185] text-[#007185] hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium flex items-center transition-colors shadow-sm">
-      <span class="material-icons text-[18px] mr-2">edit</span> Cambiar tiempo de preventa
-    </button>
+  <!-- Cuenta atrás hasta fin de preventa (fecha fin de campaña activa) -->
+  <div class="w-full flex flex-col items-center py-6 bg-gradient-to-b from-white to-gray-50/80 border-b border-gray-100">
+    <%- include('../partials/catalogo-preventa-contador') %>
   </div>
 
   <!-- Contenedor Principal (Filtros + Grid de Productos) -->
@@ -188,6 +183,7 @@
 
   
  <%- include('../partials/footer') %>
+ <script src="/js/catalogo-preventa-countdown.js"></script>
  <script src="/js/catalogo-productos.js"></script>
 </body>
 </html>

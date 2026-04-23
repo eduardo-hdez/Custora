@@ -107,6 +107,7 @@ export async function renderCatalogoEmpleado(request, response) {
       title: 'Catálogo de Productos',
       productos: data || [],
       errorCatalogo: null,
+      mostrarLinkEditarCampana: true,
       ...vistaCampaña,
     });
   } catch (error) {

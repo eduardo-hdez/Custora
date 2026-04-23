@@ -61,7 +61,7 @@ async function getCampanaActiva() {
   const hoy = new Date().toISOString().slice(0, 10);
   const {data, error} = await supabase
       .from('campana')
-      .select('id_campana, nombre_campana, banner')
+      .select('id_campana, nombre_campana, banner, fecha_fin')
       .lte('fecha_inicio', hoy)
       .gte('fecha_fin', hoy)
       .limit(1)
@@ -75,11 +75,27 @@ function urlBannerLimpia(raw) {
   return t || null;
 }
 
+
+/*
+Fin de preventa = último instante del día `fecha_fin` (AAAA-MM-DD) en UTC,
+coherente con las comparaciones por fecha en el resto del módulo.
+*/
+function finDeDiaUtcEnMilisegundos(fechaFinRaw) {
+  let s = String(fechaFinRaw ?? '').trim();
+  if (s.length >= 10 && /^\d{4}-\d{2}-\d{2}/.test(s)) s = s.slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  const [y, m, d] = s.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
+  const ms = dt.getTime();
+  return Number.isNaN(ms) ? null : ms;
+}
+
 // Valores de vista del catálogo cuando no hay campaña o falla la carga.
 export const CATALOGO_CAMPANA_FALLBACK = Object.freeze({
   idCampanaActiva: null,
   nombreCampañaActiva: 'No hay campaña vigente hoy',
   catalogoBannerUrl: null,
+  preventaFinEpochMs: null,
 });
 
 // Datos de la campaña activa listos para las vistas de catálogo (banner, nombre, id).
@@ -93,6 +109,7 @@ async function getVistaCatalogoCampañaActiva() {
       idCampanaActiva: row.id_campana ?? null,
       nombreCampañaActiva: String(row.nombre_campana ?? 'Campaña'),
       catalogoBannerUrl: urlBannerLimpia(row.banner),
+      preventaFinEpochMs: finDeDiaUtcEnMilisegundos(row.fecha_fin),
     };
   } catch {
     return {...CATALOGO_CAMPANA_FALLBACK};

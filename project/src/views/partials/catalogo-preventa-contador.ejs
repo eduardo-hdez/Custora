@@ -1,0 +1,43 @@
+<% 
+  const _tieneCampana = typeof idCampanaActiva !== 'undefined' && idCampanaActiva != null && String(idCampanaActiva).trim() !== '';
+  const _finRaw = typeof preventaFinEpochMs !== 'undefined' && preventaFinEpochMs != null ? Number(preventaFinEpochMs) : NaN;
+  const _finMs = Number.isFinite(_finRaw) ? String(Math.floor(_finRaw)) : '';
+%>
+<div
+  id="preventa-countdown-root"
+  class="w-full max-w-2xl mx-auto text-center px-2"
+  data-preventa-fin-ms="<%= _finMs %>"
+  data-tiene-campaña="<%= _tieneCampana ? '1' : '0' %>"
+  data-msg-sin-campaña="No hay campaña de preventa activa en este momento."
+  data-msg-sin-fecha="La campaña activa no tiene una fecha de fin válida para la cuenta atrás."
+  data-msg-finalizada="La preventa ha finalizado."
+>
+  <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Tiempo restante de preventa</p>
+  <div id="preventa-unidades" class="flex justify-center gap-2 sm:gap-3 flex-wrap" style="display: none;">
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm px-3 sm:px-4 py-2.5 min-w-[3.75rem] sm:min-w-[4.25rem]">
+      <div id="cd-d" class="text-xl sm:text-2xl font-bold text-[#007185] tabular-nums leading-none">00</div>
+      <div class="text-[10px] sm:text-xs text-gray-500 mt-1">días</div>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm px-3 sm:px-4 py-2.5 min-w-[3.75rem] sm:min-w-[4.25rem]">
+      <div id="cd-h" class="text-xl sm:text-2xl font-bold text-[#007185] tabular-nums leading-none">00</div>
+      <div class="text-[10px] sm:text-xs text-gray-500 mt-1">horas</div>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm px-3 sm:px-4 py-2.5 min-w-[3.75rem] sm:min-w-[4.25rem]">
+      <div id="cd-m" class="text-xl sm:text-2xl font-bold text-[#007185] tabular-nums leading-none">00</div>
+      <div class="text-[10px] sm:text-xs text-gray-500 mt-1">min</div>
+    </div>
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm px-3 sm:px-4 py-2.5 min-w-[3.75rem] sm:min-w-[4.25rem]">
+      <div id="cd-s" class="text-xl sm:text-2xl font-bold text-[#007185] tabular-nums leading-none">00</div>
+      <div class="text-[10px] sm:text-xs text-gray-500 mt-1">seg</div>
+    </div>
+  </div>
+  <p id="preventa-countdown-msg" class="text-sm text-gray-600 min-h-[1.5rem]" style="display: none;"></p>
+</div>
+<% if (typeof mostrarLinkEditarCampana !== 'undefined' && mostrarLinkEditarCampana && _tieneCampana) { %>
+<div class="mt-4 flex justify-center">
+  <a href="/empleado/campanas/<%= encodeURIComponent(String(idCampanaActiva)) %>/editar" class="inline-flex items-center gap-2 text-sm font-medium text-[#007185] hover:text-[#005d6e] border border-[#007185]/40 hover:bg-teal-50/80 px-4 py-2 rounded-lg transition-colors">
+    <span class="material-icons text-[18px]">edit</span>
+    Editar tiempo de preventa
+  </a>
+</div>
+<% } %>
