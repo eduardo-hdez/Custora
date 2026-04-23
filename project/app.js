@@ -2,7 +2,9 @@ import 'dotenv/config';
 import compression from 'compression';
 import express from 'express';
 import session from 'express-session';
+import connectPgSimple from 'connect-pg-simple';
 import helmet from 'helmet';
+import pg from 'pg';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import authRoutes from './src/routes/auth.routes.js';
@@ -13,6 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+const PgSession = connectPgSimple(session);
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -29,10 +32,12 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
 const isProduction = process.env.NODE_ENV === 'production';
-const isVercel = process.env.VERCEL === '1';
-const shouldUseSecureCookies = isProduction || isVercel;
+const pgPool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
 
-if (shouldUseSecureCookies) {
+if (isProduction) {
   app.set('trust proxy', 1);
 }
 
@@ -42,12 +47,17 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   rolling: true,
-  proxy: shouldUseSecureCookies,
+  proxy: isProduction,
+  store: new PgSession({
+    pool: pgPool,
+    tableName: 'session',
+    createTableIfMissing: false,
+  }),
   cookie: {
     maxAge: 1000 * 60 * 15, // 15 minutos de inactividad
     httpOnly: true,
     sameSite: 'lax',
-    secure: shouldUseSecureCookies,
+    secure: isProduction,
   },
 }));
 
