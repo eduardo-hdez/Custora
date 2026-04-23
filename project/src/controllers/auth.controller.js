@@ -14,32 +14,43 @@ export function getLogin(request, response) {
 }
 
 export async function postLogin(request, response) {
-  const correo = String(request.body.correo).trim();
+  const correo = String(request.body.correo ?? '').trim();
   const password = request.body.password;
 
-  const {data: user} = await Usuario.findUserWithRole(correo);
+  try {
+    const {data: user, error: userError} = await Usuario.findUserWithRole(correo);
+    if (userError) {
+      throw userError;
+    }
 
-  if (!user || !Usuario.verifyPassword(password, user.contraseña)) {
-    return response.render('login', {title: 'Iniciar sesión', error: LOGIN_ERROR, correo});
+    if (!user || !Usuario.verifyPassword(password, user.contraseña)) {
+      return response.render('login', {title: 'Iniciar sesión', error: LOGIN_ERROR, correo});
+    }
+
+    if (user.id_rol !== ROL_CLIENTE && user.id_rol !== ROL_EMPLEADO) {
+      return response.render('login', {title: 'Iniciar sesión', error: ROLE_ERROR, correo});
+    }
+
+    request.session.idUsuario = user.id_usuario;
+    request.session.idRol = user.id_rol;
+    request.session.correo = correo;
+
+    if (user.id_rol === ROL_CLIENTE) {
+      const {data: poseer} = await Concesionaria.findByUsuario(user.id_usuario);
+      const concesionarias = (poseer ?? []).map((p) => p.id_concesionaria);
+      request.session.concesionarias = concesionarias;
+      request.session.idConcesionaria = concesionarias[0] ?? null;
+      return response.redirect('/cliente');
+    }
+
+    return response.redirect('/empleado');
+  } catch (error) {
+    return response.status(500).render('login', {
+      title: 'Iniciar sesión',
+      error: 'Ocurrio un error interno al iniciar sesion. Intenta nuevamente.',
+      correo,
+    });
   }
-
-  if (user.id_rol !== ROL_CLIENTE && user.id_rol !== ROL_EMPLEADO) {
-    return response.render('login', {title: 'Iniciar sesión', error: ROLE_ERROR, correo});
-  }
-
-  request.session.idUsuario = user.id_usuario;
-  request.session.idRol = user.id_rol;
-  request.session.correo = correo;
-
-  if (user.id_rol === ROL_CLIENTE) {
-    const {data: poseer} = await Concesionaria.findByUsuario(user.id_usuario);
-    const concesionarias = (poseer ?? []).map((p) => p.id_concesionaria);
-    request.session.concesionarias = concesionarias;
-    request.session.idConcesionaria = concesionarias[0] ?? null;
-    return response.redirect('/cliente');
-  }
-
-  response.redirect('/empleado');
 }
 
 export function postLogout(request, response) {
