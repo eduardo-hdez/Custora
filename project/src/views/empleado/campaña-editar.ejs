@@ -25,8 +25,7 @@
       <% } %>
 
       <%
-        const lineasBanner = String(campana.banners || '').split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
-        const primeraUrlBanner = lineasBanner.find((s) => /^https?:\/\//i.test(s)) || null;
+        const urlBanner = String(campana.banners || '').trim() || null;
       %>
       <!-- 2. Action apunta a la ruta de editar -->
       <form method="post" enctype="multipart/form-data"
@@ -62,9 +61,9 @@
         </div>
         <div class="space-y-2">
           <span class="block text-sm font-medium text-gray-700">Banner actual</span>
-          <% if (primeraUrlBanner) { %>
+          <% if (urlBanner) { %>
             <div class="rounded-lg border border-gray-200 bg-gray-50 p-2 max-w-md">
-              <img src="<%= primeraUrlBanner %>" alt="Banner actual" class="max-h-32 w-auto object-contain mx-auto" onerror="this.style.display='none'" />
+              <img src="<%= urlBanner %>" alt="Banner actual" class="max-h-32 w-auto object-contain mx-auto" onerror="this.style.display='none'" />
             </div>
           <% } else { %>
             <p class="text-sm text-gray-500">Sin banner. Puedes subir uno abajo.</p>

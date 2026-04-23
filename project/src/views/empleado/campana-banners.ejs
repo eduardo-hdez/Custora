@@ -13,10 +13,30 @@
         Volver a campañas
       </a>
     </div>
-    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8">
-      <h1 class="text-2xl font-bold text-gray-900 mb-2">Banners</h1>
-      <p class="text-sm text-gray-600 mb-1">Campaña <span class="font-mono font-medium text-gray-900"><%= campanaId %></span></p>
-      <p class="text-sm text-gray-500">Gestión de banners para esta campaña (pendiente de integración).</p>
+    <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-8 max-w-3xl">
+      <h1 class="text-2xl font-bold text-gray-900 mb-1">Banner</h1>
+      <p class="text-sm text-gray-600 mb-1"><%= nombreCampana %></p>
+
+      <% if (bannerUrl) { %>
+        <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 min-h-[120px] flex flex-col items-center justify-center">
+          <img
+            src="<%= bannerUrl %>"
+            alt="Banner de la campaña"
+            class="max-w-full max-h-[min(70vh,32rem)] w-auto h-auto object-contain"
+            onerror="this.classList.add('hidden'); var e=document.getElementById('bannerCargaError'); if(e) e.classList.remove('hidden');"
+          />
+          <p id="bannerCargaError" class="hidden text-sm text-amber-800 text-center">No se pudo mostrar la imagen. Revisa el enlace o sube otra en Editar campaña.</p>
+        </div>
+        <p class="mt-4 text-right">
+          <a href="/empleado/campanas/<%= encodeURIComponent(campanaId) %>/editar" class="text-sm text-[#007185] hover:underline">Cambiar banner</a>
+        </p>
+      <% } else { %>
+        <p class="text-sm text-gray-600 mb-4">Esta campaña aún no tiene un banner.</p>
+        <a href="/empleado/campanas/<%= encodeURIComponent(campanaId) %>/editar" class="inline-flex items-center gap-2 text-sm font-medium text-[#007185] hover:text-[#005d6e]">
+          <span class="material-icons text-[18px]">add_photo_alternate</span>
+          Subir banner en Editar campaña
+        </a>
+      <% } %>
     </div>
   </main>
 

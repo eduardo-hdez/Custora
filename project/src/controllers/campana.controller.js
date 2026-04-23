@@ -158,10 +158,22 @@ async function crearCampanaPost(request, response) {
   }
 }
 
-function renderBannersCampana(request, response) {
+async function renderBannersCampana(request, response) {
+  const id = request.params.id;
+  let campana;
+  try {
+    campana = await campanaModel.obtenerCampanaPorId(id);
+  } catch (e) {
+    return response.redirect('/empleado/campanas');
+  }
+  if (!campana) {
+    return response.redirect('/empleado/campanas');
+  }
   return response.render('empleado/campana-banners', {
-    title: 'Banners de la campaña',
-    campanaId: request.params.id,
+    title: 'Banner de la campaña',
+    campanaId: campana.id,
+    nombreCampana: campana.nombre,
+    bannerUrl: String(campana.banner ?? '').trim() || null,
   });
 }
 
