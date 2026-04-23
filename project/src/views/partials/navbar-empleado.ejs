@@ -1,57 +1,64 @@
 <nav class="bg-[#262F3E] py-2">
-    <div class="flex items-center w-full">
-        <!-- Logo y Botones Izquierda -->
-        <div class="flex items-center justify-around flex-1 px-4">
-            <div>
-                <img />
-            </div>
-            <a href="/empleado/gestion-productos"
-                class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out inline-flex items-center justify-center">
-                Gestión de productos
-            </a>
-            <a href="/empleado/tabla-reservas"
-                class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out inline-flex items-center justify-center">
-                Tabla de reservas
-            </a>
-        </div>
+    <div class="flex items-center gap-2 px-4 w-full">
+
+        <!-- Home -->
+        <a href="/empleado/catalogo"
+            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+            aria-label="Inicio">
+            <span class="material-icons" style="font-size:1.5rem">home</span>
+        </a>
+
+        <!-- Gestión -->
+        <a href="/empleado/gestion-productos"
+            class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
+            Gestión
+        </a>
+
+        <!-- Reservas -->
+        <a href="/empleado/tabla-reservas"
+            class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
+            Reservas
+        </a>
+
+        <!-- Campaña -->
+        <a href="/empleado/campanas"
+            class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
+            Campaña
+        </a>
+
         <!-- Barra de búsqueda -->
-        <div class="flex justify-center flex-1">
-            <div class="flex items-center gap-4">
-                <a href="/empleado/catalogo" class="text-white/80 hover:text-white transition-colors duration-200 flex items-center justify-center" aria-label="Ir al catálogo">
-                    <span class="material-icons" style="font-size:2.2rem">home</span>
-                </a>
-                <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
-                    <input type="text" placeholder="Buscar"
-                        class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
-                    <button
-                        class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
-                        <span class="material-icons text-white" style="font-size:1.5rem">search</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Acciones del empleado -->
-        <div class="flex items-center justify-around flex-1 px-4">
-            <a href="/empleado/campanas"
-                class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out inline-flex items-center justify-center">Campañas</a>
-            <a href="/empleado/reporte"
-                class="bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out inline-flex items-center justify-center">Reporte</a>
-            <!-- Grupo de Iconos -->
-            <div class="flex items-center gap-8">
-                <!-- Icono de perfil -->
-                <button
-                    class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200">
-                    <span class="material-icons" style="font-size:2.8rem">account_circle</span>
+        <div class="flex-1 flex justify-center px-2">
+            <div class="flex w-80 rounded-lg overflow-hidden">
+                <input type="text" placeholder="Buscar"
+                    class="flex-1 px-4 py-1.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
+                <button class="bg-[#2B6398] hover:bg-[#1f476e] px-3 flex items-center justify-center transition-colors duration-300">
+                    <span class="material-icons text-white" style="font-size:1.1rem">search</span>
                 </button>
-                <!-- Boton de logout -->
-                <form action="/logout" method="POST" class="flex items-center justify-center m-0">
-                    <button type="submit"
-                        class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                        aria-label="Cerrar sesion">
-                        <span class="material-icons" style="font-size:2.4rem">logout</span>
-                    </button>
-                </form>
             </div>
         </div>
+
+        <!-- Perfil -->
+        <a href="/empleado/perfil"
+            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+            aria-label="Perfil">
+            <span class="material-icons" style="font-size:1.5rem">account_circle</span>
+        </a>
+
+        <!-- Ayuda -->
+        <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNELp5g-3eepBPnvYczT0eC85"
+            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+            aria-label="Ayuda">
+            <span class="material-icons" style="font-size:1.5em">help_outline</span>
+        </a>
+
+        <!-- Logout -->
+        <form action="/logout" method="POST" class="flex items-center m-0">
+            <button type="submit"
+                class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+                aria-label="Cerrar sesión">
+                <span class="material-icons" style="font-size:1.5rem">logout</span>
+            </button>
+        </form>
+
     </div>
 </nav>
