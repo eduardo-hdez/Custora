@@ -21,3 +21,41 @@ export async function fetchDemandaProductosRanking(limite = 3) {
     productosMenosSolicitados: normalizarRanking(menosResult.data),
   };
 }
+
+export async function fetchTopConcesionariasRanking(limite = 10) {
+  const { data, error } = await supabase
+    .from('reserva')
+    .select(`
+      id_concesionaria,
+      concesionaria(nombre_concesionaria),
+      productos_reservados(unidades_reservadas)
+    `)
+    .eq('estado_reserva', true);
+
+  if (error) throw error;
+
+  const mapa = new Map();
+  for (const r of data) {
+    const id = r.id_concesionaria;
+    if (!id) continue;
+    
+    const nombre = r.concesionaria?.nombre_concesionaria ?? 'N/D';
+    const unidades = (r.productos_reservados || []).reduce(
+      (sum, p) => sum + (Number(p.unidades_reservadas) || 0), 
+      0
+    );
+
+    const entrada = mapa.get(id) ?? { 
+      nombreConcesionaria: nombre, 
+      totalUnidades: 0, 
+      totalReservas: 0 
+    };
+    entrada.totalUnidades += unidades;
+    entrada.totalReservas += 1;
+    mapa.set(id, entrada);
+  }
+
+  return Array.from(mapa.values())
+    .sort((a, b) => b.totalUnidades - a.totalUnidades)
+    .slice(0, limite);
+}
