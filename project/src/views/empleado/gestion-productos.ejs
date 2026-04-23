@@ -116,7 +116,7 @@
                             class="w-full md:w-auto border border-gray-300 rounded-lg py-2 px-3 text-sm focus:ring-[#007185] focus:border-[#007185]">
                             <option value="">Todas las unidades de venta</option>
                             <option value="caja">Caja</option>
-                            <option value="cubeta">Cubeta</option>
+                            <option value="pieza">Pieza</option>
                             <option value="rollo">Rollo</option>
                             <option value="kit">Kit</option>
                           </select>
@@ -168,8 +168,6 @@
                                               <p class="font-medium text-gray-900 line-clamp-1">
                                                 <%= producto.nombre_producto || producto.nombre || 'Producto sin nombre'
                                                   %>
-                                              </p>
-                                              <p class="text-xs text-gray-500">ID: <%= producto.id_producto || 'N/A' %>
                                               </p>
                                             </div>
                                           </div>
