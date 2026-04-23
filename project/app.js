@@ -85,4 +85,18 @@ app.get('/', (request, response) => {
   response.redirect('/login');
 });
 
+app.use((error, request, response, next) => {
+  console.error('[express-error]', {
+    path: request.path,
+    method: request.method,
+    message: error?.message,
+    code: error?.code,
+    name: error?.name,
+  });
+  if (response.headersSent) {
+    return next(error);
+  }
+  return response.status(500).send('Internal Server Error');
+});
+
 export default app;
