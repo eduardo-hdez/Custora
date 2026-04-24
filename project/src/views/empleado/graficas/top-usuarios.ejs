@@ -41,8 +41,7 @@
             </thead>
             <tbody id="top-users-body">
               <% topConcesionarias.forEach((user, index)=> { %>
-                <tr class="group transition-all duration-200 <%= index >= 5 ? 'hidden' : '' %>" <%=index>= 5 ?
-                  'data-extra-item="true"' : '' %>>
+                <tr class="group transition-all duration-200">
                   <td class="py-4 pl-4 rounded-l-xl bg-gray-50 group-hover:bg-gray-100 transition-colors">
                     <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold 
                     <%= index === 0 ? 'bg-yellow-100 text-yellow-700' : '' %>
@@ -72,66 +71,7 @@
             </tbody>
           </table>
         </div>
-
-        <% if (topConcesionarias.length> 5) { %>
-          <div class="mt-6 flex justify-center">
-            <button id="btn-toggle-top-users"
-              class="inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-gray-200 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm active:scale-95">
-              <span>Ver más concesionarias</span>
-              <svg id="icon-toggle-users" xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-          <% } %>
-            <% } %>
+      <% } %>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('btn-toggle-top-users');
-      if (!btn) return;
-
-      const icon = document.getElementById('icon-toggle-users');
-      const extraItems = document.querySelectorAll('[data-extra-item="true"]');
-      let isExpanded = false;
-
-      btn.addEventListener('click', () => {
-        isExpanded = !isExpanded;
-        
-        extraItems.forEach(item => {
-          if (isExpanded) {
-            item.classList.remove('hidden');
-            item.classList.add('animate-fade-in');
-          } else {
-            item.classList.add('hidden');
-            item.classList.remove('animate-fade-in');
-          }
-        });
-
-        btn.querySelector('span').textContent = isExpanded ? 'Ver menos' : 'Ver más concesionarias';
-        icon.style.transform = isExpanded ? 'rotate(180deg)' : 'rotate(0deg)';
-      });
-    });
-  </script>
-
-  <style>
-    @keyframes fade-in {
-      from {
-        opacity: 0;
-        transform: translateY(-4px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-fade-in {
-      animation: fade-in 0.3s ease-out forwards;
-    }
-  </style>
 
 </section>
