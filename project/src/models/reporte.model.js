@@ -1,45 +1,61 @@
 import supabase from '../config/supabase.js';
 
-export async function fetchReservas(filtros = {}) {
-  const { soloActivas = false, fechaDesde, fechaHasta } = filtros;
+function normalizarRanking(filas = []) {
+  return filas.map((fila) => ({
+    nombreProducto: fila.nombre_producto ?? 'Sin nombre',
+    totalUnidades: Number(fila.total_unidades) || 0,
+  }));
+}
 
-  let queryReservas = supabase
+export async function fetchDemandaProductosRanking(limite = 3) {
+  const [masResult, menosResult] = await Promise.all([
+    supabase.rpc('top_productos_mas_solicitados', { p_limite: limite }),
+    supabase.rpc('top_productos_menos_solicitados', { p_limite: limite }),
+  ]);
+
+  if (masResult.error) throw masResult.error;
+  if (menosResult.error) throw menosResult.error;
+
+  return {
+    productosMasSolicitados: normalizarRanking(masResult.data),
+    productosMenosSolicitados: normalizarRanking(menosResult.data),
+  };
+}
+
+export async function fetchTopConcesionariasRanking(limite = 10) {
+  const { data, error } = await supabase
     .from('reserva')
-    .select('folio, fecha_reserva, fecha_hora_reserva, estado_reserva');
+    .select(`
+      id_concesionaria,
+      concesionaria(nombre_concesionaria),
+      productos_reservados(unidades_reservadas)
+    `)
+    .eq('estado_reserva', true);
 
-  if (soloActivas) queryReservas = queryReservas.eq('estado_reserva', true);
-  if (fechaDesde) queryReservas = queryReservas.gte('fecha_reserva', fechaDesde);
-  if (fechaHasta) queryReservas = queryReservas.lte('fecha_reserva', fechaHasta);
+  if (error) throw error;
 
-  const { data: reservas, error: errorReservas } = await queryReservas;
-  if (errorReservas) throw errorReservas;
-  if (!reservas || reservas.length === 0) return [];
+  const mapa = new Map();
+  for (const r of data) {
+    const id = r.id_concesionaria;
+    if (!id) continue;
+    
+    const nombre = r.concesionaria?.nombre_concesionaria ?? 'N/D';
+    const unidades = (r.productos_reservados || []).reduce(
+      (sum, p) => sum + (Number(p.unidades_reservadas) || 0), 
+      0
+    );
 
-  const folios = reservas.map((r) => r.folio);
-
-  const { data: items, error: errorItems } = await supabase
-    .from('productos_reservados')
-    .select(
-      'folio, unidades_reservadas, producto(id_producto, nombre_producto, precio_producto)',
-    )
-    .in('folio', folios);
-
-  if (errorItems) throw errorItems;
-
-  const reservaPorFolio = new Map(reservas.map((r) => [r.folio, r]));
-
-  return (items || []).map((item) => {
-    const reserva = reservaPorFolio.get(item.folio) ?? {};
-    const producto = item.producto ?? {};
-    return {
-      folio: item.folio,
-      unidades_reservadas: Number(item.unidades_reservadas) || 0,
-      id_producto: producto.id_producto ?? null,
-      nombre_producto: producto.nombre_producto ?? 'Sin nombre',
-      precio_producto: Number(producto.precio_producto) || 0,
-      fecha_reserva: reserva.fecha_reserva ?? null,
-      fecha_hora_reserva: reserva.fecha_hora_reserva ?? null,
-      estado_reserva: reserva.estado_reserva ?? null,
+    const entrada = mapa.get(id) ?? { 
+      nombreConcesionaria: nombre, 
+      totalUnidades: 0, 
+      totalReservas: 0 
     };
-  });
+    entrada.totalUnidades += unidades;
+    entrada.totalReservas += 1;
+    mapa.set(id, entrada);
+  }
+
+  return Array.from(mapa.values())
+    .sort((a, b) => b.totalUnidades - a.totalUnidades)
+    .slice(0, limite);
 }
