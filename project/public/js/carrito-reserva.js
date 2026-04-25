@@ -3,6 +3,11 @@ const formatCurrencyMx = (value) => `$${Number(value || 0).toLocaleString('es-MX
   maximumFractionDigits: 2,
 })}`;
 
+const formatWeightMx = (value) => `${Number(value || 0).toLocaleString('es-MX', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})} kg`;
+
 const actualizarResumenCarrito = () => {
   const items = Array.from(document.querySelectorAll('[data-carrito-item]'));
   const totalItems = items.reduce((acc, item) => {
@@ -15,6 +20,11 @@ const actualizarResumenCarrito = () => {
     const cantidad = Number(item.querySelector('[data-cantidad]')?.textContent || 0);
     return acc + (precio * Math.max(0, cantidad));
   }, 0);
+  const pesoTotal = items.reduce((acc, item) => {
+    const peso = Number(item.dataset.pesoUnitario || 0);
+    const cantidad = Number(item.querySelector('[data-cantidad]')?.textContent || 0);
+    return acc + (peso * Math.max(0, cantidad));
+  }, 0);
 
   const iva = subtotal * 0.16;
   const total = subtotal + iva;
@@ -23,6 +33,7 @@ const actualizarResumenCarrito = () => {
   const labelItemsEl = document.getElementById('carritoLabelItems');
   const subtotalEl = document.getElementById('carritoSubtotal');
   const ivaEl = document.getElementById('carritoIva');
+  const pesoTotalEl = document.getElementById('carritoPesoTotal');
   const totalEl = document.getElementById('carritoTotal');
   const badgeCarritoEl = document.getElementById('navbarCarritoBadge');
 
@@ -30,6 +41,7 @@ const actualizarResumenCarrito = () => {
   if (labelItemsEl) labelItemsEl.textContent = totalItems === 1 ? 'producto' : 'productos';
   if (subtotalEl) subtotalEl.textContent = formatCurrencyMx(subtotal);
   if (ivaEl) ivaEl.textContent = formatCurrencyMx(iva);
+  if (pesoTotalEl) pesoTotalEl.textContent = formatWeightMx(pesoTotal);
   if (totalEl) totalEl.textContent = formatCurrencyMx(total);
   if (badgeCarritoEl) {
     badgeCarritoEl.textContent = String(totalItems);
