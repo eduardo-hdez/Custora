@@ -7,11 +7,6 @@
   <%- include('../partials/navbar-cliente') %>
 
   <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
-      <a href="/cliente" class="hover:text-[#2B6398] transition-colors">Inicio</a>
-      <span class="material-icons text-sm">chevron_right</span>
-      <span class="text-gray-900 font-medium">Carrito de Reserva</span>
-    </div>
 
     <h1 class="text-2xl font-bold text-gray-900 mb-8">Mi Carrito de Reserva</h1>
 
@@ -23,6 +18,7 @@
       <%
         const items = Array.isArray(carrito?.productos_seleccionados) ? carrito.productos_seleccionados : [];
         const subtotal = items.reduce((acc, ps) => acc + Number(ps.producto?.precio_producto ?? 0) * ps.cantidad, 0);
+        const totalPeso = items.reduce((acc, ps) => acc + Number(ps.producto?.peso_unidad ?? 0) * ps.cantidad, 0);
         const iva = subtotal * 0.16;
         const total = subtotal + iva;
         const totalItems = items.reduce((acc, ps) => acc + ps.cantidad, 0);
@@ -47,10 +43,11 @@
                 const precioUnitario = Number(p?.precio_producto ?? 0);
                 const nombre = p?.nombre_producto ?? 'Producto';
                 const unidad = p?.unidad_venta_producto ?? '';
+                const pesoUnitario = Number(p?.peso_unidad ?? 0);
                 const foto = p?.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen';
                 const idProducto = p?.id_producto;
               %>
-              <div data-carrito-item data-id-producto="<%= idProducto %>" data-precio-unitario="<%= precioUnitario %>" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <div data-carrito-item data-id-producto="<%= idProducto %>" data-precio-unitario="<%= precioUnitario %>" data-peso-unitario="<%= pesoUnitario %>" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
                 <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-md p-2 flex items-center justify-center mx-auto sm:mx-0">
                   <img src="<%= foto %>" alt="<%= nombre %>" class="max-h-full max-w-full object-contain mix-blend-multiply">
                 </div>
@@ -132,6 +129,11 @@
               <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">
                 <span>IVA (16%)</span>
                 <span id="carritoIva" class="font-medium text-gray-900">$<%= iva.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+              </div>
+
+              <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">
+                <span>Peso total</span>
+                <span id="carritoPesoTotal" class="font-medium text-gray-900"><%= totalPeso.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> kg</span>
               </div>
 
               <div class="border-t border-gray-200 my-4 pt-4">
