@@ -26,6 +26,9 @@ busquedaGeneral.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') aplicarFiltros();
 });
 
+//Filtrar automáticamente al cambiar el estado
+filtroEstado.addEventListener('change', aplicarFiltros);
+
 function convertirFecha(fechaTexto) { //convertir dato de fecha de texto a formato aaaa-mm-dd para comparar
     if (!fechaTexto) return '';
     const partes = fechaTexto.split('/');
@@ -75,3 +78,20 @@ function aplicarFiltros() {
         reserva.style.display = cumpleBusqueda && cumpleEstado && cumpleFecha ? '' : 'none';
     });
 }
+
+// Script de despliegue/minimización de las reservas
+document.querySelectorAll('.encabezado-reserva').forEach(encabezado => {
+    encabezado.addEventListener('click', function () {
+        const card = this.closest('.card-reserva');
+        const contenido = card.querySelector('.contenido-reserva');
+        const flecha = this.querySelector('.flecha-despliegue');
+
+        contenido.classList.toggle('hidden');
+
+        if (contenido.classList.contains('hidden')) {
+            flecha.style.transform = 'rotate(0deg)';
+        } else {
+            flecha.style.transform = 'rotate(180deg)';
+        }
+    });
+});
