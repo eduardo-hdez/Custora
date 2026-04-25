@@ -401,3 +401,42 @@ export async function deshabilitarProductosCatalogo(request, response) {
     return response.redirect('/empleado/catalogo?errorModificar=1');
   }
 }
+
+async function getEditarProducto(request, response) {
+  try {
+    const producto = await productoModel.obtenerProductoPorId(request.params.id);
+    if (!producto) {
+      return response.status(404).redirect('/empleado/catalogo-productos');
+    }
+
+    const campanas = await campanaModel.obtenerCampanas();
+    const idCampanaActiva = campanas.find(c => c.activa)?.id ?? null;
+
+    const errorSession = request.session[SESSION_EDITAR_PRODUCTO_ERROR] ?? null;
+    if (errorSession) {
+      delete request.session[SESSION_EDITAR_PRODUCTO_ERROR];
+    }
+
+    return response.render('empleado/editar-producto', {
+      title: 'Editar producto',
+      campanas,
+      idCampanaActiva,
+      errorMessage: errorSession,
+      success: null,
+      producto: {
+        idProducto: producto.id,
+        nombreProducto: producto.nombre,
+        descripcion: producto.descripcion,
+        precio: producto.precio,
+        foto: producto.foto,
+        pesoUnidad: producto.pesoUnidad,
+        unidadVenta: producto.unidadVenta,
+        idCampana: producto.idCampana,
+        habilitado: producto.habilitado,
+      },
+    });
+  } catch (error) {
+    console.error('Error al cargar producto:', error.message);
+    return response.redirect('/empleado/catalogo-productos');
+  }
+} 
