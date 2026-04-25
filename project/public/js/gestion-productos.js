@@ -203,6 +203,12 @@ const spansResumenPaginacion = textoResumenPaginacion ?
   textoResumenPaginacion.querySelectorAll('.font-medium') :
   [];
 const navPaginacion = document.querySelector('nav[aria-label="Pagination"]');
+const tablaGestion = document.getElementById('form-habilitado');
+
+function desplazarAlInicioProductosGestion() {
+  if (!tablaGestion) return;
+  tablaGestion.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
 
 function crearBotonPaginacion({label, disabled = false, activo = false, onClick, ariaLabel = ''}) {
   const boton = document.createElement('button');
@@ -249,6 +255,7 @@ function renderControlesPaginacion() {
       if (paginaActual > 1) {
         paginaActual -= 1;
         renderPagina();
+        desplazarAlInicioProductosGestion();
       }
     },
   });
@@ -262,6 +269,7 @@ function renderControlesPaginacion() {
       if (paginaActual < totalPaginas) {
         paginaActual += 1;
         renderPagina();
+        desplazarAlInicioProductosGestion();
       }
     },
   });
@@ -275,6 +283,7 @@ function renderControlesPaginacion() {
       onClick: () => {
         paginaActual = i;
         renderPagina();
+        desplazarAlInicioProductosGestion();
       },
     });
     navPaginacion.appendChild(botonPagina);
