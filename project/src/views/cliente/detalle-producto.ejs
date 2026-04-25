@@ -59,10 +59,22 @@
               </div>
             <% } %>
 
-<div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-3">
               <form method="POST" action="/cliente/carrito/agregar">
                 <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
                 <input type="hidden" name="cantidad" value="1">
+                
+                <div class="flex flex-col sm:flex-row gap-4 mb-4">
+                  <div class="flex flex-col gap-2">
+                    <span class="text-sm font-medium text-gray-700">Cantidad</span>
+                    <div class="flex items-center border border-gray-300 rounded-md qty-container w-max">
+                      <button type="button" class="px-4 py-2 hover:bg-gray-100 btn-cantidad-menos text-gray-600 font-bold">-</button>
+                      <input type="text" inputmode="numeric" pattern="[0-9]*" value="1" class="w-16 text-center border-none focus:ring-0 text-base input-cantidad bg-transparent" readonly>
+                      <button type="button" class="px-4 py-2 hover:bg-gray-100 btn-cantidad-mas text-gray-600 font-bold">+</button>
+                    </div>
+                  </div>
+                </div>
+
                 <button type="submit" class="w-full bg-[#2B6398] hover:bg-[#1e466b] text-white border border-[#1e466b] rounded-full py-3 px-6 font-medium flex justify-center items-center gap-2 text-lg transition-colors">
                   <span class="material-icons">shopping_cart</span>
                   Agregar al carrito
@@ -85,5 +97,6 @@
   </main>
 
   <%- include('../partials/footer') %>
+  <script src="/js/cliente-productos.js"></script>
 </body>
 </html>

@@ -207,10 +207,10 @@ const tablaGestion = document.getElementById('form-habilitado');
 
 function desplazarAlInicioProductosGestion() {
   if (!tablaGestion) return;
-  tablaGestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  tablaGestion.scrollIntoView({behavior: 'smooth', block: 'start'});
 }
 
-function crearBotonPaginacion({ label, disabled = false, activo = false, onClick, ariaLabel = '' }) {
+function crearBotonPaginacion({label, disabled = false, activo = false, onClick, ariaLabel = ''}) {
   const boton = document.createElement('button');
   boton.type = 'button';
 

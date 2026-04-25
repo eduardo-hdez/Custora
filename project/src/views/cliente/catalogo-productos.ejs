@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <%- include('../partials/head') %>
 </head>
@@ -24,69 +25,69 @@
     <%- include('../partials/catalogo-preventa-contador') %>
   </div>
 
-  <!-- Contenedor Principal (Filtros + Grid de Productos) -->
-  <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6">
-    
-    <!-- Sidebar de Filtros -->
-    <aside class="w-full md:w-64 flex-shrink-0">
-      <div class="bg-white p-5 rounded-lg border border-gray-200 sticky top-4">
-        <h2 class="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Filtros</h2>
-        
-        <!-- Artículos -->
-        <div class="mb-6">
-          <h3 class="font-semibold text-gray-800 mb-3">Artículos</h3>
-          <div class="space-y-2">
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Rollos</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Kits</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Pinturas</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Vestimenta</span>
-            </label>
-          </div>
-        </div>
+      <!-- Contenedor Principal (Filtros + Grid de Productos) -->
+      <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row gap-6">
 
-        <!-- Categorías -->
-        <div>
-          <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
-          <div class="space-y-2">
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Paraguas</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Mochilas</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Termos</span>
-            </label>
-            <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Otros Accesorios</span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </aside>
+        <!-- Sidebar de Filtros -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+          <div class="bg-white p-5 rounded-lg border border-gray-200 sticky top-4">
+            <h2 class="text-lg font-bold mb-4 text-gray-900 border-b pb-2">Filtros</h2>
 
-    <!-- Grid de Productos -->
-    <div class="flex-grow">
-      <% if (errorCatalogo) { %>
-        <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-          <%= errorCatalogo %>
-        </div>
-      <% } %>
+            <!-- Artículos -->
+            <div class="mb-6">
+              <h3 class="font-semibold text-gray-800 mb-3">Artículos</h3>
+              <div class="space-y-2">
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Rollos</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Kits</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Pinturas</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Vestimenta</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Categorías -->
+            <div>
+              <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
+              <div class="space-y-2">
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Paraguas</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Mochilas</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Termos</span>
+                </label>
+                <label class="flex items-center cursor-pointer">
+                  <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+                  <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Otros Accesorios</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Grid de Productos -->
+        <div class="flex-grow">
+          <% if (errorCatalogo) { %>
+            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+              <%= errorCatalogo %>
+            </div>
+            <% } %>
 
       <% if (!productos || productos.length === 0) { %>
         <div class="rounded-lg border border-gray-200 bg-white p-8 text-center text-gray-600">
@@ -110,9 +111,9 @@
                   <%= producto.nombre_producto || producto.nombre || 'Producto sin nombre' %>
                 </a>
 
-                <p class="text-sm text-gray-600 mb-2 line-clamp-2">
-                  <%= producto.descripcion_producto || 'Sin descripcion disponible.' %>
-                </p>
+                              <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+                                <%= producto.descripcion_producto || 'Sin descripcion disponible.' %>
+                              </p>
 
                 <div class="mt-auto">
                   <div class="flex items-end gap-2 mb-3 text-gray-900">
@@ -123,7 +124,23 @@
                       <%= producto.unidad_venta_producto || '' %>
                     </span>
                   </div>
-                  <% if (!urlDetalle) { %>
+                  <% if (urlDetalle) { %>
+                    <form action="/cliente/carrito/agregar" method="POST" class="flex flex-col gap-2">
+                      <input type="hidden" name="id_producto" value="<%= idProducto %>">
+                      <input type="hidden" name="cantidad" value="1">
+
+                      <div class="flex items-center justify-between border border-gray-300 rounded-md qty-container">
+                        <button type="button" class="px-3 py-1 hover:bg-gray-100 btn-cantidad-menos text-gray-600 font-bold">-</button>
+                        <input type="text" inputmode="numeric" pattern="[0-9]*" value="1" class="w-12 text-center border-none focus:ring-0 text-sm input-cantidad bg-transparent" readonly>
+                        <button type="button" class="px-3 py-1 hover:bg-gray-100 btn-cantidad-mas text-gray-600 font-bold">+</button>
+                      </div>
+
+                      <button type="submit" class="w-full bg-[#2B6398] hover:bg-[#1e466b] text-white py-2 px-4 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                        <span class="material-icons text-lg">shopping_cart</span>
+                        Agregar al carrito
+                      </button>
+                    </form>
+                  <% } else { %>
                     <p class="text-xs text-amber-700 mb-2">No hay id de producto en los datos del catálogo; revisa la función get_catalogo_productos_habilitados.</p>
                   <% } %>
                 </div>
@@ -137,8 +154,10 @@
   </div>
 </main>
 
-  <%- include('../partials/footer') %>
-  <script src="/js/catalogo-preventa-countdown.js"></script>
-  <script src="/js/catalogo-paginacion.js"></script>
+    <%- include('../partials/footer') %>
+      <script src="/js/catalogo-preventa-countdown.js"></script>
+      <script src="/js/catalogo-paginacion.js"></script>
+      <script src="/js/cliente-productos.js"></script>
 </body>
+
 </html>
