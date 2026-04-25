@@ -1,0 +1,51 @@
+<section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
+
+  <header class="flex items-center gap-3 px-6 sm:px-8 py-5 bg-gray-50 border-b border-gray-200">
+    <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#007185]/10 text-[#007185]">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+    </span>
+    <h2 class="text-xl font-extrabold text-gray-900">Top Concesionarias</h2>
+  </header>
+
+  <div class="px-6 sm:px-8 py-6">
+    <div class="flex items-center gap-2 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#007185]">
+        <path d="M3 3v18h18"></path>
+        <path d="M7 14l4-4 3 3 4-6"></path>
+      </svg>
+      <h3 class="text-sm font-bold tracking-wider text-[#007185] uppercase">Ranking de Compras</h3>
+    </div>
+
+    <% if (!topConcesionarias || topConcesionarias.length === 0) { %>
+      <p class="text-sm text-gray-500 italic">Sin datos.</p>
+    <% } else { %>
+      <ul class="divide-y divide-gray-100">
+        <% topConcesionarias.forEach((user, i) => { %>
+          <li class="flex items-baseline justify-between py-2.5 gap-4">
+            <span class="text-gray-900 font-medium flex items-center gap-2 min-w-0">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0
+                <%= i === 0 ? 'bg-yellow-100 text-yellow-700' : '' %>
+                <%= i === 1 ? 'bg-gray-200 text-gray-700' : '' %>
+                <%= i === 2 ? 'bg-orange-100 text-orange-700' : '' %>
+                <%= i > 2 ? 'bg-white text-gray-400 border border-gray-200' : '' %>">
+                <%= i + 1 %>
+              </span>
+              <span class="truncate"><%= user.nombreConcesionaria %></span>
+            </span>
+            <span class="text-gray-500 text-sm whitespace-nowrap">
+              <%= user.totalReservas.toLocaleString('es-MX') %> reservas - <%= user.totalUnidades.toLocaleString('es-MX') %> unid.
+            </span>
+          </li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </div>
+
+</section>

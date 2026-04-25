@@ -69,12 +69,11 @@
                         <a href="/cliente/carrito-reserva"
                             class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200">
                             <span class="material-icons" style="font-size:2.8rem">shopping_cart</span>
-                            <% if ((cantidadProductosCarrito ?? 0) > 0) { %>
-                                <span
-                                    class="absolute -top-1 -right-2 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center">
-                                    <%= cantidadProductosCarrito %>
-                                </span>
-                            <% } %>
+                            <span
+                                id="navbarCarritoBadge"
+                                class="absolute -top-1 -right-2 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold items-center justify-center <%= (cantidadProductosCarrito ?? 0) > 0 ? 'flex' : 'hidden' %>">
+                                <%= cantidadProductosCarrito ?? 0 %>
+                            </span>
                         </a>
                         <!-- Boton de logout -->
                         <form action="/logout" method="POST" class="flex items-center justify-center m-0">

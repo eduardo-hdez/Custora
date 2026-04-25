@@ -1,34 +1,4 @@
-import { fetchReservas } from '../models/reporte.model.js';
-
-function calcularDemandaProductos(filas) {
-  const mapa = new Map();
-
-  for (const fila of filas) {
-    if (fila.estado_reserva !== true) continue;
-    if (!fila.id_producto || fila.unidades_reservadas <= 0) continue;
-
-    const entrada = mapa.get(fila.id_producto) ?? {
-      idProducto: fila.id_producto,
-      nombreProducto: fila.nombre_producto,
-      totalUnidades: 0,
-      totalRegistros: 0,
-    };
-    entrada.totalUnidades += fila.unidades_reservadas;
-    entrada.totalRegistros += 1;
-    mapa.set(fila.id_producto, entrada);
-  }
-
-  const ranking = Array.from(mapa.values()).sort((a, b) =>
-    b.totalUnidades !== a.totalUnidades
-      ? b.totalUnidades - a.totalUnidades
-      : b.totalRegistros - a.totalRegistros,
-  );
-
-  return {
-    productosMasSolicitados: ranking.slice(0, 3),
-    productosMenosSolicitados: ranking.slice(-3).reverse(),
-  };
-}
+import { fetchDemandaProductosRanking, fetchTopConcesionariasRanking } from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
   const base = {
@@ -37,13 +7,16 @@ export async function renderReporte(request, response) {
   };
 
   try {
-    const filas = await fetchReservas();
-    const demanda = calcularDemandaProductos(filas);
+    const [demanda, topConcesionarias] = await Promise.all([
+      fetchDemandaProductosRanking(3),
+      fetchTopConcesionariasRanking(5),
+    ]);
 
     return response.render('empleado/reporte', {
       ...base,
       errorReporte: null,
       ...demanda,
+      topConcesionarias,
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -53,6 +26,7 @@ export async function renderReporte(request, response) {
       errorReporte: 'No se pudo cargar el reporte en este momento.',
       productosMasSolicitados: [],
       productosMenosSolicitados: [],
+      topConcesionarias: [],
     });
   }
 }
