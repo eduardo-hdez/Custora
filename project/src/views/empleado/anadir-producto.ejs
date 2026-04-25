@@ -24,7 +24,9 @@
           class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
           <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
             <span class="material-icons text-red-600 text-5xl mb-4">error_outline</span>
-            <h3 class="mb-6 text-lg font-medium text-gray-800"><%= errorMessage %></h3>
+            <h3 class="mb-6 text-lg font-medium text-gray-800">
+              <%= errorMessage %>
+            </h3>
             <div class="flex flex-col sm:flex-row justify-center gap-3">
               <button id="btnModalError" type="button"
                 class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
@@ -86,7 +88,8 @@
                       </div>
                       <!-- Foto: subida a Supabase Storage (bucket) -->
                       <div>
-                        <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto del producto:</label>
+                        <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto del
+                          producto:</label>
                         <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp,image/gif"
                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                           required />
@@ -121,17 +124,20 @@
                         <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">Campaña:</label>
                         <select id="idCampana" name="idCampana"
                           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
-                          required <%= !campanas || campanas.length === 0 ? 'disabled' : '' %>>
-                          <% if (!campanas || campanas.length === 0) { %>
+                          required <%=!campanas || campanas.length===0 ? 'disabled' : '' %>>
+                          <% if (!campanas || campanas.length===0) { %>
                             <option value="">No hay campañas disponibles</option>
-                          <% } else { %>
-                            <option value="" disabled <%= !idCampanaActiva ? 'selected' : '' %>>Selecciona una campaña</option>
-                            <% campanas.forEach(function (campana) { %>
-                              <option value="<%= campana.id %>" <%= String(idCampanaActiva || '') === String(campana.id) ? 'selected' : '' %>>
-                                <%= campana.nombre %><%= String(idCampanaActiva || '') === String(campana.id) ? ' (Activa)' : '' %>
+                            <% } else { %>
+                              <option value="" disabled <%=!idCampanaActiva ? 'selected' : '' %>>Selecciona una campaña
                               </option>
-                            <% }) %>
-                          <% } %>
+                              <% campanas.forEach(function (campana) { %>
+                                <option value="<%= campana.id %>" <%=String(idCampanaActiva || '' )===String(campana.id)
+                                  ? 'selected' : '' %>>
+                                  <%= campana.nombre %>
+                                    <%= String(idCampanaActiva || '' )===String(campana.id) ? ' (Activa)' : '' %>
+                                </option>
+                                <% }) %>
+                                  <% } %>
                         </select>
                       </div>
                     </div>
@@ -153,21 +159,7 @@
               </section>
     </main>
     <%- include('../partials/footer') %>
-      <script>
-        const modalError = document.getElementById('modalError');
-        const btnModalError = document.getElementById('btnModalError');
-        if (modalError && btnModalError) {
-          function ocultarModal() {
-            modalError.classList.add('hidden');
-          }
-          btnModalError.addEventListener('click', ocultarModal);
-          modalError.addEventListener('click', (e) => {
-            if (e.target === modalError) {
-              ocultarModal();
-            }
-          });
-        }
-      </script>
+      <script src="/js/anadir-producto.js"></script>
 </body>
 
 </html>

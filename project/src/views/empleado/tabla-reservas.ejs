@@ -18,25 +18,12 @@
       <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-8">
         <h2 class="text-base font-semibold text-gray-800 mb-4 border-b pb-2">Filtros de Búsqueda</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 items-end">
-          <div class="lg:col-span-3 relative">
+          <div class="lg:col-span-4 relative">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <span class="material-icons text-gray-400 text-sm">search</span>
             </div>
-            <input type="text" id="busquedaFolio" placeholder="Buscar por folio..."
-              class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
-          </div>
-          <div class="lg:col-span-3 relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="material-icons text-gray-400 text-sm">search</span>
-            </div>
-            <input type="text" id="busquedaConcesionaria" placeholder="Buscar por concesionaria..."
-              class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
-          </div>
-          <div class="lg:col-span-3 relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <span class="material-icons text-gray-400 text-sm">search</span>
-            </div>
-            <input type="text" id="busquedaSucursal" placeholder="Buscar por sucursal..."
+            <input type="text" id="busquedaGeneral"
+              placeholder="Buscar por folio, concesionaria, sucursal o producto..."
               class="w-full pl-10 pr-3 border border-gray-300 rounded-lg py-2 text-sm focus:ring-[#007185] focus:border-[#007185]">
           </div>
           <div class="lg:col-span-2">
@@ -49,8 +36,13 @@
             </select>
           </div>
           <div class="lg:col-span-2">
-            <label for="filtroFecha" class="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
-            <input type="date" id="filtroFecha"
+            <label for="filtroFechaInicio" class="block text-sm font-medium text-gray-700 mb-1">Fecha inicio</label>
+            <input type="date" id="filtroFechaInicio"
+              class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-3 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer text-gray-700">
+          </div>
+          <div class="lg:col-span-2">
+            <label for="filtroFechaFin" class="block text-sm font-medium text-gray-700 mb-1">Fecha fin</label>
+            <input type="date" id="filtroFechaFin"
               class="w-full border border-gray-300 rounded-md py-2 pl-3 pr-3 text-sm focus:ring-[#007185] focus:border-[#007185] bg-white outline-none shadow-sm cursor-pointer text-gray-700">
           </div>
           <div class="lg:col-span-2">
@@ -97,7 +89,8 @@
                     data-folio="<%= reserva.folio %>" data-concesionaria="<%= reserva.nombre_concesionaria %>"
                     data-sucursal="<%= reserva.nombre_sucursal %>"
                     data-estado="<%= reserva.estado_reserva ? 'confirmada' : 'cancelada' %>"
-                    data-fecha-reserva="<%= reserva.fecha_reserva %>">
+                    data-fecha-reserva="<%= reserva.fecha_reserva %>"
+                    data-productos="<%= reserva.productos.map(p => p.nombre_producto).join(', ') %>">
                     <div
                       class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap md:flex-nowrap justify-between items-start gap-4">
                       <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
