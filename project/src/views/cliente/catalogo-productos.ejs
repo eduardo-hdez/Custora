@@ -124,7 +124,23 @@
                       <%= producto.unidad_venta_producto || '' %>
                     </span>
                   </div>
-                  <% if (!urlDetalle) { %>
+                  <% if (urlDetalle) { %>
+                    <form action="/cliente/carrito/agregar" method="POST" class="flex flex-col gap-2">
+                      <input type="hidden" name="id_producto" value="<%= idProducto %>">
+                      <input type="hidden" name="cantidad" value="1">
+
+                      <div class="flex items-center justify-between border border-gray-300 rounded-md qty-container">
+                        <button type="button" class="px-3 py-1 hover:bg-gray-100 btn-cantidad-menos text-gray-600 font-bold">-</button>
+                        <input type="number" value="1" min="1" class="w-12 text-center border-none focus:ring-0 text-sm input-cantidad bg-transparent" readonly>
+                        <button type="button" class="px-3 py-1 hover:bg-gray-100 btn-cantidad-mas text-gray-600 font-bold">+</button>
+                      </div>
+
+                      <button type="submit" class="w-full bg-[#2B6398] hover:bg-[#1e466b] text-white py-2 px-4 rounded-md font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                        <span class="material-icons text-lg">shopping_cart</span>
+                        Agregar al carrito
+                      </button>
+                    </form>
+                  <% } else { %>
                     <p class="text-xs text-amber-700 mb-2">No hay id de producto en los datos del catálogo; revisa la función get_catalogo_productos_habilitados.</p>
                   <% } %>
                 </div>
@@ -140,7 +156,7 @@
 
     <%- include('../partials/footer') %>
       <script src="/js/catalogo-preventa-countdown.js"></script>
-  <script src="/js/catalogo-paginacion.js"></script>
+      <script src="/js/catalogo-paginacion.js"></script>
       <script src="/js/cliente-productos.js"></script>
 </body>
 
