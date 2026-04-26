@@ -30,7 +30,6 @@
       <% const precio = Number(producto.precio_producto ?? 0); %>
       <% const unidad = producto.unidad_venta_producto || ''; %>
       <% const foto = producto.foto_producto || 'https://placehold.co/600x600/ffffff/cccccc?text=Sin+imagen'; %>
-      <% const pesoUnidad = producto.peso_unidad_producto != null && producto.peso_unidad_producto !== '' ? producto.peso_unidad_producto : null; %>
       <% const promedioResenas = Number(resumenResenas?.promedio || 0); %>
       <% const totalResenas = Number(resumenResenas?.total || 0); %>
       <% const estrellasCompletas = Math.floor(promedioResenas); %>
@@ -124,7 +123,7 @@
         </div>
       <% } %>
 
-      <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-10">
+      <div id="resenas-producto" class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-10">
         <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Reseñas del producto</h2>
         <% const totalResenasListado = Number(resumenResenas?.total || 0); %>
         <% const promedioResenasListado = Number(resumenResenas?.promedio || 0); %>
@@ -172,6 +171,61 @@
               <% } %>
             <% }) %>
           </div>
+          <% if (paginationResenas && paginationResenas.totalPages > 1) { %>
+            <div class="mt-6 flex items-center justify-center gap-2">
+              <% if (paginationResenas.hasPrev) { %>
+                <a
+                  href="/cliente/detalle-producto/<%= producto.id_producto %>?page=<%= paginationResenas.prevPage %>#resenas-producto"
+                  class="px-3 py-1.5 rounded-md border text-sm font-medium transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                  aria-disabled="false"
+                >
+                  Anterior
+                </a>
+              <% } else { %>
+                <a
+                  href="#"
+                  class="px-3 py-1.5 rounded-md border text-sm font-medium transition-colors bg-white border-gray-300 text-gray-700 opacity-50 cursor-not-allowed pointer-events-none"
+                  aria-disabled="true"
+                >
+                  Anterior
+                </a>
+              <% } %>
+              <% paginationResenas.pages.forEach((pageNumber) => { %>
+                <% if (pageNumber === paginationResenas.currentPage) { %>
+                  <a
+                    href="/cliente/detalle-producto/<%= producto.id_producto %>?page=<%= pageNumber %>#resenas-producto"
+                    class="px-3 py-1.5 rounded-md border border-[#007185] bg-[#007185] text-sm font-medium text-white transition-colors"
+                  >
+                    <%= pageNumber %>
+                  </a>
+                <% } else { %>
+                  <a
+                    href="/cliente/detalle-producto/<%= producto.id_producto %>?page=<%= pageNumber %>#resenas-producto"
+                    class="px-3 py-1.5 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                  >
+                    <%= pageNumber %>
+                  </a>
+                <% } %>
+              <% }) %>
+              <% if (paginationResenas.hasNext) { %>
+                <a
+                  href="/cliente/detalle-producto/<%= producto.id_producto %>?page=<%= paginationResenas.nextPage %>#resenas-producto"
+                  class="px-3 py-1.5 rounded-md border text-sm font-medium transition-colors bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                  aria-disabled="false"
+                >
+                  Siguiente
+                </a>
+              <% } else { %>
+                <a
+                  href="#"
+                  class="px-3 py-1.5 rounded-md border text-sm font-medium transition-colors bg-white border-gray-300 text-gray-700 opacity-50 cursor-not-allowed pointer-events-none"
+                  aria-disabled="true"
+                >
+                  Siguiente
+                </a>
+              <% } %>
+            </div>
+          <% } %>
         <% } %>
       </div>
     <% } %>

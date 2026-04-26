@@ -8,6 +8,7 @@ const SESSION_ANADIR_PRODUCTO_ERROR = 'anadirProductoError';
 const SESSION_EDITAR_PRODUCTO_ERROR = 'editarProductoError';
 
 const MAX_COMENTARIO_LENGTH = 500;
+const REVIEWS_PER_PAGE = 5;
 
 const normalizeComentario = (comentarioRaw) => {
   if (typeof comentarioRaw !== 'string') return null;
@@ -16,18 +17,37 @@ const normalizeComentario = (comentarioRaw) => {
 };
 
 const getFechaCalificacionHoy = () => new Date().toISOString().slice(0, 10);
+const getValidReviewPage = (rawPage) => {
+  const parsed = Number.parseInt(rawPage, 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+};
+const buildReviewPagination = (currentPage, totalItems, itemsPerPage) => {
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  return {
+    currentPage: safeCurrentPage,
+    totalPages,
+    hasPrev: safeCurrentPage > 1,
+    hasNext: safeCurrentPage < totalPages,
+    prevPage: Math.max(1, safeCurrentPage - 1),
+    nextPage: Math.min(totalPages, safeCurrentPage + 1),
+    pages: Array.from({ length: totalPages }, (_, idx) => idx + 1),
+  };
+};
 
 export async function renderDetalleProductoCliente(request, response) {
   const { id } = request.params;
+  const currentPage = getValidReviewPage(request.query.page);
   const successCalificacion = request.query.calificacion === 'ok';
   const errorCalificacion = request.query.calificacion === 'error';
   const duplicadaCalificacion = request.query.calificacion === 'duplicada';
   const idConcesionaria = request.session.idConcesionaria;
 
   try {
-    const [{ data, error }, { data: resenasData, error: errorResenas }] = await Promise.all([
+    const [{ data, error }, { data: resumenData, error: errorResumen }, { data: resenasData, error: errorResenas }] = await Promise.all([
       Producto.findById(id),
-      Producto.getResenasByProductoId(id),
+      Producto.getResumenCalificacionesByProductoIds([id]),
+      Producto.getResenasPaginadasByProductoId(id, { page: currentPage, limit: REVIEWS_PER_PAGE }),
     ]);
 
     if (error || data == null) {
@@ -54,10 +74,10 @@ export async function renderDetalleProductoCliente(request, response) {
         concesionaria: item.concesionaria?.nombre_concesionaria || `Concesionaria ${item.id_concesionaria}`,
       })) :
       [];
-    const total = resenasProducto.length;
-    const promedio = total > 0 ?
-      (resenasProducto.reduce((acc, item) => acc + item.puntuacion, 0) / total) :
-      0;
+    const resumen = Array.isArray(resumenData) && resumenData.length > 0 ? resumenData[0] : null;
+    const total = resumen ? Number(resumen.total_resenas || 0) : 0;
+    const promedio = resumen ? Number(resumen.promedio_puntuacion || 0) : 0;
+    const paginationResenas = buildReviewPagination(currentPage, total, REVIEWS_PER_PAGE);
     let yaCalifico = false;
     if (idConcesionaria) {
       const { existe } = await Producto.existeCalificacionPorProductoYConcesionaria(id, idConcesionaria);
@@ -70,7 +90,8 @@ export async function renderDetalleProductoCliente(request, response) {
       errorDetalle: null,
       resenasProducto,
       resumenResenas: { promedio, total },
-      errorResenas: errorResenas ? 'No se pudieron cargar las reseñas por el momento.' : null,
+      paginationResenas,
+      errorResenas: errorResenas || errorResumen ? 'No se pudieron cargar las reseñas por el momento.' : null,
       mensajeCalificacion: successCalificacion ?
         'Reseña publicada correctamente' :
         null,
@@ -86,6 +107,7 @@ export async function renderDetalleProductoCliente(request, response) {
       errorDetalle: 'No se pudo cargar el producto en este momento.',
       resenasProducto: [],
       resumenResenas: { promedio: 0, total: 0 },
+      paginationResenas: buildReviewPagination(1, 0, REVIEWS_PER_PAGE),
       errorResenas: 'No se pudieron cargar las reseñas por el momento.',
       mensajeCalificacion: null,
       puedeCalificar: false,
@@ -256,11 +278,13 @@ export async function renderCatalogoCliente(request, response) {
 
 export async function renderDetalleProductoEmpleado(request, response) {
   const { id } = request.params;
+  const currentPage = getValidReviewPage(request.query.page);
 
   try {
-    const [{ data, error }, { data: resenasData, error: errorResenas }] = await Promise.all([
+    const [{ data, error }, { data: resumenData, error: errorResumen }, { data: resenasData, error: errorResenas }] = await Promise.all([
       Producto.findById(id),
-      Producto.getResenasByProductoId(id),
+      Producto.getResumenCalificacionesByProductoIds([id]),
+      Producto.getResenasPaginadasByProductoId(id, { page: currentPage, limit: REVIEWS_PER_PAGE }),
     ]);
 
     if (error || data == null) {
@@ -270,6 +294,7 @@ export async function renderDetalleProductoEmpleado(request, response) {
         errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
         resenasProducto: [],
         resumenResenas: { promedio: 0, total: 0 },
+        paginationResenas: buildReviewPagination(1, 0, REVIEWS_PER_PAGE),
         errorResenas: null,
       });
     }
@@ -283,10 +308,10 @@ export async function renderDetalleProductoEmpleado(request, response) {
         concesionaria: item.concesionaria?.nombre_concesionaria || `Concesionaria ${item.id_concesionaria}`,
       })) :
       [];
-    const total = resenasProducto.length;
-    const promedio = total > 0 ?
-      (resenasProducto.reduce((acc, item) => acc + item.puntuacion, 0) / total) :
-      0;
+    const resumen = Array.isArray(resumenData) && resumenData.length > 0 ? resumenData[0] : null;
+    const total = resumen ? Number(resumen.total_resenas || 0) : 0;
+    const promedio = resumen ? Number(resumen.promedio_puntuacion || 0) : 0;
+    const paginationResenas = buildReviewPagination(currentPage, total, REVIEWS_PER_PAGE);
 
     return response.render('empleado/detalle-producto', {
       title: nombre,
@@ -294,7 +319,8 @@ export async function renderDetalleProductoEmpleado(request, response) {
       errorDetalle: null,
       resenasProducto,
       resumenResenas: { promedio, total },
-      errorResenas: errorResenas ? 'No se pudieron cargar las reseñas por el momento.' : null,
+      paginationResenas,
+      errorResenas: errorResenas || errorResumen ? 'No se pudieron cargar las reseñas por el momento.' : null,
     });
   } catch (err) {
     return response.status(500).render('empleado/detalle-producto', {
@@ -303,6 +329,7 @@ export async function renderDetalleProductoEmpleado(request, response) {
       errorDetalle: 'No se pudo cargar el producto en este momento.',
       resenasProducto: [],
       resumenResenas: { promedio: 0, total: 0 },
+      paginationResenas: buildReviewPagination(1, 0, REVIEWS_PER_PAGE),
       errorResenas: 'No se pudieron cargar las reseñas por el momento.',
     });
   }
