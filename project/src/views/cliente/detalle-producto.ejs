@@ -31,6 +31,11 @@
       <% const unidad = producto.unidad_venta_producto || ''; %>
       <% const foto = producto.foto_producto || 'https://placehold.co/600x600/ffffff/cccccc?text=Sin+imagen'; %>
       <% const pesoUnidad = producto.peso_unidad_producto != null && producto.peso_unidad_producto !== '' ? producto.peso_unidad_producto : null; %>
+      <% const promedioResenas = Number(resumenResenas?.promedio || 0); %>
+      <% const totalResenas = Number(resumenResenas?.total || 0); %>
+      <% const estrellasCompletas = Math.floor(promedioResenas); %>
+      <% const tieneMedia = (promedioResenas - estrellasCompletas) >= 0.5; %>
+      <% const estrellasVacias = 5 - estrellasCompletas - (tieneMedia ? 1 : 0); %>
 
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 lg:p-10 items-start">
@@ -51,6 +56,22 @@
                 <p class="text-sm text-gray-500 mt-1">Unidad de venta: <span class="text-gray-700"><%= unidad %></span></p>
               <% } %>
               <p class="text-sm text-gray-500 mt-1">*Precio sin IVA</p>
+              <div class="mt-2 flex items-center gap-2">
+                <span class="inline-flex items-center text-amber-400 leading-none">
+                  <% for (let i = 0; i < estrellasCompletas; i += 1) { %>
+                    <span class="material-icons text-[18px]">star</span>
+                  <% } %>
+                  <% if (tieneMedia) { %>
+                    <span class="material-icons text-[18px]">star_half</span>
+                  <% } %>
+                  <% for (let i = 0; i < estrellasVacias; i += 1) { %>
+                    <span class="material-icons text-[18px] text-gray-300">star_border</span>
+                  <% } %>
+                </span>
+                <span class="text-sm text-gray-600">
+                  <%= totalResenas > 0 ? `${promedioResenas.toFixed(1)} (${totalResenas} reseñas)` : 'Sin reseñas' %>
+                </span>
+              </div>
             </div>
 
             <div class="flex flex-col gap-3">
@@ -95,6 +116,57 @@
           </div>
         </div>
       <% } %>
+
+      <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6 lg:p-10">
+        <h2 class="text-xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">Reseñas del producto</h2>
+        <% const totalResenasListado = Number(resumenResenas?.total || 0); %>
+        <% const promedioResenasListado = Number(resumenResenas?.promedio || 0); %>
+        <% const estrellasCompletasListado = Math.floor(promedioResenasListado); %>
+        <% const tieneMediaListado = (promedioResenasListado - estrellasCompletasListado) >= 0.5; %>
+        <% const estrellasVaciasListado = 5 - estrellasCompletasListado - (tieneMediaListado ? 1 : 0); %>
+        <div class="mb-5 flex items-center gap-2">
+          <span class="inline-flex items-center text-amber-400 leading-none">
+            <% for (let i = 0; i < estrellasCompletasListado; i += 1) { %>
+              <span class="material-icons text-[18px]">star</span>
+            <% } %>
+            <% if (tieneMediaListado) { %>
+              <span class="material-icons text-[18px]">star_half</span>
+            <% } %>
+            <% for (let i = 0; i < estrellasVaciasListado; i += 1) { %>
+              <span class="material-icons text-[18px] text-gray-300">star_border</span>
+            <% } %>
+          </span>
+          <span class="text-sm text-gray-700">
+            <%= totalResenasListado > 0 ? `${promedioResenasListado.toFixed(1)} de 5 (${totalResenasListado} reseñas)` : 'Aún no hay reseñas' %>
+          </span>
+        </div>
+
+        <% if (errorResenas) { %>
+          <p class="text-sm text-red-700"><%= errorResenas %></p>
+        <% } else if (!resenasProducto || resenasProducto.length === 0) { %>
+          <p class="text-sm text-gray-600">Sé el primero en compartir tu experiencia de este producto.</p>
+        <% } else { %>
+          <div class="space-y-4">
+            <% resenasProducto.forEach((resena, idx) => { %>
+              <article class="rounded-md border border-gray-200 p-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                  <p class="text-sm font-medium text-gray-800"><%= resena.concesionaria %></p>
+                  <p class="text-xs text-gray-500"><%= resena.fecha ? new Date(resena.fecha).toLocaleDateString('es-MX') : '' %></p>
+                </div>
+                <p class="text-amber-400 text-sm mb-2">
+                  <% for (let i = 1; i <= 5; i += 1) { %>
+                    <%= i <= Math.round(Number(resena.puntuacion || 0)) ? '★' : '☆' %>
+                  <% } %>
+                </p>
+                <p class="text-sm text-gray-700 whitespace-pre-wrap"><%= resena.comentario || 'Sin comentario.' %></p>
+              </article>
+              <% if (idx < resenasProducto.length - 1) { %>
+                <hr class="border-gray-100">
+              <% } %>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
     <% } %>
   </main>
 
