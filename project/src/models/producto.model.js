@@ -72,17 +72,29 @@ export default class Producto {
     }) {
         const { data, error } = await supabase
             .from('calificar')
-            .upsert([{
+            .insert([{
                 id_producto,
                 id_concesionaria,
                 puntuacion,
                 comentario,
                 fecha_calificacion,
-            }], {
-                onConflict: 'id_producto,id_concesionaria',
-            });
+            }]);
 
         return { data, error };
+    }
+
+    static async existeCalificacionPorProductoYConcesionaria(idProducto, idConcesionaria) {
+        const { data, error } = await supabase
+            .from('calificar')
+            .select('id_producto')
+            .eq('id_producto', idProducto)
+            .eq('id_concesionaria', idConcesionaria)
+            .limit(1);
+
+        return {
+            existe: Array.isArray(data) && data.length > 0,
+            error,
+        };
     }
 
     static async getResenasByProductoId(idProducto) {

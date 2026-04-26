@@ -52,53 +52,59 @@
           </div>
         <% } %>
 
-        <form method="POST" action="/cliente/productos/<%= producto.id_producto %>/calificacion" class="space-y-5">
-          <div>
-            <span class="block text-sm font-medium text-gray-700 mb-2">Puntuación</span>
-            <input
-              id="puntuacion"
-              name="puntuacion"
-              type="hidden"
-              value="<%= formData?.puntuacion || '' %>"
-              required
-            >
+        <% if (bloqueadaPorResenaExistente) { %>
+          <p class="text-sm text-gray-700">
+            Ya tienes una reseña registrada para este producto con la concesionaria activa.
+          </p>
+        <% } else { %>
+          <form method="POST" action="/cliente/productos/<%= producto.id_producto %>/calificacion" class="space-y-5">
+            <div>
+              <span class="block text-sm font-medium text-gray-700 mb-2">Puntuación</span>
+              <input
+                id="puntuacion"
+                name="puntuacion"
+                type="hidden"
+                value="<%= formData?.puntuacion || '' %>"
+                required
+              >
 
-            <div class="mt-1" data-rating-widget data-rating-initial="<%= formData?.puntuacion || '' %>">
-              <div class="flex items-center gap-1" role="radiogroup" aria-label="Selecciona una puntuación de 1 a 5">
-                <% for (let i = 1; i <= 5; i += 1) { %>
-                  <button
-                    type="button"
-                    class="text-5xl leading-none text-gray-300 hover:scale-110 transition-transform"
-                    data-star-value="<%= i %>"
-                    aria-label="<%= i %> <%= i === 1 ? 'estrella' : 'estrellas' %>"
-                    aria-checked="false"
-                    role="radio"
-                  >★</button>
-                <% } %>
+              <div class="mt-1" data-rating-widget data-rating-initial="<%= formData?.puntuacion || '' %>">
+                <div class="flex items-center gap-1" role="radiogroup" aria-label="Selecciona una puntuación de 1 a 5">
+                  <% for (let i = 1; i <= 5; i += 1) { %>
+                    <button
+                      type="button"
+                      class="text-5xl leading-none text-gray-300 hover:scale-110 transition-transform"
+                      data-star-value="<%= i %>"
+                      aria-label="<%= i %> <%= i === 1 ? 'estrella' : 'estrellas' %>"
+                      aria-checked="false"
+                      role="radio"
+                    >★</button>
+                  <% } %>
+                </div>
+                <p class="text-sm text-gray-600 mt-1" data-rating-label>Selecciona una calificación</p>
               </div>
-              <p class="text-sm text-gray-600 mt-1" data-rating-label>Selecciona una calificación</p>
             </div>
-          </div>
 
-          <div>
-            <label for="comentario" class="block font-medium text-gray-700 mb-2">Comentario (opcional)</label>
-            <textarea
-              id="comentario"
-              name="comentario"
-              maxlength="500"
-              rows="5"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
-              placeholder="Comparte tu experiencia con este producto"
-            ><%= formData?.comentario || '' %></textarea>
-          </div>
+            <div>
+              <label for="comentario" class="block font-medium text-gray-700 mb-2">Comentario (opcional)</label>
+              <textarea
+                id="comentario"
+                name="comentario"
+                maxlength="500"
+                rows="5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                placeholder="Comparte tu experiencia con este producto"
+              ><%= formData?.comentario || '' %></textarea>
+            </div>
 
-          <button
-            type="submit"
-            class="inline-flex items-center justify-center bg-[#2B6398] hover:bg-[#1e466b] text-white border border-[#1e466b] rounded-full py-2.5 px-6 font-medium transition-colors"
-          >
-            Publicar reseña
-          </button>
-        </form>
+            <button
+              type="submit"
+              class="inline-flex items-center justify-center bg-[#2B6398] hover:bg-[#1e466b] text-white border border-[#1e466b] rounded-full py-2.5 px-6 font-medium transition-colors"
+            >
+              Publicar reseña
+            </button>
+          </form>
+        <% } %>
       </div>
     <% } %>
   </main>

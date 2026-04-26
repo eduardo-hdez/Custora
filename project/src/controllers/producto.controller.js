@@ -21,6 +21,8 @@ export async function renderDetalleProductoCliente(request, response) {
   const { id } = request.params;
   const successCalificacion = request.query.calificacion === 'ok';
   const errorCalificacion = request.query.calificacion === 'error';
+  const duplicadaCalificacion = request.query.calificacion === 'duplicada';
+  const idConcesionaria = request.session.idConcesionaria;
 
   try {
     const [{ data, error }, { data: resenasData, error: errorResenas }] = await Promise.all([
@@ -56,6 +58,11 @@ export async function renderDetalleProductoCliente(request, response) {
     const promedio = total > 0 ?
       (resenasProducto.reduce((acc, item) => acc + item.puntuacion, 0) / total) :
       0;
+    let yaCalifico = false;
+    if (idConcesionaria) {
+      const { existe } = await Producto.existeCalificacionPorProductoYConcesionaria(id, idConcesionaria);
+      yaCalifico = Boolean(existe);
+    }
 
     return response.render('cliente/detalle-producto', {
       title: nombre,
@@ -69,7 +76,8 @@ export async function renderDetalleProductoCliente(request, response) {
         null,
       errorCalificacion: errorCalificacion ?
         'No se pudo registrar la reseña. Intenta nuevamente.' :
-        null,
+        (duplicadaCalificacion ? 'Ya calificaste este producto. No puedes registrar una segunda reseña.' : null),
+      puedeCalificar: !yaCalifico,
     });
   } catch (err) {
     return response.status(500).render('cliente/detalle-producto', {
@@ -80,6 +88,7 @@ export async function renderDetalleProductoCliente(request, response) {
       resumenResenas: { promedio: 0, total: 0 },
       errorResenas: 'No se pudieron cargar las reseñas por el momento.',
       mensajeCalificacion: null,
+      puedeCalificar: false,
     });
   }
 }
@@ -87,6 +96,7 @@ export async function renderDetalleProductoCliente(request, response) {
 export async function renderCalificacion(request, response) {
   const { id } = request.params;
   const errorCalificacion = request.query.error;
+  const idConcesionaria = request.session.idConcesionaria;
 
   try {
     const { data, error } = await Producto.findById(id);
@@ -97,15 +107,25 @@ export async function renderCalificacion(request, response) {
         errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
         errorCalificacion: null,
         formData: { puntuacion: '', comentario: '' },
+        bloqueadaPorResenaExistente: false,
       });
+    }
+
+    let bloqueadaPorResenaExistente = false;
+    if (idConcesionaria) {
+      const { existe } = await Producto.existeCalificacionPorProductoYConcesionaria(id, idConcesionaria);
+      bloqueadaPorResenaExistente = Boolean(existe);
     }
 
     return response.render('cliente/calificacion', {
       title: 'Calificar producto',
       producto: data,
       errorDetalle: null,
-      errorCalificacion: errorCalificacion || null,
+      errorCalificacion: bloqueadaPorResenaExistente ?
+        'Ya calificaste este producto. No puedes registrar una segunda reseña.' :
+        (errorCalificacion || null),
       formData: { puntuacion: '', comentario: '' },
+      bloqueadaPorResenaExistente,
     });
   } catch (err) {
     return response.status(500).render('cliente/calificacion', {
@@ -114,6 +134,7 @@ export async function renderCalificacion(request, response) {
       errorDetalle: 'No se pudo cargar el producto en este momento.',
       errorCalificacion: null,
       formData: { puntuacion: '', comentario: '' },
+      bloqueadaPorResenaExistente: false,
     });
   }
 }
@@ -143,6 +164,16 @@ export async function registrarCalificacion(request, response) {
       errorCalificacion: 'No se encontró la concesionaria activa. Cambia de cuenta e intenta nuevamente.',
       formData: { puntuacion: request.body.puntuacion || '', comentario: request.body.comentario || '' },
     });
+  }
+
+  const { existe: yaCalifico, error: errorExisteCalificacion } = await Producto
+    .existeCalificacionPorProductoYConcesionaria(id, idConcesionaria);
+  if (errorExisteCalificacion) {
+    console.error('Error al validar calificación existente:', errorExisteCalificacion.message);
+    return response.redirect(`/cliente/detalle-producto/${encodeURIComponent(id)}?calificacion=error`);
+  }
+  if (yaCalifico) {
+    return response.redirect(`/cliente/detalle-producto/${encodeURIComponent(id)}?calificacion=duplicada`);
   }
 
   if (!Number.isFinite(puntuacion) || puntuacion < 1 || puntuacion > 5) {
