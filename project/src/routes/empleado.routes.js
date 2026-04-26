@@ -27,7 +27,7 @@ router.post(
   productoController.postAnadirProducto,
 );
 
-router.post('gestion-productos/carga-masiva', uploadCargaMasiva.single('cargaMasiva'), productoController.postCargaMasiva);
+router.post('/gestion-productos/carga-masiva', uploadCargaMasiva.single('cargaMasiva'), productoController.postCargaMasiva);
 
 router.post('/gestion-productos/deshabilitar', productoController.deshabilitarProductos);
 

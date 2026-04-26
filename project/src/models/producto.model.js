@@ -32,13 +32,13 @@ export default class Producto {
             .from('producto')
             .insert([
                 {
-                    id_producto: fila.idProducto,
-                    nombre_producto: fila.nombreProducto,
-                    descripcion_producto: fila.descripcion,
-                    precio_producto: fila.precio,
-                    peso_unidad: fila.pesoUnidad,
-                    unidad_venta_producto: fila.unidadVenta,
-                    id_campana: fila.idCampana,
+                    id_producto: fila.id_producto,
+                    nombre_producto: fila.nombre_producto,
+                    descripcion_producto: fila.descripcion_producto,
+                    precio_producto: fila.precio_producto,
+                    peso_unidad: fila.peso_unidad,
+                    unidad_venta_producto: fila.unidad_venta_producto,
+                    id_campana: fila.id_campana,
                 },
             ]);
         return { data, error }
