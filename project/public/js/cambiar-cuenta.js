@@ -1,6 +1,6 @@
 /*cambiar sucursal vía AJAX*/
 
-import {fetchJSON} from './ajax-helper.js';
+import { fetchJSON } from './ajax-helper.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const sucursalCards = document.querySelectorAll('[data-cuenta-id]');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const idConcesionaria = card.getAttribute('data-cuenta-id');
-      
+
       if (!idConcesionaria) {
         console.error('No se encontró ID de concesionaria en data-cuenta-id');
         return;
@@ -30,10 +30,13 @@ document.addEventListener('DOMContentLoaded', () => {
           c.classList.remove('border-[#2B6398]', 'bg-blue-50', 'shadow-md');
           c.classList.add('border-gray-200', 'bg-white');
         });
-        
+
         card.classList.remove('border-gray-200', 'bg-white');
         card.classList.add('border-[#2B6398]', 'bg-blue-50', 'shadow-md');
 
+        if (window.location.pathname.includes('/info-perfil')) {
+          window.location.reload();
+        }
       } else {
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';

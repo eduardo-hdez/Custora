@@ -28,7 +28,11 @@ export async function renderPerfil(request, response) {
         return {
           id: concesionaria.id_concesionaria,
           nombre: concesionaria.nombre_concesionaria,
-          sucursales: sucursales || []
+          sucursales: (sucursales || []).map(s => ({
+            id: s.id_sucursal,
+            nombre: s.nombre_sucursal,
+            ubicacion: s.ubicacion
+          }))
         };
       })
     );

@@ -31,10 +31,10 @@
           <span class="block text-sm font-medium text-gray-500 mb-1">Nombre de la Concesionaria Actual</span>
           <span class="block text-base text-gray-900 font-medium">
             <% 
-              const activa = concesionarias.find(c => String(c.id_concesionaria) === String(idConcesionariaActiva));
+              const activa = concesionarias.find(c => String(c.id) === String(idConcesionariaActiva));
               if (activa) {
             %>
-              <%= activa.nombre_concesionaria || activa.id_concesionaria %>
+              <%= activa.nombre || activa.id %>
             <% } else { %>
               No seleccionada
             <% } %>
@@ -52,18 +52,18 @@
     <div class="flex flex-col gap-6">
       
       <% if (concesionarias && concesionarias.length > 0) { %>
-        <% concesionarias.forEach(concesionaria => { 
-          const esActiva = String(concesionaria.id_concesionaria) === String(idConcesionariaActiva);
+        <% 
+          concesionarias.forEach((concesionaria) => { 
+          const esActiva = idConcesionariaActiva && String(concesionaria.id) === String(idConcesionariaActiva);
         %>
-          <!-- Concesionaria -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col <%= esActiva ? 'ring-2 ring-[#2B6398] ring-inset' : '' %>">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col <%= esActiva ? 'ring-2 ring-[#2B6398] ring-inset' : '' %>" data-cuenta-id="<%= concesionaria.id %>">
             <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
               <div>
                 <h3 class="text-lg font-bold <%= esActiva ? 'text-[#2B6398]' : 'text-gray-800' %> flex items-center gap-2">
                   <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-500' %>">business</span>
-                  <%= concesionaria.nombre_concesionaria || concesionaria.id_concesionaria %>
+                  <%= concesionaria.nombre || concesionaria.id %>
                 </h3>
-                <p class="text-sm text-gray-600 mt-1">Cuenta: <%= concesionaria.id_concesionaria %></p>
+                <p class="text-sm text-gray-600 mt-1">Cuenta: <%= concesionaria.id %></p>
               </div>
               <div class="flex items-center gap-3">
                 <% if (esActiva) { %>
@@ -71,13 +71,15 @@
                     <span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
                     Activa
                   </span>
-                  <button class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm opacity-50 cursor-not-allowed" disabled>
-                    Cuenta actual
+                  <button class="bg-[#2B6398] text-white px-4 py-2 rounded-md text-sm font-bold shadow-md flex items-center gap-2 cursor-default" disabled title="Esta es tu cuenta actualmente activa">
+                    <span class="material-icons text-sm">check_circle</span>
+                    Cuenta en uso
                   </button>
                 <% } else { %>
                   <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
-                    <input type="hidden" name="idConcesionaria" value="<%= concesionaria.id_concesionaria %>">
-                    <button type="submit" class="bg-[#2B6398] hover:bg-[#1e466b] text-white px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors">
+                    <input type="hidden" name="idConcesionaria" value="<%= concesionaria.id %>">
+                    <button type="submit" class="bg-white border border-[#2B6398] text-[#2B6398] hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-bold shadow-sm transition-all flex items-center gap-2">
+                      <span class="material-icons text-sm">swap_horiz</span>
                       Cambiar a esta cuenta
                     </button>
                   </form>
@@ -93,7 +95,7 @@
                     <div class="border border-gray-200 rounded-md p-4 <%= esActiva ? 'hover:border-[#2B6398] hover:shadow-sm' : '' %> transition-all bg-white group">
                       <div class="flex items-center gap-2 mb-2">
                         <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-400' %>">store</span>
-                        <span class="font-medium text-gray-900"><%= sucursal.nombre_sucursal %></span>
+                        <span class="font-medium text-gray-900"><%= sucursal.nombre %></span>
                       </div>
                       <p class="text-xs text-gray-500"><%= sucursal.ubicacion || 'Sin ubicación registrada' %></p>
                     </div>
