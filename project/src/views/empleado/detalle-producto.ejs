@@ -22,14 +22,6 @@
       <% const foto = producto.foto_producto || 'https://placehold.co/600x600/ffffff/cccccc?text=Sin+imagen'; %>
       <% const pesoUnidad = producto.peso_unidad_producto != null && producto.peso_unidad_producto !== '' ? producto.peso_unidad_producto : null; %>
 
-      <nav class="flex items-center text-sm text-gray-500 mb-6 flex-wrap" aria-label="Migas de pan">
-        <a href="/empleado" class="hover:text-[#007185] transition-colors">Inicio</a>
-        <span class="material-icons text-sm mx-1" aria-hidden="true">chevron_right</span>
-        <a href="/empleado/catalogo" class="hover:text-[#007185] transition-colors">Catálogo</a>
-        <span class="material-icons text-sm mx-1" aria-hidden="true">chevron_right</span>
-        <span class="text-gray-900 font-medium"><%= nombre %></span>
-      </nav>
-
       <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 lg:p-10 items-start">
           <div class="flex justify-center items-center bg-gray-50 rounded-lg p-6 border border-gray-100 h-full max-h-[450px]">
@@ -39,25 +31,17 @@
           <div class="flex flex-col">
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight"><%= nombre %></h1>
 
-            <div class="border-t border-b border-gray-200 py-4 mb-6">
+            <div class="border-t border-gray-200 py-4 mb-6">
               <div class="flex items-end gap-2 text-gray-900">
                 <span class="text-sm font-medium">$</span>
                 <span class="text-4xl font-semibold leading-none"><%= precio.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
               </div>
+              <p class="text-sm text-gray-500 mt-2">ID de producto: <span class="font-medium text-gray-700"><%= producto.id_producto %></span></p>
               <% if (unidad) { %>
-                <p class="text-sm text-gray-500 mt-2">Unidad de venta: <%= unidad %></p>
+                <p class="text-sm text-gray-500 mt-1">Unidad de venta: <span class="text-gray-700"><%= unidad %></span></p>
               <% } %>
-              <p class="text-sm text-gray-500 mt-1">Precio sin IVA</p>
+              <p class="text-sm text-gray-500 mt-1">*Precio sin IVA</p>
             </div>
-
-            <% if (unidad) { %>
-              <div class="mb-6">
-                <span class="block text-sm font-medium text-gray-700 mb-2">Unidad de venta</span>
-                <div class="inline-flex items-center border-2 border-[#007185] bg-blue-50 text-[#007185] rounded-md px-4 py-2 text-sm font-medium">
-                  <%= unidad %><% if (pesoUnidad) { %> (<%= pesoUnidad %>)<% } %>
-                </div>
-              </div>
-            <% } %>
 
             <div class="flex flex-col gap-3 mt-4">
               <a href="/empleado/gestion-productos"

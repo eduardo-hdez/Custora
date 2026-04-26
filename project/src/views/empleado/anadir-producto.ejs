@@ -24,7 +24,9 @@
           class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
           <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
             <span class="material-icons text-red-600 text-5xl mb-4">error_outline</span>
-            <h3 class="mb-6 text-lg font-medium text-gray-800"><%= errorMessage %></h3>
+            <h3 class="mb-6 text-lg font-medium text-gray-800">
+              <%= errorMessage %>
+            </h3>
             <div class="flex flex-col sm:flex-row justify-center gap-3">
               <button id="btnModalError" type="button"
                 class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
@@ -74,19 +76,21 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                       <!-- Precio -->
                       <div>
-                        <label for="precio" class="block text-sm font-medium text-gray-700 mb-1">Precio (pesos):</label>
+                        <label for="precio" class="block text-sm font-medium text-gray-700 mb-1">Precio sin IVA
+                          (pesos):</label>
                         <div class="relative">
                           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span class="text-gray-500 sm:text-sm">$</span>
                           </div>
-                          <input type="number" step="0.01" id="precio" name="precio"
-                            class="w-full pl-7 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                          <input type="number" id="precio" name="precio"
+                            class="w-full pl-7 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                             required />
                         </div>
                       </div>
                       <!-- Foto: subida a Supabase Storage (bucket) -->
                       <div>
-                        <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto del producto:</label>
+                        <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto del
+                          producto:</label>
                         <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp,image/gif"
                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
                           required />
@@ -97,35 +101,44 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                       <!-- Peso -->
                       <div>
-                        <label for="peso" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg/litro):</label>
-                        <input type="number" step="0.01" id="peso" name="pesoUnidad"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                        <label for="peso" class="block text-sm font-medium text-gray-700 mb-1">Peso (kgs):</label>
+                        <input type="number" step="0.5" id="peso" name="pesoUnidad"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           required />
                       </div>
                       <!-- Unidad de venta -->
                       <div>
                         <label for="unidadVenta" class="block text-sm font-medium text-gray-700 mb-1">Unidad de
                           venta:</label>
-                        <input type="text" id="unidadVenta" name="unidadVenta" placeholder="Ej. Pieza, Caja"
-                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
-                          required />
+                        <select id="unidadVenta" name="unidadVenta"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                          required>
+                          <option value="" disabled selected>Selecciona una unidad</option>
+                          <option value="Pieza">Pieza</option>
+                          <option value="Caja">Caja</option>
+                          <option value="Kit">Kit</option>
+                          <option value="Rollo">Rollo</option>
+                        </select>
                       </div>
                       <!-- id_campana (formulario) -->
                       <div>
                         <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">Campaña:</label>
                         <select id="idCampana" name="idCampana"
                           class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
-                          required <%= !campanas || campanas.length === 0 ? 'disabled' : '' %>>
-                          <% if (!campanas || campanas.length === 0) { %>
+                          required <%=!campanas || campanas.length===0 ? 'disabled' : '' %>>
+                          <% if (!campanas || campanas.length===0) { %>
                             <option value="">No hay campañas disponibles</option>
-                          <% } else { %>
-                            <option value="" disabled <%= !idCampanaActiva ? 'selected' : '' %>>Selecciona una campaña</option>
-                            <% campanas.forEach(function (campana) { %>
-                              <option value="<%= campana.id %>" <%= String(idCampanaActiva || '') === String(campana.id) ? 'selected' : '' %>>
-                                <%= campana.nombre %><%= String(idCampanaActiva || '') === String(campana.id) ? ' (Activa)' : '' %>
+                            <% } else { %>
+                              <option value="" disabled <%=!idCampanaActiva ? 'selected' : '' %>>Selecciona una campaña
                               </option>
-                            <% }) %>
-                          <% } %>
+                              <% campanas.forEach(function (campana) { %>
+                                <option value="<%= campana.id %>" <%=String(idCampanaActiva || '' )===String(campana.id)
+                                  ? 'selected' : '' %>>
+                                  <%= campana.nombre %>
+                                    <%= String(idCampanaActiva || '' )===String(campana.id) ? ' (Activa)' : '' %>
+                                </option>
+                                <% }) %>
+                                  <% } %>
                         </select>
                       </div>
                     </div>
@@ -147,21 +160,7 @@
               </section>
     </main>
     <%- include('../partials/footer') %>
-      <script>
-        const modalError = document.getElementById('modalError');
-        const btnModalError = document.getElementById('btnModalError');
-        if (modalError && btnModalError) {
-          function ocultarModal() {
-            modalError.classList.add('hidden');
-          }
-          btnModalError.addEventListener('click', ocultarModal);
-          modalError.addEventListener('click', (e) => {
-            if (e.target === modalError) {
-              ocultarModal();
-            }
-          });
-        }
-      </script>
+      <script src="/js/anadir-producto.js"></script>
 </body>
 
 </html>

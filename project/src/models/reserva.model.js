@@ -75,15 +75,21 @@ export default class Reserva {
     return { data, error };
   }
 
-  static async listarPorCliente(id_concesionaria) {
-    const { data: reservas, error } = await supabase
-      .from('reserva')
-      .select('*')
-      .eq('id_concesionaria', id_concesionaria)
-      .order('fecha_hora_reserva', { ascending: false });
+  static async listarPorCliente(id_concesionaria, options = {}) {
+    const page = Math.max(1, Number(options.page) || 1);
+    const pageSize = Math.max(1, Number(options.pageSize) || 10);
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
 
-    if (error) return { data: null, error };
-    if (!Array.isArray(reservas) || reservas.length === 0) return { data: [], error: null };
+    const { data: reservas, error, count } = await supabase
+      .from('reserva')
+      .select('*', { count: 'exact' })
+      .eq('id_concesionaria', id_concesionaria)
+      .order('fecha_hora_reserva', { ascending: false })
+      .range(from, to);
+
+    if (error) return { data: null, total: 0, error };
+    if (!Array.isArray(reservas) || reservas.length === 0) return { data: [], total: Number(count) || 0, error: null };
 
     const folios = reservas.map((r) => r.folio);
     const sucursalIds = [...new Set(reservas.map((r) => r.id_sucursal).filter(Boolean))];
@@ -96,7 +102,7 @@ export default class Reserva {
         .in('folio', folios),
       supabase
         .from('sucursal')
-        .select('id_sucursal, nombre_sucursal')
+        .select('id_sucursal, nombre_sucursal, ubicacion')
         .in('id_sucursal', sucursalIds.length > 0 ? sucursalIds : [-1]),
       supabase
         .from('campana')
@@ -105,7 +111,7 @@ export default class Reserva {
     ]);
 
     if (errorProductos || errorSucursales || errorCampanas) {
-      return { data: null, error: errorProductos || errorSucursales || errorCampanas };
+      return { data: null, total: Number(count) || 0, error: errorProductos || errorSucursales || errorCampanas };
     }
 
     const productosPorFolio = new Map();
@@ -115,17 +121,21 @@ export default class Reserva {
       productosPorFolio.set(item.folio, current);
     }
 
-    const sucursalPorId = new Map((sucursales || []).map((s) => [s.id_sucursal, s.nombre_sucursal]));
+    const sucursalPorId = new Map((sucursales || []).map((s) => [
+      s.id_sucursal,
+      { nombre: s.nombre_sucursal, ubicacion: s.ubicacion },
+    ]));
     const tiempoCancelacionPorCampana = new Map((campanas || []).map((c) => [c.id_campana, Math.min(Number(c.tiempo_cancelacion) || 20, 20)]));
 
     const data = reservas.map((reserva) => ({
       ...reserva,
       productos: productosPorFolio.get(reserva.folio) || [],
-      nombre_sucursal: sucursalPorId.get(reserva.id_sucursal) || 'N/D',
+      nombre_sucursal: sucursalPorId.get(reserva.id_sucursal)?.nombre || 'N/D',
+      ubicacion_sucursal: sucursalPorId.get(reserva.id_sucursal)?.ubicacion || 'N/D',
       tiempo_cancelacion: tiempoCancelacionPorCampana.get(getCampanaId(reserva)) || 20,
     }));
 
-    return { data, error: null };
+    return { data, total: Number(count) || 0, error: null };
   }
 
   static async obtenerPorFolio(folio) {
@@ -135,6 +145,55 @@ export default class Reserva {
       .eq('folio', folio)
       .maybeSingle();
     return { data, error };
+  }
+
+  static async obtenerDetallePorFolio(folio, idConcesionaria) {
+    const query = supabase
+      .from('reserva')
+      .select('*')
+      .eq('folio', folio)
+      .limit(1);
+
+    if (idConcesionaria) {
+      query.eq('id_concesionaria', idConcesionaria);
+    }
+
+    const { data: reserva, error } = await query.maybeSingle();
+    if (error) return { data: null, error };
+    if (!reserva) return { data: null, error: null };
+
+    const idCampana = getCampanaId(reserva);
+    const [{ data: productosReservados, error: errorProductos }, { data: sucursal, error: errorSucursal }, { data: campana, error: errorCampana }] = await Promise.all([
+      supabase
+        .from('productos_reservados')
+        .select('folio, unidades_reservadas, producto(id_producto, nombre_producto, precio_producto, peso_unidad, unidad_venta_producto, foto_producto)')
+        .eq('folio', folio),
+      supabase
+        .from('sucursal')
+        .select('id_sucursal, nombre_sucursal, ubicacion')
+        .eq('id_sucursal', reserva.id_sucursal)
+        .maybeSingle(),
+      supabase
+        .from('campana')
+        .select('id_campana, tiempo_cancelacion')
+        .eq('id_campana', idCampana || -1)
+        .maybeSingle(),
+    ]);
+
+    if (errorProductos || errorSucursal || errorCampana) {
+      return { data: null, error: errorProductos || errorSucursal || errorCampana };
+    }
+
+    return {
+      data: {
+        ...reserva,
+        productos: productosReservados || [],
+        nombre_sucursal: sucursal?.nombre_sucursal || 'N/D',
+        ubicacion_sucursal: sucursal?.ubicacion || 'N/D',
+        tiempo_cancelacion: Math.min(Number(campana?.tiempo_cancelacion) || 20, 20),
+      },
+      error: null,
+    };
   }
 
   static async obtenerTiempoCancelacion(idCampana) {

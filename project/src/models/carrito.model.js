@@ -33,6 +33,7 @@ export default class Carrito {
               id_producto,
               nombre_producto,
               precio_producto,
+              peso_unidad,
               foto_producto,
               unidad_venta_producto
             )

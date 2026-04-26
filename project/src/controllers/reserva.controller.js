@@ -66,6 +66,7 @@ function mapReservaView(reserva) {
     fechaReserva: reserva.fecha_hora_reserva || reserva.fecha_reserva || '',
     fechaCancelacion: reserva.fecha_cancelacion || null,
     sucursal: reserva.nombre_sucursal || 'N/D',
+    sucursalUbicacion: reserva.ubicacion_sucursal || 'N/D',
     total,
     pesoTotal,
     productos: productosView,
@@ -119,18 +120,34 @@ export async function getHistorialReservas(request, response) {
   const idConcesionaria = request.session.idConcesionaria;
   if (!idConcesionaria) return response.redirect('/login');
 
-  const { data, error } = await Reserva.listarPorCliente(idConcesionaria);
+  const page = Math.max(1, Number(request.query.page) || 1);
+  const pageSize = 5;
+  const { data, total, error } = await Reserva.listarPorCliente(idConcesionaria, { page, pageSize });
   if (error) {
     console.error('[reserva] listarPorCliente error:', error);
     return response.render('cliente/historial-reservas', {
       title: 'Historial de Reservas',
       reservas: [],
+      pagination: {
+        page: 1,
+        totalPages: 1,
+        hasPrev: false,
+        hasNext: false,
+        startItem: 0,
+        endItem: 0,
+        totalItems: 0,
+      },
       errorMessage: 'No se pudo cargar el historial de reservas.',
       successMessage: null,
     });
   }
 
   const reservas = (data || []).map(mapReservaView);
+  const totalPages = Math.max(1, Math.ceil((Number(total) || 0) / pageSize));
+  const safePage = Math.min(page, totalPages);
+  const totalItems = Number(total) || 0;
+  const startItem = totalItems === 0 ? 0 : ((safePage - 1) * pageSize) + 1;
+  const endItem = totalItems === 0 ? 0 : Math.min(safePage * pageSize, totalItems);
   const successMessage = request.session.successMessage || null;
   request.session.successMessage = null;
   const errorMessage = null;
@@ -138,8 +155,39 @@ export async function getHistorialReservas(request, response) {
   return response.render('cliente/historial-reservas', {
     title: 'Historial de Reservas',
     reservas,
+    pagination: {
+      page: safePage,
+      totalPages,
+      hasPrev: safePage > 1,
+      hasNext: safePage < totalPages,
+      startItem,
+      endItem,
+      totalItems,
+    },
     successMessage,
     errorMessage,
+  });
+}
+
+export async function getDetalleReserva(request, response) {
+  const idConcesionaria = request.session.idConcesionaria;
+  if (!idConcesionaria) return response.redirect('/login');
+
+  const folio = request.params.folio;
+  if (!folio) return response.redirect('/cliente/historial-reservas');
+
+  const { data: reservaRaw, error: errorDetalle } = await Reserva.obtenerDetallePorFolio(folio, idConcesionaria);
+  if (errorDetalle) {
+    console.error('[reserva] detalle obtenerDetallePorFolio error:', errorDetalle);
+    return response.redirect('/cliente/historial-reservas');
+  }
+
+  const reserva = reservaRaw ? mapReservaView(reservaRaw) : null;
+  if (!reserva) return response.redirect('/cliente/historial-reservas');
+
+  return response.render('cliente/detalle-reserva', {
+    title: `Detalle de Reserva ${folio}`,
+    reserva,
   });
 }
 
