@@ -1,6 +1,7 @@
 import Reserva from '../models/reserva.model.js';
 import Carrito from '../models/carrito.model.js';
 import Campana from '../models/campana.model.js';
+import Producto from '../models/producto.model.js';
 import { enviarConfirmacionReserva } from '../services/email.service.js';
 import { enviarCancelacionReserva } from '../services/email.service.js';
 
@@ -184,6 +185,20 @@ export async function getDetalleReserva(request, response) {
 
   const reserva = reservaRaw ? mapReservaView(reservaRaw) : null;
   if (!reserva) return response.redirect('/cliente/historial-reservas');
+
+  const idsProducto = reserva.productos.map((item) => item.id).filter(Boolean);
+  const { data: resumenCalificaciones } = await Producto.getResumenCalificacionesByProductoIds(idsProducto);
+  const resumenPorProducto = new Map(
+    (resumenCalificaciones || []).map((item) => [item.id_producto, item]),
+  );
+  reserva.productos = reserva.productos.map((item) => {
+    const resumen = resumenPorProducto.get(item.id);
+    return {
+      ...item,
+      promedioPuntuacion: resumen ? Number(resumen.promedio_puntuacion) : 0,
+      totalResenas: resumen ? Number(resumen.total_resenas) : 0,
+    };
+  });
 
   return response.render('cliente/detalle-reserva', {
     title: `Detalle de Reserva ${folio}`,

@@ -85,6 +85,51 @@ export default class Producto {
         return { data, error };
     }
 
+    static async getResenasByProductoId(idProducto) {
+        const { data, error } = await supabase
+            .from('calificar')
+            .select('id_producto,id_concesionaria,puntuacion,comentario,fecha_calificacion,concesionaria(nombre_concesionaria)')
+            .eq('id_producto', idProducto)
+            .order('fecha_calificacion', { ascending: false });
+
+        return { data, error };
+    }
+
+    static async getResumenCalificacionesByProductoIds(idsProducto) {
+        const ids = Array.isArray(idsProducto) ? idsProducto.filter(Boolean) : [];
+        if (ids.length === 0) {
+            return { data: [], error: null };
+        }
+
+        const { data, error } = await supabase
+            .from('calificar')
+            .select('id_producto,puntuacion')
+            .in('id_producto', ids);
+
+        if (error || !Array.isArray(data)) {
+            return { data: [], error };
+        }
+
+        const acumulado = new Map();
+        data.forEach((row) => {
+            const id = row.id_producto;
+            const puntuacion = Number(row.puntuacion) || 0;
+            if (!id || puntuacion <= 0) return;
+            const previo = acumulado.get(id) || { suma: 0, totalResenas: 0 };
+            previo.suma += puntuacion;
+            previo.totalResenas += 1;
+            acumulado.set(id, previo);
+        });
+
+        const resumen = Array.from(acumulado.entries()).map(([id_producto, valor]) => ({
+            id_producto,
+            total_resenas: valor.totalResenas,
+            promedio_puntuacion: valor.totalResenas > 0 ? (valor.suma / valor.totalResenas) : 0,
+        }));
+
+        return { data: resumen, error: null };
+    }
+
     static async deshabilitar(ids) {
         const { data, error } = await supabase
             .from('producto')
