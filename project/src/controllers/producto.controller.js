@@ -258,28 +258,52 @@ export async function renderDetalleProductoEmpleado(request, response) {
   const { id } = request.params;
 
   try {
-    const { data, error } = await Producto.findById(id);
+    const [{ data, error }, { data: resenasData, error: errorResenas }] = await Promise.all([
+      Producto.findById(id),
+      Producto.getResenasByProductoId(id),
+    ]);
 
     if (error || data == null) {
       return response.status(404).render('empleado/detalle-producto', {
         title: 'Producto no encontrado',
         producto: null,
         errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
+        resenasProducto: [],
+        resumenResenas: { promedio: 0, total: 0 },
+        errorResenas: null,
       });
     }
 
     const nombre = data.nombre_producto || data.nombre || 'Producto';
+    const resenasProducto = Array.isArray(resenasData) ?
+      resenasData.map((item) => ({
+        puntuacion: Number(item.puntuacion) || 0,
+        comentario: item.comentario || '',
+        fecha: item.fecha_calificacion || null,
+        concesionaria: item.concesionaria?.nombre_concesionaria || `Concesionaria ${item.id_concesionaria}`,
+      })) :
+      [];
+    const total = resenasProducto.length;
+    const promedio = total > 0 ?
+      (resenasProducto.reduce((acc, item) => acc + item.puntuacion, 0) / total) :
+      0;
 
     return response.render('empleado/detalle-producto', {
       title: nombre,
       producto: data,
       errorDetalle: null,
+      resenasProducto,
+      resumenResenas: { promedio, total },
+      errorResenas: errorResenas ? 'No se pudieron cargar las reseñas por el momento.' : null,
     });
   } catch (err) {
     return response.status(500).render('empleado/detalle-producto', {
       title: 'Error',
       producto: null,
       errorDetalle: 'No se pudo cargar el producto en este momento.',
+      resenasProducto: [],
+      resumenResenas: { promedio: 0, total: 0 },
+      errorResenas: 'No se pudieron cargar las reseñas por el momento.',
     });
   }
 }
@@ -295,9 +319,24 @@ export async function renderCatalogoEmpleado(request, response) {
       throw error;
     }
 
+    const productos = data || [];
+    const idsProducto = productos.map((item) => item.id_producto).filter(Boolean);
+    const { data: resumenCalificaciones } = await Producto.getResumenCalificacionesByProductoIds(idsProducto);
+    const resumenPorProducto = new Map(
+      (resumenCalificaciones || []).map((item) => [item.id_producto, item]),
+    );
+    const productosConResenas = productos.map((item) => {
+      const resumen = resumenPorProducto.get(item.id_producto);
+      return {
+        ...item,
+        promedio_puntuacion: resumen ? Number(resumen.promedio_puntuacion) : 0,
+        total_resenas: resumen ? Number(resumen.total_resenas) : 0,
+      };
+    });
+
     response.render('empleado/catalogo-productos', {
       title: 'Catálogo de Productos',
-      productos: data || [],
+      productos: productosConResenas,
       errorCatalogo: null,
       mostrarLinkEditarCampana: true,
       ...vistaCampaña,
