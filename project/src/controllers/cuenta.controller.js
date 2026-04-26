@@ -20,13 +20,27 @@ export function postCambiarCuenta(request, response) {
 
   request.session.idConcesionaria = idConcesionaria;
 
-  if (request.xhr || request.headers.accept?.includes('application/json')) {
-    return response.json({
-      success: true,
-      message: 'Cuenta actualizada correctamente',
-      idConcesionaria: idConcesionaria,
-      redirectTo: redirectPath,
-    });
-  }
-  response.redirect(redirectPath);
+  return request.session.save((saveError) => {
+    if (saveError) {
+      console.error('Error al guardar sesión al cambiar cuenta:', saveError);
+      if (request.xhr || request.headers.accept?.includes('application/json')) {
+        return response.status(500).json({
+          success: false,
+          error: 'No se pudo actualizar la cuenta',
+        });
+      }
+      return response.redirect('/cliente/catalogo');
+    }
+
+    if (request.xhr || request.headers.accept?.includes('application/json')) {
+      return response.json({
+        success: true,
+        message: 'Cuenta actualizada correctamente',
+        idConcesionaria: idConcesionaria,
+        redirectTo: redirectPath,
+      });
+    }
+
+    return response.redirect(redirectPath);
+  });
 }

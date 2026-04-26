@@ -48,5 +48,6 @@ router.post('/campanas/nueva', parseCampanaMultipart, campanaController.crearCam
 router.get('/campanas/:id/editar', campanaController.renderEditarCampana);
 router.post('/campanas/:id/editar', parseCampanaEditMultipart, campanaController.editarCampanaPost);
 router.get('/campanas/:id/banners', campanaController.renderBannersCampana);
+router.post('/campanas/:id/estado', campanaController.toggleEstadoCampana);
 
 export default router;
