@@ -1,123 +1,136 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <%- include('../partials/head') %>
 </head>
+
 <body class="bg-gray-50 flex flex-col min-h-screen">
   <%- include('../partials/navbar-cliente') %>
 
-  <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
-      <a href="/" class="hover:text-[#2B6398] transition-colors">Inicio</a>
-      <span class="material-icons text-sm">chevron_right</span>
-      <span class="text-gray-900 font-medium">Mi Perfil</span>
-    </div>
-
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-      <h1 class="text-2xl font-bold text-gray-900">Información del Perfil</h1>
-    </div>
-
-    <!-- User Information -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
-      <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200">
-        <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
-          <span class="material-icons text-[#2B6398]">account_circle</span>
-          Datos Personales
-        </h2>
+    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
+        <a href="/" class="hover:text-[#2B6398] transition-colors">Inicio</a>
+        <span class="material-icons text-sm">chevron_right</span>
+        <span class="text-gray-900 font-medium">Mi Perfil</span>
       </div>
-      <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div>
-          <span class="block text-sm font-medium text-gray-500 mb-1">Nombre de la Concesionaria Actual</span>
-          <span class="block text-base text-gray-900 font-medium">
-            <% 
-              const activa = concesionarias.find(c => String(c.id) === String(idConcesionariaActiva));
-              if (activa) {
-            %>
-              <%= activa.nombre || activa.id %>
-            <% } else { %>
-              No seleccionada
-            <% } %>
-          </span>
-        </div>
-        <div>
-          <span class="block text-sm font-medium text-gray-500 mb-1">Correo Electrónico</span>
-          <span class="block text-base text-gray-900"><%= correo %></span>
-        </div>
-      </div>
-    </div>
 
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Mis Concesionarias y Sucursales</h2>
-    
-    <div class="flex flex-col gap-6">
-      
-      <% if (concesionarias && concesionarias.length > 0) { %>
-        <% 
-          concesionarias.forEach((concesionaria) => { 
-          const esActiva = idConcesionariaActiva && String(concesionaria.id) === String(idConcesionariaActiva);
-        %>
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col <%= esActiva ? 'ring-2 ring-[#2B6398] ring-inset' : '' %>" data-cuenta-id="<%= concesionaria.id %>">
-            <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
-              <div>
-                <h3 class="text-lg font-bold <%= esActiva ? 'text-[#2B6398]' : 'text-gray-800' %> flex items-center gap-2">
-                  <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-500' %>">business</span>
-                  <%= concesionaria.nombre || concesionaria.id %>
-                </h3>
-                <p class="text-sm text-gray-600 mt-1">Cuenta: <%= concesionaria.id %></p>
-              </div>
-              <div class="flex items-center gap-3">
-                <% if (esActiva) { %>
-                  <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center gap-1">
-                    <span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
-                    Activa
-                  </span>
-                  <button class="bg-[#2B6398] text-white px-4 py-2 rounded-md text-sm font-bold shadow-md flex items-center gap-2 cursor-default" disabled title="Esta es tu cuenta actualmente activa">
-                    <span class="material-icons text-sm">check_circle</span>
-                    Cuenta en uso
-                  </button>
-                <% } else { %>
-                  <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
-                    <input type="hidden" name="idConcesionaria" value="<%= concesionaria.id %>">
-                    <button type="submit" class="bg-white border border-[#2B6398] text-[#2B6398] hover:bg-blue-50 px-4 py-2 rounded-md text-sm font-bold shadow-sm transition-all flex items-center gap-2">
-                      <span class="material-icons text-sm">swap_horiz</span>
-                      Cambiar a esta cuenta
-                    </button>
-                  </form>
-                <% } %>
-              </div>
-            </div>
-            
-            <div class="p-4 sm:p-6 <%= !esActiva ? 'opacity-90' : '' %>">
-              <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Sucursales Disponibles</h4>
-              <% if (concesionaria.sucursales && concesionaria.sucursales.length > 0) { %>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <% concesionaria.sucursales.forEach(sucursal => { %>
-                    <div class="border border-gray-200 rounded-md p-4 <%= esActiva ? 'hover:border-[#2B6398] hover:shadow-sm' : '' %> transition-all bg-white group">
-                      <div class="flex items-center gap-2 mb-2">
-                        <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-400' %>">store</span>
-                        <span class="font-medium text-gray-900"><%= sucursal.nombre %></span>
-                      </div>
-                      <p class="text-xs text-gray-500"><%= sucursal.ubicacion || 'Sin ubicación registrada' %></p>
-                    </div>
-                  <% }) %>
-                </div>
-              <% } else { %>
-                <p class="text-sm text-gray-500 italic">No hay sucursales registradas para esta concesionaria.</p>
-              <% } %>
-            </div>
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl font-bold text-gray-900">Información del Perfil</h1>
+      </div>
+
+      <!-- User Information -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <span class="material-icons text-[#2B6398]">account_circle</span>
+            Datos Personales
+          </h2>
+        </div>
+        <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <span class="block text-sm font-medium text-gray-500 mb-1">Concesionaria Actual</span>
+            <span class="block text-base text-gray-900 font-medium">
+              <% const activa=concesionarias.find(c=> String(c.id) === String(idConcesionariaActiva));
+                if (activa) {
+                %>
+                <%= activa.nombre || activa.id %>
+                  <% } else { %>
+                    No seleccionada
+                    <% } %>
+            </span>
           </div>
-        <% }) %>
-      <% } else { %>
-        <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg">
-          No se encontraron concesionarias asociadas a tu cuenta.
+          <div>
+            <span class="block text-sm font-medium text-gray-500 mb-1">Correo Electrónico</span>
+            <span class="block text-base text-gray-900">
+              <%= correo %>
+            </span>
+          </div>
         </div>
-      <% } %>
+      </div>
 
-    </div>
-  </main>
+      <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        Mis Cuentas y Sucursales
+      </h2>
 
-  <%- include('../partials/footer') %>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-  <script type="module" src="/js/cambiar-cuenta.js"></script>
+        <% if (concesionarias && concesionarias.length> 0) { %>
+          <% concesionarias.forEach((concesionaria)=> {
+            const esActiva = idConcesionariaActiva && String(concesionaria.id) === String(idConcesionariaActiva);
+            %>
+            <div
+              class="bg-white rounded-xl shadow-sm border <%= esActiva ? 'border-[#2B6398] ring-1 ring-[#2B6398]' : 'border-gray-200' %> overflow-hidden flex flex-col transition-all hover:shadow-md"
+              data-cuenta-id="<%= concesionaria.id %>">
+
+              <div
+                class="<%= esActiva ? 'bg-blue-50' : 'bg-gray-50' %> px-5 py-3 border-b border-gray-200 flex justify-between items-center">
+                <div class="min-w-0">
+                  <h3 class="text-sm font-bold <%= esActiva ? 'text-[#2B6398]' : 'text-gray-800' %> uppercase tracking-tight">
+                    Cuenta: <%= concesionaria.id %>
+                  </h3>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <% if (esActiva) { %>
+                    <span
+                      class="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-200 flex items-center gap-1 shrink-0">
+                      <span class="w-1 h-1 bg-green-600 rounded-full"></span>
+                      ACTIVA
+                    </span>
+                    <% } else { %>
+                      <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+                        <input type="hidden" name="idConcesionaria" value="<%= concesionaria.id %>">
+                        <button type="submit"
+                          class="bg-white border border-[#2B6398] text-[#2B6398] hover:bg-[#2B6398] hover:text-white px-2.5 py-1 rounded-md text-[11px] font-bold transition-all flex items-center gap-1">
+                          <span class="material-icons text-xs">swap_horiz</span>
+                          CAMBIAR
+                        </button>
+                      </form>
+                      <% } %>
+                </div>
+              </div>
+
+              <div class="p-4 flex-1">
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Sucursales</p>
+                <% if (concesionaria.sucursales && concesionaria.sucursales.length> 0) { %>
+                  <div class="flex flex-wrap gap-2">
+                    <% concesionaria.sucursales.forEach(sucursal=> { %>
+                      <div
+                        class="bg-gray-50 border border-gray-100 rounded-md px-2.5 py-1.5 flex items-center gap-2 group hover:border-gray-300 transition-colors">
+                        <span class="material-icons text-gray-400 text-xs">store</span>
+                        <div class="min-w-0">
+                          <p class="text-xs font-semibold text-gray-700 truncate">
+                            <%= sucursal.nombre %>
+                          </p>
+                          <% if (sucursal.ubicacion) { %>
+                            <p class="text-[10px] text-gray-400 truncate max-w-[120px]">
+                              <%= sucursal.ubicacion %>
+                            </p>
+                            <% } %>
+                        </div>
+                      </div>
+                      <% }) %>
+                  </div>
+                  <% } else { %>
+                    <p class="text-xs text-gray-400 italic">No hay sucursales registradas</p>
+                    <% } %>
+              </div>
+            </div>
+            <% }) %>
+              <% } else { %>
+                <div class="col-span-full bg-white rounded-xl p-12 text-center border-2 border-dashed border-gray-200">
+                  <span class="material-icons text-5xl text-gray-300 mb-2">account_balance</span>
+                  <p class="text-gray-500">No se encontraron cuentas asociadas a tu perfil.</p>
+                </div>
+                <% } %>
+      </div>
+    </main>
+
+    <%- include('../partials/footer') %>
+
+      <script type="module" src="/js/cambiar-cuenta.js"></script>
 </body>
+
 </html>
