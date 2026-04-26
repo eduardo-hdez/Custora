@@ -78,4 +78,39 @@ export default class Producto {
             .in('id_producto', ids);
         return { data, error };
     }
+    static async obtenerProductoPorId(id) {
+  const { data, error } = await supabase
+    .rpc('obtener_producto_por_id', { p_id_producto: id })
+    .single();
+  if (error) throw error;
+  return {
+    id: data.id_producto,
+    nombre: data.nombre_producto,
+    descripcion: data.descripcion_producto,
+    precio: data.precio_producto,
+    foto: data.foto_producto,
+    pesoUnidad: data.peso_unidad,
+    unidadVenta: data.unidad_venta_producto,
+    idCampana: data.id_campana,
+    habilitado: data.habilitado,
+  };
 }
+
+static async actualizarProducto({ idProducto, nombreProducto, descripcion, precio, pesoUnidad, unidadVenta, idCampana, habilitado, foto }) {
+  const { error } = await supabase.rpc('actualizar_producto', {
+    p_id_producto:           idProducto,
+    p_nombre_producto:       nombreProducto,
+    p_descripcion_producto:  descripcion,
+    p_precio_producto:       parseFloat(precio),
+    p_peso_unidad:           parseFloat(pesoUnidad),
+    p_unidad_venta_producto: unidadVenta,
+    p_id_campana:            parseInt(idCampana),
+    p_habilitado:            habilitado,
+    p_foto_producto:         foto ?? null,
+  });
+  if (error) throw error;
+}
+
+}
+
+

@@ -136,9 +136,12 @@
 
                   <!-- Botones Editar y Eliminar -->
                   <div class="flex gap-2 w-full">
-                    <button class="flex-1 bg-[#007185] hover:bg-[#005d6e] border border-[#005d6e] rounded-full py-1.5 flex justify-center items-center text-white transition-colors shadow-sm" title="Editar producto">
-                      <span class="material-icons text-[18px]">edit</span>
-                    </button>
+        
+                    <a href="/empleado/producto/editar/<%= producto.id_producto %>"
+   class="flex-1 bg-[#007185] hover:bg-[#005d6e] border border-[#005d6e] rounded-full py-1.5 flex justify-center items-center text-white transition-colors shadow-sm"
+   title="Editar producto">
+    <span class="material-icons text-[18px]">edit</span>
+</a>
                    <button type="button"
                             data-id="<%= idProducto %>"
                             class="btn-deshabilitar flex-1 bg-red-600 hover:bg-red-700 border border-red-700 rounded-full py-1.5 flex justify-center items-center text-white transition-colors shadow-sm" 

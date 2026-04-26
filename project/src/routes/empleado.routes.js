@@ -15,6 +15,9 @@ router.get('/', productoController.renderCatalogoEmpleado);
 router.get('/catalogo', productoController.renderCatalogoEmpleado);
 router.post('/catalogo-productos/deshabilitar', productoController.deshabilitarProductosCatalogo);
 
+router.get('/producto/editar/:id',productoController.getEditarProducto);
+router.post('/producto/editar/:id', parseProductoMultipart,productoController.postEditarProducto);
+
 router.get('/detalle-producto/:id', productoController.renderDetalleProductoEmpleado);
 
 router.get('/gestion-productos', productoController.renderGestionProductos);
@@ -42,7 +45,6 @@ router.get('/detalle-reserva', (request, response) => {
 router.get('/reporte', reporteController.renderReporte);
 
 router.get('/campanas', campanaController.renderCampanas);
-
 router.get('/campanas/nueva', campanaController.renderNuevaCampana);
 router.post('/campanas/nueva', parseCampanaMultipart, campanaController.crearCampanaPost);
 router.get('/campanas/:id/editar', campanaController.renderEditarCampana);

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <%- include('../partials/head') %>
+</head>
+
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('../partials/navbar-empleado') %>
+
+  <main class="w-full flex flex-col items-center pb-16 flex-grow bg-white">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Editar Producto</h1>
+          <p class="text-sm text-gray-500 mt-1">Modifica los datos del producto en el catálogo.</p>
+        </div>
+      </div>
+    </div>
+
+    <% if (errorMessage) { %>
+      <div id="modalError" tabindex="-1" aria-hidden="true"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+        <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
+          <span class="material-icons text-red-600 text-5xl mb-4">error_outline</span>
+          <h3 class="mb-6 text-lg font-medium text-gray-800"><%= errorMessage %></h3>
+          <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <button id="btnModalError" type="button"
+              class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+              Aceptar
+            </button>
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (success) { %>
+      <div class="mb-4 rounded-md bg-green-100 border border-green-400 text-green-700 px-4 py-3">
+        Producto actualizado correctamente.
+      </div>
+    <% } %>
+
+    <section id="formSection" class="w-full flex justify-center mt-2 px-4">
+      <div id="registerContainer" class="w-full max-w-5xl">
+        <form id="forma" action="/empleado/producto/editar/<%= producto.idProducto %>"
+          method="POST"
+          enctype="multipart/form-data"
+          class="bg-white p-6 md:p-8 rounded-lg border border-gray-200 shadow-sm">
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Id Producto (solo lectura) -->
+            <div>
+              <label for="idProducto" class="block text-sm font-medium text-gray-700 mb-1">ID Producto:</label>
+              <input type="text" id="idProducto" name="idProducto"
+                value="<%= producto.idProducto %>"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed focus:outline-none"
+                readonly />
+            </div>
+            <!-- Nombre -->
+            <div>
+              <label for="nombreProducto" class="block text-sm font-medium text-gray-700 mb-1">Nombre:</label>
+              <input type="text" id="nombreProducto" name="nombreProducto"
+                value="<%= producto.nombreProducto %>"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                required />
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div class="mb-6">
+            <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1">Descripción:</label>
+            <textarea id="descripcion" name="descripcion" rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+              required><%= producto.descripcion %></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Precio -->
+            <div>
+              <label for="precio" class="block text-sm font-medium text-gray-700 mb-1">Precio (pesos):</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <span class="text-gray-500 sm:text-sm">$</span>
+                </div>
+                <input type="number" step="0.01" id="precio" name="precio"
+                  value="<%= producto.precio %>"
+                  class="w-full pl-7 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                  required />
+              </div>
+            </div>
+            <!-- Foto -->
+            <div>
+              <label for="foto" class="block text-sm font-medium text-gray-700 mb-1">Foto del producto:</label>
+              <% if (producto.foto) { %>
+                <div class="mb-2 flex items-center gap-3">
+                  <img src="<%= producto.foto %>" alt="Foto actual" class="h-16 w-16 object-cover rounded-md border border-gray-200" />
+                  <span class="text-xs text-gray-500">Foto actual. Sube una nueva para reemplazarla.</span>
+                </div>
+              <% } %>
+              <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp,image/gif"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-sm file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" />
+              <p class="text-xs text-gray-500 mt-1">JPEG, JPG, PNG. Máx. 5&nbsp;MB. Opcional si no deseas cambiarla.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Peso -->
+            <div>
+              <label for="peso" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg/litro):</label>
+              <input type="number" step="0.01" id="peso" name="pesoUnidad"
+                value="<%= producto.pesoUnidad %>"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                required />
+            </div>
+            <!-- Unidad de venta -->
+            <div>
+              <label for="unidadVenta" class="block text-sm font-medium text-gray-700 mb-1">Unidad de venta:</label>
+              <input type="text" id="unidadVenta" name="unidadVenta"
+                value="<%= producto.unidadVenta %>"
+                placeholder="Ej. Pieza, Caja"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                required />
+            </div>
+            <!-- Campaña -->
+            <div>
+              <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">Campaña:</label>
+              <select id="idCampana" name="idCampana"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+                required <%= !campanas || campanas.length === 0 ? 'disabled' : '' %>>
+                <% if (!campanas || campanas.length === 0) { %>
+                  <option value="">No hay campañas disponibles</option>
+                <% } else { %>
+                  <option value="" disabled>Selecciona una campaña</option>
+                  <% campanas.forEach(function(campana) { %>
+                    <option value="<%= campana.id %>"
+                      <%= String(producto.idCampana || '') === String(campana.id) ? 'selected' : '' %>>
+                      <%= campana.nombre %><%= String(idCampanaActiva || '') === String(campana.id) ? ' (Activa)' : '' %>
+                    </option>
+                  <% }) %>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <!-- Habilitado -->
+          <div class="mb-8 flex items-center gap-3">
+            <input type="checkbox" id="habilitado" name="habilitado" value="true"
+              <%= producto.habilitado ? 'checked' : '' %>
+              class="w-4 h-4 text-[#007185] border-gray-300 rounded focus:ring-[#007185]" />
+            <label for="habilitado" class="text-sm font-medium text-gray-700">Producto habilitado</label>
+          </div>
+
+          <!-- Botones -->
+          <div id="toAccept" class="flex flex-col sm:flex-row gap-3 justify-end pt-5 border-t border-gray-200">
+            <a href="/empleado/catalogo">
+              <button type="button"
+                class="w-full sm:w-auto px-6 py-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium rounded-md transition-colors shadow-sm">
+                Regresar a Catálogo
+              </button>
+            </a>
+            <input type="submit" value="Guardar cambios"
+              class="w-full sm:w-auto px-6 py-2 bg-[#007185] hover:bg-[#005d6e] text-white font-medium rounded-md transition-colors shadow-sm" />
+          </div>
+
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <%- include('../partials/footer') %>
+<script src="/js/editar-prod.js"></script>
+</body>
+</html>
