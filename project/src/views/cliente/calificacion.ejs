@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+  <%- include('../partials/navbar-cliente') %>
+
+  <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
+    <% if (errorDetalle) { %>
+      <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+        <%= errorDetalle %>
+      </div>
+      <p class="text-center">
+        <a href="/cliente/catalogo" class="text-[#007185] hover:text-[#2B6398] font-medium underline">Volver al catálogo</a>
+      </p>
+    <% } else if (producto) { %>
+      <% const nombre = producto.nombre_producto || 'Producto'; %>
+      <% const foto = producto.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen'; %>
+      <% const descripcion = producto.descripcion_producto || ''; %>
+      <% const unidadVenta = producto.unidad_venta_producto || ''; %>
+
+      <div class="mb-6">
+        <a href="/cliente/detalle-producto/<%= producto.id_producto %>" class="inline-flex items-center gap-1 text-sm font-medium text-[#2B6398] hover:text-[#1f476e]">
+          <span class="material-icons text-base">arrow_back</span>
+          Volver al detalle
+        </a>
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Calificar producto</h1>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-[160px_minmax(0,1fr)] gap-6 p-6">
+          <img src="<%= foto %>" alt="<%= nombre %>" class="w-40 h-40 object-contain rounded-md border border-gray-100 bg-gray-50 p-2">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-900"><%= nombre %></h2>
+            <p class="text-sm text-gray-500 mt-1">ID: <%= producto.id_producto %></p>
+            <% if (unidadVenta) { %>
+              <p class="text-sm text-gray-600 mt-1">Unidad de venta: <span class="font-medium text-gray-800"><%= unidadVenta %></span></p>
+            <% } %>
+            <% if (descripcion) { %>
+              <p class="text-sm text-gray-600 mt-3 line-clamp-3"><%= descripcion %></p>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <% if (errorCalificacion) { %>
+          <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
+            <%= errorCalificacion %>
+          </div>
+        <% } %>
+
+        <form method="POST" action="/cliente/productos/<%= producto.id_producto %>/calificacion" class="space-y-5">
+          <div>
+            <span class="block text-sm font-medium text-gray-700 mb-2">Puntuación</span>
+            <input
+              id="puntuacion"
+              name="puntuacion"
+              type="hidden"
+              value="<%= formData?.puntuacion || '' %>"
+              required
+            >
+
+            <div class="mt-1" data-rating-widget data-rating-initial="<%= formData?.puntuacion || '' %>">
+              <div class="flex items-center gap-1" role="radiogroup" aria-label="Selecciona una puntuación de 1 a 5">
+                <% for (let i = 1; i <= 5; i += 1) { %>
+                  <button
+                    type="button"
+                    class="text-5xl leading-none text-gray-300 hover:scale-110 transition-transform"
+                    data-star-value="<%= i %>"
+                    aria-label="<%= i %> <%= i === 1 ? 'estrella' : 'estrellas' %>"
+                    aria-checked="false"
+                    role="radio"
+                  >★</button>
+                <% } %>
+              </div>
+              <p class="text-sm text-gray-600 mt-1" data-rating-label>Selecciona una calificación</p>
+            </div>
+          </div>
+
+          <div>
+            <label for="comentario" class="block text-sm font-medium text-gray-700 mb-2">Comentario (opcional)</label>
+            <textarea
+              id="comentario"
+              name="comentario"
+              maxlength="500"
+              rows="5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#007185] focus:border-transparent transition-shadow"
+              placeholder="Comparte tu experiencia con este producto"
+            ><%= formData?.comentario || '' %></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="inline-flex items-center justify-center bg-[#2B6398] hover:bg-[#1e466b] text-white border border-[#1e466b] rounded-full py-2.5 px-6 font-medium transition-colors"
+          >
+            Publicar reseña
+          </button>
+        </form>
+      </div>
+    <% } %>
+  </main>
+
+  <%- include('../partials/footer') %>
+  <script src="/js/calificacion-producto.js"></script>
+</body>
+</html>
