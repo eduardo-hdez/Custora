@@ -96,13 +96,20 @@
                   </button>
                 </form>
 
-                <a
-                  href="/cliente/productos/<%= producto.id_producto %>/calificacion"
-                  class="w-full bg-white hover:bg-gray-50 text-[#2B6398] border border-[#2B6398] rounded-full py-3 px-6 font-medium flex justify-center items-center gap-2 text-lg transition-colors"
-                >
-                  <span class="material-icons">rate_review</span>
-                  Agregar reseña
-                </a>
+                <% if (puedeCalificar) { %>
+                  <a
+                    href="/cliente/productos/<%= producto.id_producto %>/calificacion"
+                    class="w-full bg-white hover:bg-gray-50 text-[#2B6398] border border-[#2B6398] rounded-full py-3 px-6 font-medium flex justify-center items-center gap-2 text-lg transition-colors"
+                  >
+                    <span class="material-icons">rate_review</span>
+                    Agregar reseña
+                  </a>
+                <% } else { %>
+                  <div class="w-full bg-gray-100 text-gray-600 border border-gray-300 rounded-full py-3 px-6 font-medium flex justify-center items-center gap-2 text-lg cursor-not-allowed">
+                    <span class="material-icons">rate_review</span>
+                    Ya calificaste este producto
+                  </div>
+                <% } %>
             </div>
           </div>
         </div>
