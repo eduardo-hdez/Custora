@@ -1,14 +1,16 @@
 import Producto from '../models/producto.model.js';
 import Campana from '../models/campana.model.js';
-import {uploadProductoImagen} from '../utils/productoImagenStorage.js';
+import { uploadProductoImagen } from '../utils/productoImagenStorage.js';
+import csvParser from 'csv-parser';
+import { Readable } from 'stream';
 
 const SESSION_ANADIR_PRODUCTO_ERROR = 'anadirProductoError';
 const SESSION_EDITAR_PRODUCTO_ERROR = 'editarProductoError';
 export async function renderDetalleProductoCliente(request, response) {
-  const {id} = request.params;
+  const { id } = request.params;
 
   try {
-    const {data, error} = await Producto.findById(id);
+    const { data, error } = await Producto.findById(id);
 
     if (error || data == null) {
       console.log(error);
@@ -38,7 +40,7 @@ export async function renderDetalleProductoCliente(request, response) {
 
 export async function renderCatalogoCliente(request, response) {
   try {
-    const [{data, error}, vistaCampaña] = await Promise.all([
+    const [{ data, error }, vistaCampaña] = await Promise.all([
       Producto.fetchAll(),
       Campana.getVistaCatalogoCampañaActiva(),
     ]);
@@ -64,10 +66,10 @@ export async function renderCatalogoCliente(request, response) {
 }
 
 export async function renderDetalleProductoEmpleado(request, response) {
-  const {id} = request.params;
+  const { id } = request.params;
 
   try {
-    const {data, error} = await Producto.findById(id);
+    const { data, error } = await Producto.findById(id);
 
     if (error || data == null) {
       return response.status(404).render('empleado/detalle-producto', {
@@ -95,7 +97,7 @@ export async function renderDetalleProductoEmpleado(request, response) {
 
 export async function renderCatalogoEmpleado(request, response) {
   try {
-    const [{data, error}, vistaCampaña] = await Promise.all([
+    const [{ data, error }, vistaCampaña] = await Promise.all([
       Producto.fetchAll(),
       Campana.getVistaCatalogoCampañaActiva(),
     ]);
@@ -132,7 +134,7 @@ export async function renderAnadirProducto(request, response) {
   }
   if (!errorMessage && request.query.error === '1') {
     errorMessage =
-        'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
+      'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
   }
 
   try {
@@ -164,28 +166,28 @@ export async function postAnadirProducto(request, response) {
     const file = request.file;
     if (!file) {
       request.session[SESSION_ANADIR_PRODUCTO_ERROR] =
-          'Selecciona una imagen del producto (JPEG, JPG, PNG).';
+        'Selecciona una imagen del producto (JPEG, JPG, PNG).';
       return response.redirect('/empleado/gestion-productos/anadir-producto');
     }
 
-    const {publicUrl: foto} = await uploadProductoImagen(
-        file.buffer,
-        file.mimetype,
-        request.body.idProducto,
+    const { publicUrl: foto } = await uploadProductoImagen(
+      file.buffer,
+      file.mimetype,
+      request.body.idProducto,
     );
 
     const producto = new Producto(
-        request.body.idProducto,
-        request.body.nombreProducto,
-        request.body.descripcion,
-        request.body.precio,
-        foto,
-        request.body.pesoUnidad,
-        request.body.unidadVenta,
-        request.body.idCampana,
+      request.body.idProducto,
+      request.body.nombreProducto,
+      request.body.descripcion,
+      request.body.precio,
+      foto,
+      request.body.pesoUnidad,
+      request.body.unidadVenta,
+      request.body.idCampana,
     );
 
-    const {error} = await producto.save();
+    const { error } = await producto.save();
     if (error) {
       console.log(error);
       throw error;
@@ -194,16 +196,64 @@ export async function postAnadirProducto(request, response) {
   } catch (error) {
     console.log(error);
     request.session[SESSION_ANADIR_PRODUCTO_ERROR] =
-        'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
+      'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
     return response.redirect('/empleado/gestion-productos/anadir-producto');
   }
+}
+
+export async function postCargaMasiva(request, response) {
+  try {
+    if (!request.file) {
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
+    }
+    const resultados = [];
+    const errores = [];
+
+    const stream = Readable.from(request.file.buffer);
+
+    await new Promise((resolve, reject) => {
+      stream
+        .pipe(csvParser())
+        .on('data', (row) => {
+          if (!row.id_producto || !row.nombre_producto || !row.descripcion_producto || !row.precio_producto || !row.peso_unidad || !row.unidad_venta_producto || !row.id_campana) {
+            errores.push({ row, error: 'Campos obligatorios faltantes' });
+            return;
+          }
+          resultados.push(row);
+        })
+        .on('end', resolve)
+        .on('error', reject);
+    });
+
+    if (errores.length > 0) {
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
+    }
+    for (const fila of resultados) {
+      try {
+        await Producto.insertarFila(fila);
+      } catch (error) {
+        errores.push({ fila, error: error.message });
+      }
+    }
+
+    if (errores.length > 0) {
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
+    }
+
+    return response.redirect('/empleado/gestion-productos?success=carga-masiva');
+  } catch (error) {
+    console.error(error);
+    return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
+  }
+
 }
 
 export async function renderGestionProductos(request, response) {
   const success = request.query.success;
   const errorHabilitado = request.query.errorHabilitado === '1';
+  const errorCargaMasiva = request.query.errorCargaMasiva === '1';
   try {
-    const {data, error} = await Producto.fetchAllGestion();
+    const { data, error } = await Producto.fetchAllGestion();
     if (error) {
       throw error;
     }
@@ -212,6 +262,7 @@ export async function renderGestionProductos(request, response) {
       productos: data || [],
       errorRecuperacion: null,
       errorHabilitado,
+      errorCargaMasiva,
       success,
     });
   } catch (error) {
@@ -220,6 +271,7 @@ export async function renderGestionProductos(request, response) {
       productos: [],
       errorRecuperacion: 1,
       errorHabilitado,
+      errorCargaMasiva,
       success,
     });
   }
@@ -245,7 +297,7 @@ export async function deshabilitarProductos(request, response) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const {error} = await Producto.deshabilitar(productosDeshabilitar);
+    const { error } = await Producto.deshabilitar(productosDeshabilitar);
 
     if (error) {
       console.error(error);
@@ -296,7 +348,7 @@ export async function rehabilitarProductos(request, response) {
       return response.redirect('/empleado/gestion-productos?error=sin-seleccion');
     }
 
-    const {error} = await Producto.rehabilitar(productosRehabilitar);
+    const { error } = await Producto.rehabilitar(productosRehabilitar);
 
     if (error) {
       console.error(error);
@@ -339,7 +391,7 @@ export async function deshabilitarProductosCatalogo(request, response) {
       return response.redirect('/empleado/catalogo?error=sin-seleccion');
     }
 
-    const {error} = await Producto.deshabilitar(productosSeleccionados);
+    const { error } = await Producto.deshabilitar(productosSeleccionados);
 
     if (error) {
       console.error(error);
