@@ -57,10 +57,8 @@ export async function eliminarProductoCarrito(request, response) {
 
 export async function actualizarCantidadProducto(request, response) {
   const idConcesionaria = request.session.idConcesionaria;
-  const esperaJson = request.xhr || request.headers.accept?.includes('application/json');
   if (!idConcesionaria) {
-    if (esperaJson) return response.status(401).json({ok: false, error: 'No autorizado'});
-    return response.redirect('/login');
+    return response.status(401).json({ok: false, error: 'No autorizado'});
   }
 
   const idProducto = request.params.id_producto;
@@ -70,22 +68,18 @@ export async function actualizarCantidadProducto(request, response) {
   const usaCantidadAbsoluta = cantidadSolicitadaRaw !== undefined && cantidadSolicitadaRaw !== '';
 
   if (!idProducto) {
-    if (esperaJson) return response.status(400).json({ok: false, error: 'Parámetros inválidos'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(400).json({ok: false, error: 'Parámetros inválidos'});
   }
   if (usaCantidadAbsoluta && (!Number.isFinite(cantidadSolicitada) || cantidadSolicitada < 0)) {
-    if (esperaJson) return response.status(400).json({ok: false, error: 'Cantidad inválida'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(400).json({ok: false, error: 'Cantidad inválida'});
   }
   if (!usaCantidadAbsoluta && (accion !== '+' && accion !== '-')) {
-    if (esperaJson) return response.status(400).json({ok: false, error: 'Parámetros inválidos'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(400).json({ok: false, error: 'Parámetros inválidos'});
   }
 
   const {data: carrito, error} = await Carrito.getCartById(idConcesionaria);
   if (error || !carrito?.id_carrito) {
-    if (esperaJson) return response.status(404).json({ok: false, error: 'Carrito no encontrado'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(404).json({ok: false, error: 'Carrito no encontrado'});
   }
 
   const items = Array.isArray(carrito.productos_seleccionados) ? carrito.productos_seleccionados : [];
@@ -96,8 +90,7 @@ export async function actualizarCantidadProducto(request, response) {
   });
   const cantidadActual = line ? Math.max(0, Number(line.cantidad) || 0) : 0;
   if (cantidadActual === 0) {
-    if (esperaJson) return response.status(404).json({ok: false, error: 'Producto no encontrado en carrito'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(404).json({ok: false, error: 'Producto no encontrado en carrito'});
   }
 
   const nuevaCantidad = usaCantidadAbsoluta ?
@@ -110,15 +103,10 @@ export async function actualizarCantidadProducto(request, response) {
       nuevaCantidad,
   );
   if (errorUpdate) {
-    if (esperaJson) return response.status(500).json({ok: false, error: 'No se pudo actualizar la cantidad'});
-    return response.redirect('/cliente/carrito-reserva');
+    return response.status(500).json({ok: false, error: 'No se pudo actualizar la cantidad'});
   }
 
-  if (esperaJson) {
-    return response.json({ok: true, cantidad: Math.max(0, nuevaCantidad)});
-  }
-
-  return response.redirect('/cliente/carrito-reserva');
+  return response.json({ok: true, cantidad: Math.max(0, nuevaCantidad)});
 }
 
 export async function renderCarritoCliente(request, response) {
