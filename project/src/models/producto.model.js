@@ -27,9 +27,26 @@ export default class Producto {
             }]);
     }
 
+    static async insertarFila(fila) {
+        const { data, error } = await supabase
+            .from('producto')
+            .insert([
+                {
+                    id_producto: fila.idProducto,
+                    nombre_producto: fila.nombreProducto,
+                    descripcion_producto: fila.descripcion,
+                    precio_producto: fila.precio,
+                    peso_unidad: fila.pesoUnidad,
+                    unidad_venta_producto: fila.unidadVenta,
+                    id_campana: fila.idCampana,
+                },
+            ]);
+        return { data, error }
+    }
+
     static async fetchAllGestion() {
         const { data, error } = await supabase
-            .rpc('get_productos_campania')    //campaña actual (hardcodeada)
+            .rpc('get_productos_campania')
         return { data, error }
     }
 
