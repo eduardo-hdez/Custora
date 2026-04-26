@@ -2,7 +2,8 @@ import {
   fetchDemandaProductosRanking,
   fetchTopConcesionariasRanking,
   fetchIngresosHoy,
-  fetchPromedioIngresosDiarios
+  fetchPromedioIngresosDiarios,
+  fetchSingleTopConcesionaria
 } from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
@@ -12,11 +13,12 @@ export async function renderReporte(request, response) {
   };
 
   try {
-    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios] = await Promise.all([
+    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios, singleTopConcesionaria] = await Promise.all([
       fetchDemandaProductosRanking(3),
       fetchTopConcesionariasRanking(5),
       fetchIngresosHoy(),
-      fetchPromedioIngresosDiarios()
+      fetchPromedioIngresosDiarios(),
+      fetchSingleTopConcesionaria()
     ]);
 
     return response.render('empleado/reporte', {
@@ -25,7 +27,8 @@ export async function renderReporte(request, response) {
       ...demanda,
       topConcesionarias,
       ingresosHoy,
-      promedioIngresosDiarios
+      promedioIngresosDiarios,
+      singleTopConcesionaria
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -37,7 +40,8 @@ export async function renderReporte(request, response) {
       productosMenosSolicitados: [],
       topConcesionarias: [],
       ingresosHoy: [],
-      promedioIngresosDiarios: []
+      promedioIngresosDiarios: [],
+      singleTopConcesionaria: []
     });
   }
 }

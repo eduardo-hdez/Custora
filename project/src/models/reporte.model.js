@@ -75,3 +75,11 @@ export async function fetchPromedioIngresosDiarios() {
 
   return data?.[0]?.promedio_ingresos_diarios ?? 0;
 }
+
+export async function fetchSingleTopConcesionaria() {
+  const { data, error } = await supabase.rpc('get_single_top_concesionaria');
+
+  if (error) throw error;
+
+  return data?.[0] ?? 0;
+}

@@ -52,8 +52,12 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold text-green-800 uppercase">Concesionaria con más reservas</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">comex %></p>
-                    <p class="text-sm text-gray-500 mt-1">total de reservas</p>
+                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                        <%= singleTopConcesionaria.nombre_concesionaria %>
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        <%= singleTopConcesionaria.num_reservas %> reservas
+                    </p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-full">
                     <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
