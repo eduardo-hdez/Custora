@@ -77,7 +77,7 @@ export default class Reserva {
 
   static async listarPorCliente(id_concesionaria, options = {}) {
     const page = Math.max(1, Number(options.page) || 1);
-    const pageSize = Math.max(1, Number(options.pageSize) || 6);
+    const pageSize = Math.max(1, Number(options.pageSize) || 10);
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
 

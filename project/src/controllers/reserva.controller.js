@@ -121,7 +121,7 @@ export async function getHistorialReservas(request, response) {
   if (!idConcesionaria) return response.redirect('/login');
 
   const page = Math.max(1, Number(request.query.page) || 1);
-  const pageSize = 6;
+  const pageSize = 5;
   const { data, total, error } = await Reserva.listarPorCliente(idConcesionaria, { page, pageSize });
   if (error) {
     console.error('[reserva] listarPorCliente error:', error);
@@ -133,6 +133,9 @@ export async function getHistorialReservas(request, response) {
         totalPages: 1,
         hasPrev: false,
         hasNext: false,
+        startItem: 0,
+        endItem: 0,
+        totalItems: 0,
       },
       errorMessage: 'No se pudo cargar el historial de reservas.',
       successMessage: null,
@@ -142,6 +145,9 @@ export async function getHistorialReservas(request, response) {
   const reservas = (data || []).map(mapReservaView);
   const totalPages = Math.max(1, Math.ceil((Number(total) || 0) / pageSize));
   const safePage = Math.min(page, totalPages);
+  const totalItems = Number(total) || 0;
+  const startItem = totalItems === 0 ? 0 : ((safePage - 1) * pageSize) + 1;
+  const endItem = totalItems === 0 ? 0 : Math.min(safePage * pageSize, totalItems);
   const successMessage = request.session.successMessage || null;
   request.session.successMessage = null;
   const errorMessage = null;
@@ -154,6 +160,9 @@ export async function getHistorialReservas(request, response) {
       totalPages,
       hasPrev: safePage > 1,
       hasNext: safePage < totalPages,
+      startItem,
+      endItem,
+      totalItems,
     },
     successMessage,
     errorMessage,
