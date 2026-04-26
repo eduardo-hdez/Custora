@@ -36,10 +36,11 @@
                 <span class="text-sm font-medium">$</span>
                 <span class="text-4xl font-semibold leading-none"><%= precio.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
               </div>
+              <p class="text-sm text-gray-500 mt-2">ID de producto: <span class="font-medium text-gray-700"><%= producto.id_producto %></span></p>
               <% if (unidad) { %>
-                <p class="text-sm text-gray-500 mt-2">Unidad de venta: <%= unidad %></p>
+                <p class="text-sm text-gray-500 mt-1">Unidad de venta: <span class="text-gray-700"><%= unidad %></span></p>
               <% } %>
-              <p class="text-sm text-gray-500 mt-1">Precio sin IVA</p>
+              <p class="text-sm text-gray-500 mt-1">*Precio sin IVA</p>
             </div>
 
             <div class="flex flex-col gap-3">

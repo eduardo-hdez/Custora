@@ -152,7 +152,7 @@
                     <select id="sucursal" name="id_sucursal" class="w-full appearance-none border border-gray-300 rounded-md shadow-sm focus:border-[#2B6398] focus:ring focus:ring-[#2B6398] focus:ring-opacity-20 outline-none py-3 pl-4 pr-10 text-gray-700 bg-white transition-shadow" required>
                       <option value="" disabled selected>Elige una sucursal...</option>
                       <% sucursales.forEach(s => { %>
-                        <option value="<%= s.id_sucursal %>"><%= s.nombre_sucursal %></option>
+                        <option value="<%= s.id_sucursal %>"><%= s.id_sucursal %> <%= s.nombre_sucursal %></option>
                       <% }); %>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">

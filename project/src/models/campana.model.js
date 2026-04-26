@@ -21,6 +21,7 @@ async function listarCampanas() {
     nombre: item.nombre_campana ?? item.nombre_campana ?? item.nombre,
     fechaInicio: item.fecha_inicio,
     fechaFin: item.fecha_fin,
+    estado: item.estado,
   }));
 }
 
@@ -61,9 +62,10 @@ async function getCampanaActiva() {
   const hoy = new Date().toISOString().slice(0, 10);
   const {data, error} = await supabase
       .from('campana')
-      .select('id_campana, nombre_campana, banner, fecha_fin')
+      .select('id_campana, nombre_campana, banner, fecha_fin, estado')
       .lte('fecha_inicio', hoy)
       .gte('fecha_fin', hoy)
+      .eq('estado', true)
       .limit(1)
       .maybeSingle();
   if (error) throw error;
@@ -139,6 +141,7 @@ async function obtenerCampanaPorId(id) {
     fechaFin: data.fecha_fin,
     banner: data.banner,
     tiempoCancelacion: data.tiempo_cancelacion,
+    estado: data.estado,
   };
 }
 
@@ -170,6 +173,16 @@ async function actualizarCampana(id, campos) {
   return true;
 }
 
+async function toggleEstadoCampana(id, nuevoEstado) {
+  const supabase = await getSupabase();
+  const {error} = await supabase
+      .from('campana')
+      .update({estado: nuevoEstado})
+      .eq('id_campana', id);
+  if (error) throw error;
+  return true;
+}
+
 export default {
   listarCampanas,
   crearCampana,
@@ -177,5 +190,6 @@ export default {
   obtenerCampanaPorId,
   actualizarCampana,
   getVistaCatalogoCampañaActiva,
+  toggleEstadoCampana,
   CATALOGO_CAMPANA_FALLBACK,
 };

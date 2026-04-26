@@ -1,5 +1,5 @@
 import campanaModel from '../models/campana.model.js';
-import {uploadCampanaBanner} from '../utils/campanaBannerStorage.js';
+import { uploadCampanaBanner } from '../utils/campanaBannerStorage.js';
 
 const SESSION_NUEVA_CAMPANA_ERROR = 'nuevaCampanaError';
 const SESSION_EDITAR_CAMPANA_ERROR = 'editarCampanaError';
@@ -47,21 +47,18 @@ async function renderCampanas(request, response) {
       fechaInicio: toISODate(item.fechaInicio),
       fechaFin: toISODate(item.fechaFin),
       estadoCalculado: clasificarCampana(item.fechaInicio, item.fechaFin),
+      estado: item.estado,
     }));
 
     return response.render('empleado/campana', {
       title: 'Campañas',
-      campanasPasadas: campanas.filter((c) => c.estadoCalculado === 'pasada'),
-      campanaActual: campanas.filter((c) => c.estadoCalculado === 'actual'),
-      campanasProgramadas: campanas.filter((c) => c.estadoCalculado === 'programada'),
+      campanas,
     });
   } catch (error) {
     console.error('Error al listar campañas:', error.message);
     return response.status(500).render('empleado/campana', {
       title: 'Campañas',
-      campanasPasadas: [],
-      campanaActual: [],
-      campanasProgramadas: [],
+      campanas: [],
     });
   }
 }
@@ -129,10 +126,10 @@ async function crearCampanaPost(request, response) {
   try {
     let bannerFinal = banners;
     if (bannerFile) {
-      const {publicUrl} = await uploadCampanaBanner(
-          bannerFile.buffer,
-          bannerFile.mimetype,
-          idCampana,
+      const { publicUrl } = await uploadCampanaBanner(
+        bannerFile.buffer,
+        bannerFile.mimetype,
+        idCampana,
       );
       bannerFinal = publicUrl;
     }
@@ -231,8 +228,8 @@ async function editarCampanaPost(request, response) {
     fechaInicio: fi,
     fechaFin: ff,
     banners: existente.banner != null && existente.banner !== undefined ?
-        String(existente.banner) :
-        '',
+      String(existente.banner) :
+      '',
     tiempoCancelacion: tiempoCancelacion != null ? String(tiempoCancelacion) : '',
   };
 
@@ -261,14 +258,14 @@ async function editarCampanaPost(request, response) {
   }
 
   let banner = existente.banner != null && existente.banner !== undefined ?
-      String(existente.banner) :
-      '';
+    String(existente.banner) :
+    '';
   if (bannerFile) {
     try {
-      const {publicUrl} = await uploadCampanaBanner(
-          bannerFile.buffer,
-          bannerFile.mimetype,
-          id,
+      const { publicUrl } = await uploadCampanaBanner(
+        bannerFile.buffer,
+        bannerFile.mimetype,
+        id,
       );
       banner = publicUrl;
     } catch (err) {
@@ -300,11 +297,24 @@ async function editarCampanaPost(request, response) {
   }
 }
 
+async function toggleEstadoCampana(request, response) {
+  const id = request.params.id;
+  const nuevoEstado = request.body.estado === 'true';
+  try {
+    await campanaModel.toggleEstadoCampana(id, nuevoEstado);
+    return response.redirect('/empleado/campanas');
+  } catch (error) {
+    console.error('Error al cambiar estado de campaña:', error.message);
+    return response.redirect('/empleado/campanas');
+  }
+}
+
 export default {
   renderCampanas,
   renderNuevaCampana,
   crearCampanaPost,
   renderBannersCampana,
-  renderEditarCampana,  
-  editarCampanaPost,   
+  renderEditarCampana,
+  editarCampanaPost,
+  toggleEstadoCampana,
 };

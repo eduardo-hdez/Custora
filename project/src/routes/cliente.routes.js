@@ -11,6 +11,10 @@ router.use(requireRol([ROL_CLIENTE]));
 
 // Middleware para obtener la cantidad de productos en el carrito
 router.use(injectCantidadProductosCarrito);
+router.use((request, response, next) => {
+  response.locals.currentClientePath = request.originalUrl || '/cliente/catalogo';
+  next();
+});
 
 router.get('/', productoController.renderCatalogoCliente);
 router.get('/catalogo', productoController.renderCatalogoCliente);
