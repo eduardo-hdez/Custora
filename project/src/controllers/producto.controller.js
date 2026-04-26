@@ -3,6 +3,7 @@ import Campana from '../models/campana.model.js';
 import {uploadProductoImagen} from '../utils/productoImagenStorage.js';
 
 const SESSION_ANADIR_PRODUCTO_ERROR = 'anadirProductoError';
+const SESSION_EDITAR_PRODUCTO_ERROR = 'editarProductoError';
 export async function renderDetalleProductoCliente(request, response) {
   const {id} = request.params;
 
@@ -350,14 +351,19 @@ export async function deshabilitarProductosCatalogo(request, response) {
   }
 }
 
-async function getEditarProducto(request, response) {
+export async function getEditarProducto(request, response) {
   try {
-    const producto = await productoModel.obtenerProductoPorId(request.params.id);
+    console.log('ID recibido:', request.params.id);
+    const producto = await Producto.obtenerProductoPorId(request.params.id);
+    console.log('Producto obtenido:', producto);
     if (!producto) {
-      return response.status(404).redirect('/empleado/catalogo-productos');
+      return response.status(404).redirect('/empleado/catalogo');
     }
 
-    const campanas = await campanaModel.obtenerCampanas();
+  const [campanas, campanaActiva] = await Promise.all([
+  Campana.listarCampanas(),
+  Campana.getCampanaActiva(),
+]);
     const idCampanaActiva = campanas.find(c => c.activa)?.id ?? null;
 
     const errorSession = request.session[SESSION_EDITAR_PRODUCTO_ERROR] ?? null;
@@ -385,6 +391,43 @@ async function getEditarProducto(request, response) {
     });
   } catch (error) {
     console.error('Error al cargar producto:', error.message);
-    return response.redirect('/empleado/catalogo-productos');
+    return response.redirect('/empleado/catalogo');
   }
 } 
+
+export async function postEditarProducto(request, response) {
+  try {
+    const { idProducto, nombreProducto, descripcion, precio, pesoUnidad, unidadVenta, idCampana, habilitado } = request.body;
+
+    let fotoUrl = null;
+
+    // Solo sube imagen si el usuario mandó una nueva
+    if (request.file) {
+      const { publicUrl } = await uploadProductoImagen(
+        request.file.buffer,
+        request.file.mimetype,
+        idProducto,
+      );
+      fotoUrl = publicUrl;
+    }
+
+    await Producto.actualizarProducto({
+      idProducto,
+      nombreProducto,
+      descripcion,
+      precio,
+      pesoUnidad,
+      unidadVenta,
+      idCampana,
+      habilitado: habilitado === 'true',
+      foto: fotoUrl, // null si no se subió nueva → COALESCE en el RPC conserva la anterior
+    });
+
+    return response.redirect(`/empleado/catalogo`);
+
+  } catch (error) {
+    console.error('Error al editar producto:', error.message);
+    request.session[SESSION_EDITAR_PRODUCTO_ERROR] = 'Ocurrió un error al guardar los cambios.';
+    return response.redirect(`/empleado/producto/editar/${request.body.idProducto}`);
+  }
+}
