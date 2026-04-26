@@ -67,3 +67,11 @@ export async function fetchIngresosHoy() {
 
   return data?.[0]?.ingresos_hoy ?? 0;
 }
+
+export async function fetchPromedioIngresosDiarios() {
+  const { data, error } = await supabase.rpc('get_promedio_ingresos_diarios');
+
+  if (error) throw error;
+
+  return data?.[0]?.promedio_ingresos_diarios ?? 0;
+}

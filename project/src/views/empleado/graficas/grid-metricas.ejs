@@ -31,7 +31,9 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold text-blue-800 uppercase">Promedio de ingresos diarios</p>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">ingreso promedio</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-2">$<%=
+                            Number(promedioIngresosDiarios).toLocaleString('es-MX') %>
+                    </p>
                     <p class="text-sm text-gray-500 mt-1">Última semana</p>
                 </div>
                 <div class="bg-blue-100 p-3 rounded-full">
@@ -46,15 +48,15 @@
         </div>
 
         <!-- Card 3 -->
-        <div class="card-ingreso bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 p-5 rounded-lg">
+        <div class="card-ingreso bg-gradient-to-br from-green-50 to-green-50 border border-green-100 p-5 rounded-lg">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-semibold text-blue-800 uppercase">Concesionaria Top</p>
+                    <p class="text-sm font-semibold text-green-800 uppercase">Concesionaria con más reservas</p>
                     <p class="text-3xl font-bold text-gray-900 mt-2">comex %></p>
                     <p class="text-sm text-gray-500 mt-1">total de reservas</p>
                 </div>
-                <div class="bg-blue-100 p-3 rounded-full">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 21h8m-4-4v4m0-4a7 7 0 007-7V5H5v5a7 7 0 007 7zM16 5V3H8v2">
                         </path>
