@@ -47,6 +47,7 @@ async function renderCampanas(request, response) {
       fechaInicio: toISODate(item.fechaInicio),
       fechaFin: toISODate(item.fechaFin),
       estadoCalculado: clasificarCampana(item.fechaInicio, item.fechaFin),
+      estado: item.estado,
     }));
 
     return response.render('empleado/campana', {
@@ -300,11 +301,24 @@ async function editarCampanaPost(request, response) {
   }
 }
 
+async function toggleEstadoCampana(request, response) {
+  const id = request.params.id;
+  const nuevoEstado = request.body.estado === 'true';
+  try {
+    await campanaModel.toggleEstadoCampana(id, nuevoEstado);
+    return response.redirect('/empleado/campanas');
+  } catch (error) {
+    console.error('Error al cambiar estado de campaña:', error.message);
+    return response.redirect('/empleado/campanas');
+  }
+}
+
 export default {
   renderCampanas,
   renderNuevaCampana,
   crearCampanaPost,
   renderBannersCampana,
   renderEditarCampana,  
-  editarCampanaPost,   
+  editarCampanaPost,
+  toggleEstadoCampana,
 };
