@@ -203,7 +203,7 @@ export async function postAnadirProducto(request, response) {
 export async function postCargaMasiva(request, response) {
   try {
     if (!request.file) {
-      return response.status(400).send('No se subió ningún archivo');
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
     }
     const resultados = [];
     const errores = [];
@@ -225,7 +225,7 @@ export async function postCargaMasiva(request, response) {
     });
 
     if (errores.length > 0) {
-      return response.status(400).send({ errores });
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
     }
     for (const fila of resultados) {
       try {
@@ -236,13 +236,13 @@ export async function postCargaMasiva(request, response) {
     }
 
     if (errores.length > 0) {
-      return response.status(500).send({ errores });
+      return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
     }
 
-    return response.send('Archivo procesado e insertado correctamente');
+    return response.redirect('/empleado/gestion-productos?success=carga-masiva');
   } catch (error) {
     console.error(error);
-    return response.status(500).send('Error al procesar el archivo');
+    return response.redirect('/empleado/gestion-productos?errorCargaMasiva=1');
   }
 
 }
@@ -250,6 +250,7 @@ export async function postCargaMasiva(request, response) {
 export async function renderGestionProductos(request, response) {
   const success = request.query.success;
   const errorHabilitado = request.query.errorHabilitado === '1';
+  const errorCargaMasiva = request.query.errorCargaMasiva === '1';
   try {
     const { data, error } = await Producto.fetchAllGestion();
     if (error) {
@@ -260,6 +261,7 @@ export async function renderGestionProductos(request, response) {
       productos: data || [],
       errorRecuperacion: null,
       errorHabilitado,
+      errorCargaMasiva,
       success,
     });
   } catch (error) {
@@ -268,6 +270,7 @@ export async function renderGestionProductos(request, response) {
       productos: [],
       errorRecuperacion: 1,
       errorHabilitado,
+      errorCargaMasiva,
       success,
     });
   }

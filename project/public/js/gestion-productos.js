@@ -30,6 +30,22 @@ if (modalErrorHabilitado && btnModalErrorHabilitado) {
   });
 }
 
+const modalErrorCargaMasiva = document.getElementById('modalErrorCargaMasiva');
+const btnModalErrorCargaMasiva = document.getElementById('btnModalErrorCargaMasiva');
+
+if (modalErrorCargaMasiva && btnModalErrorCargaMasiva) {
+  const ocultarModalErrorCargaMasiva = () => {
+    modalErrorCargaMasiva.classList.add('hidden');
+  };
+
+  btnModalErrorCargaMasiva.addEventListener('click', ocultarModalErrorCargaMasiva);
+  modalErrorCargaMasiva.addEventListener('click', (e) => {
+    if (e.target === modalErrorCargaMasiva) {
+      ocultarModalErrorCargaMasiva();
+    }
+  });
+}
+
 const modalDeshabilitar = document.getElementById('modalDeshabilitar');
 const btnCancelarDeshabilitar = document.getElementById('btnCancelarDeshabilitar');
 const btnConfirmarDeshabilitar = document.getElementById('btnConfirmarDeshabilitar');
