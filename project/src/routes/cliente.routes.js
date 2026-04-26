@@ -3,6 +3,7 @@ import * as productoController from '../controllers/producto.controller.js';
 import * as carritoController from '../controllers/carrito.controller.js';
 import {confirmarReserva, getDetalleReserva, getHistorialReservas, postCancelarReserva} from '../controllers/reserva.controller.js';
 import {postCambiarCuenta} from '../controllers/cuenta.controller.js';
+import * as clienteController from '../controllers/cliente.controller.js';
 import {requireRol, ROL_CLIENTE} from '../middleware/auth.middleware.js';
 import {injectCantidadProductosCarrito} from '../middleware/carritoCantidad.middleware.js';
 
@@ -30,9 +31,7 @@ router.post('/reserva/:folio/cancelar', postCancelarReserva);
 
 router.get('/detalle-reserva/:folio', getDetalleReserva);
 
-router.get('/info-perfil', (request, response) => {
-  response.render('cliente/info-perfil', {title: 'Información del Perfil'});
-});
+router.get('/info-perfil', clienteController.renderPerfil);
 
 router.post('/cambiar-cuenta', postCambiarCuenta);
 

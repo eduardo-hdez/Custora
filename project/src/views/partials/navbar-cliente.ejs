@@ -34,23 +34,29 @@
                 <details class="relative group">
                     <summary
                         class="list-none bg-white text-[#262F3E] px-5 py-2.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-2 cursor-pointer">
-                        <%= idConcesionaria ?? 'Cuenta' %>
-                        <span class="material-icons text-base">arrow_drop_down</span>
+                        <% const activaNavbar=concesionarias.find(c=> String(c.id || c) === String(idConcesionaria));
+                            %>
+                            <%= activaNavbar ? (activaNavbar.nombre || activaNavbar.id || activaNavbar) : 'ID' %>
+                                <span class="material-icons text-base">arrow_drop_down</span>
                     </summary>
                     <div
                         class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
                         <div class="py-2">
-                            <% concesionarias.forEach((c, i)=> { %>
+                            <% concesionarias.forEach((c, i)=> {
+                                const cId = c.id || c;
+                                const cNombre = c.nombre || c;
+                                %>
                                 <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
-                                    <input type="hidden" name="idConcesionaria" value="<%= c %>">
-                                    <input type="hidden" name="returnTo" value="<%= currentClientePath ?? '/cliente/catalogo' %>">
+                                    <input type="hidden" name="idConcesionaria" value="<%= cId %>">
+                                    <input type="hidden" name="returnTo"
+                                        value="<%= currentClientePath ?? '/cliente/catalogo' %>">
                                     <button type="submit"
-                                        class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= c === idConcesionaria ? 'font-bold bg-slate-50' : 'font-medium' %>">
-                                        <% if (c===idConcesionaria) { %>
+                                        class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= String(cId) === String(idConcesionaria) ? 'font-bold bg-slate-50' : 'font-medium' %>">
+                                        <% if (String(cId)===String(idConcesionaria)) { %>
                                             <span class="absolute left-0 top-0 bottom-0 w-1 bg-[#2B6398]"></span>
                                             <% } %>
                                                 <span class="truncate">
-                                                    <%= c %>
+                                                    <%= cNombre %>
                                                 </span>
                                     </button>
                                 </form>
@@ -70,8 +76,7 @@
                         <a href="/cliente/carrito-reserva"
                             class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200">
                             <span class="material-icons" style="font-size:2.8rem">shopping_cart</span>
-                            <span
-                                id="navbarCarritoBadge"
+                            <span id="navbarCarritoBadge"
                                 class="absolute -top-1 -right-2 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold items-center justify-center <%= (cantidadProductosCarrito ?? 0) > 0 ? 'flex' : 'hidden' %>">
                                 <%= cantidadProductosCarrito ?? 0 %>
                             </span>

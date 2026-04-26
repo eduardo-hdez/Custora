@@ -7,7 +7,7 @@ export function postCambiarCuenta(request, response) {
       returnTo :
       fallbackPath;
 
-  const valida = concesionarias.includes(idConcesionaria);
+  const valida = concesionarias.some(c => String(c.id || c) === String(idConcesionaria));
   if (!valida) {
     if (request.xhr || request.headers.accept?.includes('application/json')) {
       return response.status(400).json({

@@ -28,123 +28,88 @@
       </div>
       <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>
-          <span class="block text-sm font-medium text-gray-500 mb-1">Nombre de la Concesionaria</span>
-          <span class="block text-base text-gray-900 font-medium">Suministros Industriales del Bajío</span>
+          <span class="block text-sm font-medium text-gray-500 mb-1">Nombre de la Concesionaria Actual</span>
+          <span class="block text-base text-gray-900 font-medium">
+            <% 
+              const activa = concesionarias.find(c => String(c.id_concesionaria) === String(idConcesionariaActiva));
+              if (activa) {
+            %>
+              <%= activa.nombre_concesionaria || activa.id_concesionaria %>
+            <% } else { %>
+              No seleccionada
+            <% } %>
+          </span>
         </div>
         <div>
           <span class="block text-sm font-medium text-gray-500 mb-1">Correo Electrónico</span>
-          <span class="block text-base text-gray-900">ricardo.nava@sibajio.mx</span>
+          <span class="block text-base text-gray-900"><%= correo %></span>
         </div>
       </div>
     </div>
 
-    <h2 class="text-xl font-bold text-gray-900 mb-4">Cuentas y Sucursales</h2>
+    <h2 class="text-xl font-bold text-gray-900 mb-4">Mis Concesionarias y Sucursales</h2>
     
     <div class="flex flex-col gap-6">
       
-      <!-- Cuenta 1 -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h3 class="text-lg font-bold text-[#2B6398] flex items-center gap-2">
-              <span class="material-icons">business</span>
-              Cuenta 1
-            </h3>
-            <p class="text-sm text-gray-600 mt-1">ID: 541208</p>
+      <% if (concesionarias && concesionarias.length > 0) { %>
+        <% concesionarias.forEach(concesionaria => { 
+          const esActiva = String(concesionaria.id_concesionaria) === String(idConcesionariaActiva);
+        %>
+          <!-- Concesionaria -->
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col <%= esActiva ? 'ring-2 ring-[#2B6398] ring-inset' : '' %>">
+            <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
+              <div>
+                <h3 class="text-lg font-bold <%= esActiva ? 'text-[#2B6398]' : 'text-gray-800' %> flex items-center gap-2">
+                  <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-500' %>">business</span>
+                  <%= concesionaria.nombre_concesionaria || concesionaria.id_concesionaria %>
+                </h3>
+                <p class="text-sm text-gray-600 mt-1">ID: <%= concesionaria.id_concesionaria %></p>
+              </div>
+              <div class="flex items-center gap-3">
+                <% if (esActiva) { %>
+                  <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
+                    Activa
+                  </span>
+                  <button class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm opacity-50 cursor-not-allowed" disabled>
+                    Cuenta actual
+                  </button>
+                <% } else { %>
+                  <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+                    <input type="hidden" name="idConcesionaria" value="<%= concesionaria.id_concesionaria %>">
+                    <button type="submit" class="bg-[#2B6398] hover:bg-[#1e466b] text-white px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors">
+                      Cambiar a esta cuenta
+                    </button>
+                  </form>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="p-4 sm:p-6 <%= !esActiva ? 'opacity-90' : '' %>">
+              <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Sucursales Disponibles</h4>
+              <% if (concesionaria.sucursales && concesionaria.sucursales.length > 0) { %>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <% concesionaria.sucursales.forEach(sucursal => { %>
+                    <div class="border border-gray-200 rounded-md p-4 <%= esActiva ? 'hover:border-[#2B6398] hover:shadow-sm' : '' %> transition-all bg-white group">
+                      <div class="flex items-center gap-2 mb-2">
+                        <span class="material-icons <%= esActiva ? 'text-[#2B6398]' : 'text-gray-400' %>">store</span>
+                        <span class="font-medium text-gray-900"><%= sucursal.nombre_sucursal %></span>
+                      </div>
+                      <p class="text-xs text-gray-500"><%= sucursal.ubicacion || 'Sin ubicación registrada' %></p>
+                    </div>
+                  <% }) %>
+                </div>
+              <% } else { %>
+                <p class="text-sm text-gray-500 italic">No hay sucursales registradas para esta concesionaria.</p>
+              <% } %>
+            </div>
           </div>
-          <div class="flex items-center gap-3">
-            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 bg-green-600 rounded-full"></span>
-              Activa
-            </span>
-            <button class="bg-white border border-gray-300 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors opacity-50 cursor-not-allowed" disabled>
-              Cuenta actual
-            </button>
-          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg">
+          No se encontraron concesionarias asociadas a tu cuenta.
         </div>
-        
-        <div class="p-4 sm:p-6">
-          <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Sucursales Disponibles</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Sucursal 1 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group border-[#2B6398] bg-blue-50 shadow-md" data-cuenta-id="1">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-[#2B6398] group-hover:text-[#2B6398]">store</span>
-                <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Centro</span>
-              </div>
-              <p class="text-xs text-gray-500">Calle Principal #123, Zona Centro</p>
-            </div>
-            <!-- Sucursal 2 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="2">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
-                <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Norte (Industrial)</span>
-              </div>
-              <p class="text-xs text-gray-500">Parque Industrial Norte, Lote 45</p>
-            </div>
-            <!-- Sucursal 3 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="3">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
-                <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Sur</span>
-              </div>
-              <p class="text-xs text-gray-500">Av. Las Torres #789, Zona Sur</p>
-            </div>
-            <!-- Sucursal 4 -->
-            <div class="border border-gray-200 rounded-md p-4 hover:border-[#2B6398] hover:shadow-sm transition-all cursor-pointer bg-white group" data-cuenta-id="4">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-[#007185] group-hover:text-[#2B6398]">store</span>
-                <span class="font-medium text-gray-900 group-hover:text-[#2B6398]">Este</span>
-              </div>
-              <p class="text-xs text-gray-500">Blvd. Oriente #456, Plaza Este</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Cuenta 2 -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
-          <div>
-            <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-              <span class="material-icons text-gray-500">business</span>
-              Cuenta 2
-            </h3>
-            <p class="text-sm text-gray-600 mt-1">ID: 549317</p>
-          </div>
-          <div class="flex items-center gap-3">
-            <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full border border-gray-300 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 bg-gray-500 rounded-full"></span>
-              Inactiva
-            </span>
-            <button class="bg-[#2B6398] hover:bg-[#1e466b] text-white px-3 py-1.5 rounded-md text-sm font-medium shadow-sm transition-colors">
-              Cambiar a esta cuenta
-            </button>
-          </div>
-        </div>
-        
-        <div class="p-4 sm:p-6 opacity-75">
-          <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">Sucursales Disponibles</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Sucursal 1 -->
-            <div class="border border-gray-200 rounded-md p-4 bg-gray-50">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-gray-400">store</span>
-                <span class="font-medium text-gray-600">Oeste</span>
-              </div>
-              <p class="text-xs text-gray-500">Av. Poniente #101, Comercial</p>
-            </div>
-            <!-- Sucursal 2 -->
-            <div class="border border-gray-200 rounded-md p-4 bg-gray-50">
-              <div class="flex items-center gap-2 mb-2">
-                <span class="material-icons text-gray-400">store</span>
-                <span class="font-medium text-gray-600">Centro Histórico</span>
-              </div>
-              <p class="text-xs text-gray-500">Calle Antigua #22, Centro</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <% } %>
 
     </div>
   </main>
