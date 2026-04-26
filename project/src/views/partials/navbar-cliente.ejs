@@ -43,6 +43,7 @@
                             <% concesionarias.forEach((c, i)=> { %>
                                 <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
                                     <input type="hidden" name="idConcesionaria" value="<%= c %>">
+                                    <input type="hidden" name="returnTo" value="<%= currentClientePath ?? '/cliente/catalogo' %>">
                                     <button type="submit"
                                         class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= c === idConcesionaria ? 'font-bold bg-slate-50' : 'font-medium' %>">
                                         <% if (c===idConcesionaria) { %>

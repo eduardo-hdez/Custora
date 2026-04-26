@@ -1,6 +1,11 @@
 export function postCambiarCuenta(request, response) {
-  const {idConcesionaria} = request.body;
+  const {idConcesionaria, returnTo} = request.body;
   const concesionarias = request.session.concesionarias ?? [];
+  const fallbackPath = '/cliente/catalogo';
+  const redirectPath =
+    typeof returnTo === 'string' && returnTo.startsWith('/cliente') ?
+      returnTo :
+      fallbackPath;
 
   const valida = concesionarias.includes(idConcesionaria);
   if (!valida) {
@@ -10,7 +15,7 @@ export function postCambiarCuenta(request, response) {
         error: 'Concesionaria no válida',
       });
     }
-    return response.redirect('/cliente/catalogo');
+    return response.redirect(redirectPath);
   }
 
   request.session.idConcesionaria = idConcesionaria;
@@ -20,7 +25,8 @@ export function postCambiarCuenta(request, response) {
       success: true,
       message: 'Cuenta actualizada correctamente',
       idConcesionaria: idConcesionaria,
+      redirectTo: redirectPath,
     });
   }
-  response.redirect('/cliente/catalogo');
+  response.redirect(redirectPath);
 }
