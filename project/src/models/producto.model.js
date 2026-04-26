@@ -63,6 +63,28 @@ export default class Producto {
         return { data, error };
     }
 
+    static async insertCalificacion({
+        id_producto,
+        id_concesionaria,
+        puntuacion,
+        comentario,
+        fecha_calificacion,
+    }) {
+        const { data, error } = await supabase
+            .from('calificar')
+            .upsert([{
+                id_producto,
+                id_concesionaria,
+                puntuacion,
+                comentario,
+                fecha_calificacion,
+            }], {
+                onConflict: 'id_producto,id_concesionaria',
+            });
+
+        return { data, error };
+    }
+
     static async deshabilitar(ids) {
         const { data, error } = await supabase
             .from('producto')

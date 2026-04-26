@@ -6,8 +6,21 @@ import { Readable } from 'stream';
 
 const SESSION_ANADIR_PRODUCTO_ERROR = 'anadirProductoError';
 const SESSION_EDITAR_PRODUCTO_ERROR = 'editarProductoError';
+
+const MAX_COMENTARIO_LENGTH = 500;
+
+const normalizeComentario = (comentarioRaw) => {
+  if (typeof comentarioRaw !== 'string') return null;
+  const comentario = comentarioRaw.trim();
+  return comentario.length > 0 ? comentario : null;
+};
+
+const getFechaCalificacionHoy = () => new Date().toISOString().slice(0, 10);
+
 export async function renderDetalleProductoCliente(request, response) {
   const { id } = request.params;
+  const successCalificacion = request.query.calificacion === 'ok';
+  const errorCalificacion = request.query.calificacion === 'error';
 
   try {
     const { data, error } = await Producto.findById(id);
@@ -18,6 +31,7 @@ export async function renderDetalleProductoCliente(request, response) {
         title: 'Producto no encontrado',
         producto: null,
         errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
+        mensajeCalificacion: null,
       });
     }
 
@@ -28,14 +42,118 @@ export async function renderDetalleProductoCliente(request, response) {
       title: nombre,
       producto: data,
       errorDetalle: null,
+      mensajeCalificacion: successCalificacion ?
+        'Reseña publicada correctamente' :
+        null,
+      errorCalificacion: errorCalificacion ?
+        'No se pudo registrar la reseña. Intenta nuevamente.' :
+        null,
     });
   } catch (err) {
     return response.status(500).render('cliente/detalle-producto', {
       title: 'Error',
       producto: null,
       errorDetalle: 'No se pudo cargar el producto en este momento.',
+      mensajeCalificacion: null,
     });
   }
+}
+
+export async function renderCalificacion(request, response) {
+  const { id } = request.params;
+  const errorCalificacion = request.query.error;
+
+  try {
+    const { data, error } = await Producto.findById(id);
+    if (error || data == null) {
+      return response.status(404).render('cliente/calificacion', {
+        title: 'Calificar producto',
+        producto: null,
+        errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
+        errorCalificacion: null,
+        formData: { puntuacion: '', comentario: '' },
+      });
+    }
+
+    return response.render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto: data,
+      errorDetalle: null,
+      errorCalificacion: errorCalificacion || null,
+      formData: { puntuacion: '', comentario: '' },
+    });
+  } catch (err) {
+    return response.status(500).render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto: null,
+      errorDetalle: 'No se pudo cargar el producto en este momento.',
+      errorCalificacion: null,
+      formData: { puntuacion: '', comentario: '' },
+    });
+  }
+}
+
+export async function registrarCalificacion(request, response) {
+  const { id } = request.params;
+  const idConcesionaria = request.session.idConcesionaria;
+  const puntuacion = Number(request.body.puntuacion);
+  const comentario = normalizeComentario(request.body.comentario);
+
+  const { data: producto, error: errorProducto } = await Producto.findById(id);
+  if (errorProducto || producto == null) {
+    return response.status(404).render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto: null,
+      errorDetalle: 'El producto solicitado no existe o ya no está disponible.',
+      errorCalificacion: null,
+      formData: { puntuacion: request.body.puntuacion || '', comentario: request.body.comentario || '' },
+    });
+  }
+
+  if (!idConcesionaria) {
+    return response.status(401).render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto,
+      errorDetalle: null,
+      errorCalificacion: 'No se encontró la concesionaria activa. Cambia de cuenta e intenta nuevamente.',
+      formData: { puntuacion: request.body.puntuacion || '', comentario: request.body.comentario || '' },
+    });
+  }
+
+  if (!Number.isFinite(puntuacion) || puntuacion < 1 || puntuacion > 5) {
+    return response.status(400).render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto,
+      errorDetalle: null,
+      errorCalificacion: 'La puntuación debe ser un número entre 1 y 5.',
+      formData: { puntuacion: request.body.puntuacion || '', comentario: request.body.comentario || '' },
+    });
+  }
+
+  if (comentario != null && comentario.length > MAX_COMENTARIO_LENGTH) {
+    return response.status(400).render('cliente/calificacion', {
+      title: 'Calificar producto',
+      producto,
+      errorDetalle: null,
+      errorCalificacion: `El comentario no puede exceder ${MAX_COMENTARIO_LENGTH} caracteres.`,
+      formData: { puntuacion: request.body.puntuacion || '', comentario: request.body.comentario || '' },
+    });
+  }
+
+  const { error: errorInsert } = await Producto.insertCalificacion({
+    id_producto: id,
+    id_concesionaria: idConcesionaria,
+    puntuacion,
+    comentario,
+    fecha_calificacion: getFechaCalificacionHoy(),
+  });
+
+  if (errorInsert) {
+    console.error('Error al registrar calificación:', errorInsert.message);
+    return response.redirect(`/cliente/detalle-producto/${encodeURIComponent(id)}?calificacion=error`);
+  }
+
+  return response.redirect(`/cliente/detalle-producto/${encodeURIComponent(id)}?calificacion=ok`);
 }
 
 export async function renderCatalogoCliente(request, response) {
