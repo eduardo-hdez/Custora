@@ -3,13 +3,13 @@
 <head>
   <%- include('../partials/head') %>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="bg-white flex flex-col min-h-screen">
   <%- include('../partials/navbar-empleado') %>
 
   <main class="w-full flex flex-col items-center pb-16 flex-grow bg-white">
   <!-- Banner: campaña vigente hoy (mismo criterio que reservas) -->
   <div class="w-full max-w-7xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
-    <div class="w-full overflow-hidden border border-gray-100 md:rounded-lg bg-gray-50">
+    <div class="w-full overflow-hidden border border-gray-100 md:rounded-lg bg-white">
       <% if (typeof catalogoBannerUrl === 'string' && catalogoBannerUrl) { %>
         <img src="<%= catalogoBannerUrl %>" alt="Banner: <%= typeof nombreCampañaActiva !== 'undefined' ? nombreCampañaActiva : 'Campaña' %>" class="w-full h-auto object-cover" />
       <% } else { %>
@@ -27,7 +27,7 @@
     <% } %>
   </div>
   <!-- Cuenta atrás hasta fin de preventa (fecha fin de campaña activa) -->
-  <div class="w-full flex flex-col items-center py-6 bg-gradient-to-b from-white to-gray-50/80 border-b border-gray-100">
+  <div class="w-full flex flex-col items-center py-6 bg-white">
     <%- include('../partials/catalogo-preventa-contador') %>
   </div>
 
@@ -100,11 +100,11 @@
           No hay productos disponibles por el momento.
         </div>
       <% } else { %>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div data-catalogo-grid data-page-size="20" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <% productos.forEach((producto) => { %>
             <% const idProducto = producto.id_producto; %>
             <% const urlDetalle = idProducto != null && idProducto !== '' ? `/empleado/detalle-producto/${idProducto}` : null; %>
-            <div class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
+            <div data-producto-card class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
               <a href="<%= urlDetalle || '#' %>" class="relative w-full aspect-square bg-gray-50 rounded-md mb-3 flex items-center justify-center p-4 block<%= urlDetalle ? '' : ' pointer-events-none opacity-70' %>" aria-disabled="<%= urlDetalle ? 'false' : 'true' %>">
                 <img
                   src="<%= producto.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen' %>"
@@ -152,6 +152,7 @@
             </div>
           <% }) %>
         </div>
+        <div data-catalogo-paginacion class="mt-6 flex items-center justify-center gap-2"></div>
       <% } %>
     </div>
   </div>
@@ -184,6 +185,7 @@
   
  <%- include('../partials/footer') %>
  <script src="/js/catalogo-preventa-countdown.js"></script>
+ <script src="/js/catalogo-paginacion.js"></script>
  <script src="/js/catalogo-productos.js"></script>
 </body>
 </html>

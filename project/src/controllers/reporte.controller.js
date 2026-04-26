@@ -9,7 +9,7 @@ export async function renderReporte(request, response) {
   try {
     const [demanda, topConcesionarias] = await Promise.all([
       fetchDemandaProductosRanking(3),
-      fetchTopConcesionariasRanking(10),
+      fetchTopConcesionariasRanking(5),
     ]);
 
     return response.render('empleado/reporte', {

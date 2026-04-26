@@ -7,11 +7,6 @@
   <%- include('../partials/navbar-cliente') %>
 
   <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
-      <a href="/cliente" class="hover:text-[#2B6398] transition-colors">Inicio</a>
-      <span class="material-icons text-sm">chevron_right</span>
-      <span class="text-gray-900 font-medium">Carrito de Reserva</span>
-    </div>
 
     <h1 class="text-2xl font-bold text-gray-900 mb-8">Mi Carrito de Reserva</h1>
 
@@ -23,6 +18,7 @@
       <%
         const items = Array.isArray(carrito?.productos_seleccionados) ? carrito.productos_seleccionados : [];
         const subtotal = items.reduce((acc, ps) => acc + Number(ps.producto?.precio_producto ?? 0) * ps.cantidad, 0);
+        const totalPeso = items.reduce((acc, ps) => acc + Number(ps.producto?.peso_unidad ?? 0) * ps.cantidad, 0);
         const iva = subtotal * 0.16;
         const total = subtotal + iva;
         const totalItems = items.reduce((acc, ps) => acc + ps.cantidad, 0);
@@ -47,10 +43,11 @@
                 const precioUnitario = Number(p?.precio_producto ?? 0);
                 const nombre = p?.nombre_producto ?? 'Producto';
                 const unidad = p?.unidad_venta_producto ?? '';
+                const pesoUnitario = Number(p?.peso_unidad ?? 0);
                 const foto = p?.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen';
                 const idProducto = p?.id_producto;
               %>
-              <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
+              <div data-carrito-item data-id-producto="<%= idProducto %>" data-precio-unitario="<%= precioUnitario %>" data-peso-unitario="<%= pesoUnitario %>" class="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
                 <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-md p-2 flex items-center justify-center mx-auto sm:mx-0">
                   <img src="<%= foto %>" alt="<%= nombre %>" class="max-h-full max-w-full object-contain mix-blend-multiply">
                 </div>
@@ -63,7 +60,7 @@
                         <p class="text-sm text-gray-500 mt-1">Unidad de venta: <span class="font-medium text-gray-700"><%= unidad %></span></p>
                       <% } %>
                     </div>
-                    <span class="text-xl font-bold text-gray-900 text-right flex-shrink-0 tabular-nums">
+                    <span data-linea-total class="text-xl font-bold text-gray-900 text-right flex-shrink-0 tabular-nums">
                       $<%= (precioUnitario * ps.cantidad).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
                     </span>
                   </div>
@@ -76,25 +73,23 @@
                       <% if (idProducto) { %>
                         <span class="text-gray-300 hidden sm:inline" aria-hidden="true">·</span>
                         <div class="inline-flex items-center gap-0 rounded-md border border-gray-200 bg-gray-50 flex-shrink-0">
-                          <form method="POST" action="/cliente/carrito/actualizar/<%= idProducto %>" class="inline-flex m-0">
-                            <input type="hidden" name="accion" value="-">
-                            <button type="submit"
-                              class="p-1.5 rounded-l-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                              title="Disminuir cantidad"
-                              aria-label="Disminuir cantidad">
-                              <span class="material-icons text-lg leading-none">remove</span>
-                            </button>
-                          </form>
-                          <span class="min-w-[2rem] text-center font-medium text-gray-800 tabular-nums px-1"><%= ps.cantidad %></span>
-                          <form method="POST" action="/cliente/carrito/actualizar/<%= idProducto %>" class="inline-flex m-0">
-                            <input type="hidden" name="accion" value="+">
-                            <button type="submit"
-                              class="p-1.5 rounded-r-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
-                              title="Aumentar cantidad"
-                              aria-label="Aumentar cantidad">
-                              <span class="material-icons text-lg leading-none">add</span>
-                            </button>
-                          </form>
+                          <button
+                            type="button"
+                            data-cambiar-cantidad="-"
+                            class="p-1.5 rounded-l-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                            title="Disminuir cantidad"
+                            aria-label="Disminuir cantidad">
+                            <span class="material-icons text-lg leading-none">remove</span>
+                          </button>
+                          <span data-cantidad class="min-w-[2rem] text-center font-medium text-gray-800 tabular-nums px-1"><%= ps.cantidad %></span>
+                          <button
+                            type="button"
+                            data-cambiar-cantidad="+"
+                            class="p-1.5 rounded-r-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors"
+                            title="Aumentar cantidad"
+                            aria-label="Aumentar cantidad">
+                            <span class="material-icons text-lg leading-none">add</span>
+                          </button>
                         </div>
                       <% } else { %>
                         <span>· Cantidad: <%= ps.cantidad %></span>
@@ -127,19 +122,24 @@
               <h2 class="text-xl font-bold text-gray-900 mb-6">Resumen de la Reserva</h2>
 
               <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">
-                <span>Subtotal (<%= totalItems %> <%= totalItems === 1 ? 'producto' : 'productos' %>)</span>
-                <span class="font-medium text-gray-900">$<%= subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+                <span>Subtotal (<span id="carritoTotalItems"><%= totalItems %></span> <span id="carritoLabelItems"><%= totalItems === 1 ? 'producto' : 'productos' %></span>)</span>
+                <span id="carritoSubtotal" class="font-medium text-gray-900">$<%= subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
               </div>
 
               <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">
                 <span>IVA (16%)</span>
-                <span class="font-medium text-gray-900">$<%= iva.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+                <span id="carritoIva" class="font-medium text-gray-900">$<%= iva.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+              </div>
+
+              <div class="flex justify-between items-center mb-4 text-[15px] text-gray-600">
+                <span>Peso total</span>
+                <span id="carritoPesoTotal" class="font-medium text-gray-900"><%= totalPeso.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %> kg</span>
               </div>
 
               <div class="border-t border-gray-200 my-4 pt-4">
                 <div class="flex justify-between items-center mb-2">
                   <span class="text-lg font-bold text-gray-900">Total a pagar</span>
-                  <span class="text-2xl font-black text-gray-900">$<%= total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
+                  <span id="carritoTotal" class="text-2xl font-black text-gray-900">$<%= total.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %></span>
                 </div>
               </div>
 
@@ -174,5 +174,6 @@
   </main>
 
   <%- include('../partials/footer') %>
+  <script src="/js/carrito-reserva.js"></script>
 </body>
 </html>

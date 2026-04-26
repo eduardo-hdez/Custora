@@ -7,214 +7,94 @@
   <%- include('../partials/navbar-cliente') %>
 
   <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
-    <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 mb-6 text-gray-500 text-sm">
-      <a href="/" class="hover:text-[#2B6398] transition-colors">Inicio</a>
-      <span class="material-icons text-sm">chevron_right</span>
-      <a href="/cliente/historial-reservas" class="hover:text-[#2B6398] transition-colors">Historial de Reservas</a>
-      <span class="material-icons text-sm">chevron_right</span>
-      <span class="text-gray-900 font-medium">Detalles de la reserva</span>
+
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h1 class="text-2xl font-bold text-gray-900">Detalle de reserva</h1>
+      <a href="/cliente/historial-reservas" class="inline-flex items-center gap-1 text-sm font-medium text-[#2B6398] hover:text-[#1f476e]">
+        <span class="material-icons text-[18px]">arrow_back</span>
+        Volver al historial
+      </a>
     </div>
 
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Detalles de la reserva</h1>
-    </div>
-
-    <div class="flex flex-col gap-6">
-      <!-- Order Summary Card -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div class="flex flex-wrap gap-6 sm:gap-10 text-sm text-gray-600">
-            <div class="flex flex-col">
-              <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Reserva realizada</span>
-              <span class="text-gray-900 font-medium">4 de Marzo de 2026</span>
-            </div>
-          </div>
-          <div class="flex flex-col items-start sm:items-end text-sm">
-            <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">N° Reserva</span>
-            <span class="text-gray-900 font-medium">RES-10492</span>
-          </div>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-6">
+      <div class="bg-gray-100 px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-wrap justify-between items-start gap-4">
+        <div class="flex flex-col">
+          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Folio</span>
+          <span class="text-gray-900 font-semibold"><%= reserva.folio %></span>
         </div>
-
-        <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Dirección -->
-          <div class="flex flex-col gap-2">
-            <h3 class="font-bold text-gray-900 text-base mb-1">Dirección de envío</h3>
-            <p class="text-sm text-gray-700">
-              <span class="font-medium">Juan Pérez</span><br>
-              Av. Tecnológico 123<br>
-              Col. Solidaridad, C.P. 20190<br>
-              Aguascalientes, Ags.<br>
-              México
-            </p>
-          </div>
-
-          <!-- Información Adicional -->
-          <div class="flex flex-col gap-2">
-            <h3 class="font-bold text-gray-900 text-base mb-1">Información del envío</h3>
-            <p class="text-sm text-gray-700">
-              <span class="font-medium">Sucursal origen:</span> Centro<br>
-              <span class="font-medium">Peso total:</span> 14.5 kg<br>
-            </p>
-          </div>
-
-          <!-- Resumen financiero -->
-          <div class="flex flex-col gap-2 bg-gray-50 p-4 rounded-md border border-gray-100">
-            <h3 class="font-bold text-gray-900 text-base mb-2">Resumen de la reserva</h3>
-            <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>Productos:</span>
-              <span>$10,478.00</span>
-            </div>
-            <div class="flex justify-between text-sm text-gray-600 mb-1">
-              <span>Envío:</span>
-              <span>$0.00</span>
-            </div>
-            <div class="flex justify-between text-sm text-gray-600 mb-2 pb-2 border-b border-gray-200">
-              <span>IVA (16%):</span>
-              <span>$1,676.48</span>
-            </div>
-            <div class="flex justify-between text-base font-bold text-gray-900">
-              <span>Total:</span>
-              <span>$12,154.48</span>
-            </div>
-          </div>
+        <div class="flex flex-col">
+          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Fecha</span>
+          <span class="text-gray-900"><%= new Date(reserva.fechaReserva).toLocaleString('es-MX') %></span>
+        </div>
+        <div class="flex flex-col">
+          <span class="uppercase text-[11px] font-bold text-gray-500 tracking-wider mb-1">Estado</span>
+          <span class="<%= reserva.estadoReserva ? 'text-green-700' : 'text-red-700' %> font-semibold"><%= reserva.estadoTexto %></span>
         </div>
       </div>
 
-      <!-- Products List -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-        <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
-          <h2 class="text-lg font-bold text-gray-900">Productos reservados</h2>
+      <div class="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+        <div>
+          <p class="text-gray-500">Sucursal</p>
+          <p class="text-gray-900 font-medium"><%= reserva.sucursal %></p>
         </div>
-        
-        <div class="p-4 sm:p-6 flex flex-col gap-6">
-          <!-- Producto 1 -->
-          <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-              <img src="https://placehold.co/400x400/ffffff/cccccc?text=DC3000" alt="DeltronNXT DC3000" class="max-h-full max-w-full object-contain">
-            </div>
-            <div class="flex flex-col flex-grow w-full">
-              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full">
-                <div>
-                  <a href="#" class="text-base sm:text-lg font-medium text-[#2B6398] hover:text-orange-600 hover:underline">DeltronNXT DC3000</a>
-                  
-                  <!-- VALORACIÓN CONSISTENTE CON CATÁLOGO -->
-                  <div class="flex items-center text-sm mt-1.5 mb-1.5">
-                    <div class="flex text-[#FFA41C]">
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star_half</span>
-                    </div>
-                    <span class="text-[#2B6398] ml-2 text-xs hover:underline cursor-pointer">1,245</span>
-                  </div>
-
-                  <div class="text-sm text-gray-500 mt-1 space-y-1">
-                    <p>Unidad de venta: <span class="text-gray-900">3.75 Litros</span></p>
-                    <p>Cantidad: <span class="text-gray-900">2</span></p>
-                  </div>
-                </div>
-                <div class="text-left sm:text-right">
-                  <span class="text-lg font-bold text-gray-900">$6,850.00</span>
-                </div>
-              </div>
-              <div class="flex flex-wrap gap-3 items-center mt-4">
-                <button class="bg-[#2B6398] hover:bg-[#24537e] text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors">Ver artículo</button>
-                <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-1">
-                  <span class="material-icons text-[18px]">rate_review</span>
-                  Añadir reseña
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <hr class="border-gray-100">
-
-          <!-- Producto 2 -->
-          <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-              <img src="https://placehold.co/400x400/ffffff/cccccc?text=Turbo+Finish" alt="Turbo Finish" class="max-h-full max-w-full object-contain">
-            </div>
-            <div class="flex flex-col flex-grow w-full">
-              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full">
-                <div>
-                  <a href="#" class="text-base sm:text-lg font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Turbo Finish - Barniz de poliuretano</a>
-                  
-                  <!-- VALORACIÓN CONSISTENTE CON CATÁLOGO -->
-                  <div class="flex items-center text-sm mt-1.5 mb-1.5">
-                    <div class="flex text-[#FFA41C]">
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star_border</span>
-                    </div>
-                    <span class="text-[#2B6398] ml-2 text-xs hover:underline cursor-pointer">87</span>
-                  </div>
-
-                  <div class="text-sm text-gray-500 mt-1 space-y-1">
-                    <p>Unidad de venta: <span class="text-gray-900">0.788 Litros</span></p>
-                    <p>Cantidad: <span class="text-gray-900">1</span></p>
-                  </div>
-                </div>
-                <div class="text-left sm:text-right">
-                  <span class="text-lg font-bold text-gray-900">$2,400.00</span>
-                </div>
-              </div>
-              <div class="flex flex-wrap gap-3 items-center mt-4">
-                <button class="bg-[#2B6398] hover:bg-[#24537e] text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors">Ver artículo</button>
-                <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-1">
-                  <span class="material-icons text-[18px]">rate_review</span>
-                  Añadir reseña
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <hr class="border-gray-100">
-
-          <!-- Producto 3 -->
-          <div class="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-            <div class="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
-              <img src="https://placehold.co/400x400/ffffff/cccccc?text=Top+Cars" alt="Top Cars DMD1684" class="max-h-full max-w-full object-contain">
-            </div>
-            <div class="flex flex-col flex-grow w-full">
-              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 w-full">
-                <div>
-                  <a href="#" class="text-base sm:text-lg font-medium text-[#2B6398] hover:text-orange-600 hover:underline">Top Cars DMD1684 Base Color</a>
-                  
-                  <!-- VALORACIÓN CONSISTENTE CON CATÁLOGO -->
-                  <div class="flex items-center text-sm mt-1.5 mb-1.5">
-                    <div class="flex text-[#FFA41C]">
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star</span>
-                      <span class="material-icons" style="font-size: 16px;">star_half</span>
-                      <span class="material-icons" style="font-size: 16px;">star_border</span>
-                    </div>
-                    <span class="text-[#2B6398] ml-2 text-xs hover:underline cursor-pointer">342</span>
-                  </div>
-
-                  <div class="text-sm text-gray-500 mt-1 space-y-1">
-                    <p>Unidad de venta: <span class="text-gray-900">Pieza</span></p>
-                    <p>Cantidad: <span class="text-gray-900">1</span></p>
-                  </div>
-                </div>
-                <div class="text-left sm:text-right">
-                  <span class="text-lg font-bold text-gray-900">$1,228.00</span>
-                </div>
-              </div>
-              <div class="flex flex-wrap gap-3 items-center mt-4">
-                <button class="bg-[#2B6398] hover:bg-[#24537e] text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors">Ver artículo</button>
-                <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium shadow-sm hover:bg-gray-50 transition-colors flex items-center gap-1">
-                  <span class="material-icons text-[18px]">rate_review</span>
-                  Añadir reseña
-                </button>
-              </div>
-            </div>
-          </div>
+        <div>
+          <p class="text-gray-500">Enviar a:</p>
+          <p class="text-gray-900 font-medium"><%= reserva.sucursalUbicacion %></p>
         </div>
+        <div>
+          <p class="text-gray-500">Peso total</p>
+          <p class="text-gray-900 font-medium"><%= reserva.pesoTotal.toFixed(2) %> kg</p>
+        </div>
+        <div>
+          <p class="text-gray-500">Total</p>
+          <p class="text-gray-900 font-semibold text-base">$<%= reserva.total.toFixed(2) %></p>
+        </div>
+      </div>
+    </div>
+
+    <% if (reserva.estadoReserva && reserva.puedeCancelar) { %>
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-orange-200 bg-orange-50 p-4">
+        <p class="text-sm text-orange-700 font-medium flex items-center gap-1.5">
+          <span class="material-icons text-[18px]">schedule</span>
+          Tiempo restante para cancelar: <strong><%= reserva.minutosRestantesFormato %></strong>
+        </p>
+        <form method="POST" action="/cliente/reserva/<%= reserva.folio %>/cancelar" onsubmit="return confirm('¿Está seguro de que desea cancelar esta reserva? Esta acción no se puede deshacer.');">
+          <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-red-50 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 hover:border-red-400 transition-colors flex items-center justify-center gap-2">
+            <span class="material-icons text-[18px]">delete_outline</span>
+            Cancelar Reserva
+          </button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-bold text-gray-900">Productos reservados</h2>
+      </div>
+
+      <div class="p-4 sm:p-6 flex flex-col gap-5">
+        <% reserva.productos.forEach((producto, idx) => { %>
+          <div class="flex flex-col sm:flex-row items-start gap-4">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 bg-white rounded-md border border-gray-200 p-2 flex items-center justify-center">
+              <img src="<%= producto.foto %>" alt="<%= producto.nombre %>" class="max-h-full max-w-full object-contain">
+            </div>
+            <div class="flex-grow min-w-0">
+              <p class="text-base font-medium text-[#2B6398]"><%= producto.nombre %></p>
+              <p class="text-sm text-gray-500 mt-1">ID producto: <span class="text-gray-700 font-medium"><%= producto.id %></span></p>
+              <p class="text-sm text-gray-500 mt-1">Unidad de venta: <%= producto.unidad %></p>
+              <p class="text-sm text-gray-500">Cantidad: <%= producto.cantidad %></p>
+              <div class="mt-3">
+                <a href="/cliente/detalle-producto/<%= producto.id %>" class="inline-flex items-center gap-1.5 bg-[#2B6398] hover:bg-[#1f476e] text-white px-3 py-1.5 rounded-md text-sm font-medium transition-colors">
+                  <span class="material-icons text-[18px]">visibility</span>
+                  Ver artículo
+                </a>
+              </div>
+            </div>
+          </div>
+          <% if (idx < reserva.productos.length - 1) { %>
+            <hr class="border-gray-100">
+          <% } %>
+        <% }) %>
       </div>
     </div>
   </main>
