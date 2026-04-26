@@ -3,7 +3,8 @@ import {
   fetchTopConcesionariasRanking,
   fetchIngresosHoy,
   fetchPromedioIngresosDiarios,
-  fetchSingleTopConcesionaria
+  fetchSingleTopConcesionaria,
+  fetchSingleTopSucursal
 } from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
@@ -13,12 +14,13 @@ export async function renderReporte(request, response) {
   };
 
   try {
-    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios, singleTopConcesionaria] = await Promise.all([
+    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios, singleTopConcesionaria, singleTopSucursal] = await Promise.all([
       fetchDemandaProductosRanking(3),
       fetchTopConcesionariasRanking(5),
       fetchIngresosHoy(),
       fetchPromedioIngresosDiarios(),
-      fetchSingleTopConcesionaria()
+      fetchSingleTopConcesionaria(),
+      fetchSingleTopSucursal()
     ]);
 
     return response.render('empleado/reporte', {
@@ -28,7 +30,8 @@ export async function renderReporte(request, response) {
       topConcesionarias,
       ingresosHoy,
       promedioIngresosDiarios,
-      singleTopConcesionaria
+      singleTopConcesionaria,
+      singleTopSucursal
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -41,7 +44,8 @@ export async function renderReporte(request, response) {
       topConcesionarias: [],
       ingresosHoy: [],
       promedioIngresosDiarios: [],
-      singleTopConcesionaria: []
+      singleTopConcesionaria: [],
+      singleTopSucursal: []
     });
   }
 }

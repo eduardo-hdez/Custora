@@ -83,3 +83,11 @@ export async function fetchSingleTopConcesionaria() {
 
   return data?.[0] ?? 0;
 }
+
+export async function fetchSingleTopSucursal() {
+  const { data, error } = await supabase.rpc('get_single_top_sucursal');
+
+  if (error) throw error;
+
+  return data?.[0] ?? 0;
+}

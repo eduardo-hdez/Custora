@@ -1,5 +1,5 @@
 <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
         <!-- Card 1 -->
         <div class="card-ingreso bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 p-5 rounded-lg">
@@ -52,11 +52,34 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold text-green-800 uppercase">Concesionaria con más reservas</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-2">
+                    <p class="text-xl font-bold text-gray-900 mt-2">
                         <%= singleTopConcesionaria.nombre_concesionaria %>
                     </p>
                     <p class="text-sm text-gray-500 mt-1">
-                        <%= singleTopConcesionaria.num_reservas %> reservas
+                        Total de <%= singleTopConcesionaria.num_reservas %> reservas
+                    </p>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 21h8m-4-4v4m0-4a7 7 0 007-7V5H5v5a7 7 0 007 7zM16 5V3H8v2">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="card-ingreso bg-gradient-to-br from-green-50 to-green-50 border border-green-100 p-5 rounded-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-green-800 uppercase">Sucursal con más reservas</p>
+                    <p class="text-xl font-bold text-gray-900 mt-2">
+                        <%= singleTopSucursal.nombre_sucursal %>
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        <%= singleTopSucursal.nombre_concesionaria %>
+                    </p>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Total de <%= singleTopSucursal.num_reservas %> reservas
                     </p>
                 </div>
                 <div class="bg-green-100 p-3 rounded-full">
