@@ -38,17 +38,17 @@ export async function fetchTopConcesionariasRanking(limite = 10) {
   for (const r of data) {
     const id = r.id_concesionaria;
     if (!id) continue;
-    
+
     const nombre = r.concesionaria?.nombre_concesionaria ?? 'N/D';
     const unidades = (r.productos_reservados || []).reduce(
-      (sum, p) => sum + (Number(p.unidades_reservadas) || 0), 
+      (sum, p) => sum + (Number(p.unidades_reservadas) || 0),
       0
     );
 
-    const entrada = mapa.get(id) ?? { 
-      nombreConcesionaria: nombre, 
-      totalUnidades: 0, 
-      totalReservas: 0 
+    const entrada = mapa.get(id) ?? {
+      nombreConcesionaria: nombre,
+      totalUnidades: 0,
+      totalReservas: 0
     };
     entrada.totalUnidades += unidades;
     entrada.totalReservas += 1;
@@ -58,4 +58,12 @@ export async function fetchTopConcesionariasRanking(limite = 10) {
   return Array.from(mapa.values())
     .sort((a, b) => b.totalUnidades - a.totalUnidades)
     .slice(0, limite);
+}
+
+export async function fetchIngresosHoy() {
+  const { data, error } = await supabase.rpc('get_ingresos_hoy');
+
+  if (error) throw error;
+
+  return data?.[0]?.ingresos_hoy ?? 0;
 }

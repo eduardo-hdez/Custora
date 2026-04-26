@@ -1,4 +1,8 @@
-import { fetchDemandaProductosRanking, fetchTopConcesionariasRanking } from '../models/reporte.model.js';
+import {
+  fetchDemandaProductosRanking,
+  fetchTopConcesionariasRanking,
+  fetchIngresosHoy
+} from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
   const base = {
@@ -7,9 +11,10 @@ export async function renderReporte(request, response) {
   };
 
   try {
-    const [demanda, topConcesionarias] = await Promise.all([
+    const [demanda, topConcesionarias, ingresosHoy] = await Promise.all([
       fetchDemandaProductosRanking(3),
       fetchTopConcesionariasRanking(5),
+      fetchIngresosHoy(),
     ]);
 
     return response.render('empleado/reporte', {
@@ -17,6 +22,7 @@ export async function renderReporte(request, response) {
       errorReporte: null,
       ...demanda,
       topConcesionarias,
+      ingresosHoy,
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -27,6 +33,7 @@ export async function renderReporte(request, response) {
       productosMasSolicitados: [],
       productosMenosSolicitados: [],
       topConcesionarias: [],
+      ingresosHoy: [],
     });
   }
 }
