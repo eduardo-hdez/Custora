@@ -97,12 +97,18 @@ export default class Producto {
         };
     }
 
-    static async getResenasByProductoId(idProducto) {
+    static async getResenasPaginadasByProductoId(idProducto, { page = 1, limit = 10 } = {}) {
+        const pageNumber = Math.max(1, Number(page) || 1);
+        const pageSize = Math.max(1, Number(limit) || 10);
+        const from = (pageNumber - 1) * pageSize;
+        const to = from + pageSize - 1;
+
         const { data, error } = await supabase
             .from('calificar')
             .select('id_producto,id_concesionaria,puntuacion,comentario,fecha_calificacion,concesionaria(nombre_concesionaria)')
             .eq('id_producto', idProducto)
-            .order('fecha_calificacion', { ascending: false });
+            .order('fecha_calificacion', { ascending: false })
+            .range(from, to);
 
         return { data, error };
     }
