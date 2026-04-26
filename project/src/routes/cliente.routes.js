@@ -20,6 +20,8 @@ router.use((request, response, next) => {
 router.get('/', productoController.renderCatalogoCliente);
 router.get('/catalogo', productoController.renderCatalogoCliente);
 router.get('/detalle-producto/:id', productoController.renderDetalleProductoCliente);
+router.get('/productos/:id/calificacion', productoController.renderCalificacion);
+router.post('/productos/:id/calificacion', productoController.registrarCalificacion);
 
 router.get('/carrito-reserva', carritoController.renderCarritoCliente);
 router.post('/carrito/agregar', carritoController.agregarProductoCarrito);
