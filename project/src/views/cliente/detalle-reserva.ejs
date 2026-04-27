@@ -59,6 +59,7 @@
           Tiempo restante para cancelar: <strong><%= reserva.minutosRestantesFormato %></strong>
         </p>
         <form method="POST" action="/cliente/reserva/<%= reserva.folio %>/cancelar" onsubmit="return confirm('¿Está seguro de que desea cancelar esta reserva? Esta acción no se puede deshacer.');">
+          <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
           <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-red-50 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 hover:bg-red-100 hover:border-red-400 transition-colors flex items-center justify-center gap-2">
             <span class="material-icons text-[18px]">delete_outline</span>
             Cancelar Reserva

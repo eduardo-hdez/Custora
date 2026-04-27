@@ -54,6 +54,7 @@
 
         <!-- Logout -->
         <form action="/logout" method="POST" class="flex items-center m-0">
+            <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
             <button type="submit"
                 class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
                 aria-label="Cerrar sesión">

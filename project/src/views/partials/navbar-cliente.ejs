@@ -47,6 +47,7 @@
                                 const cNombre = c?.nombre ?? c?.nombre_concesionaria ?? cId;
                                 %>
                                 <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+                                    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                                     <input type="hidden" name="idConcesionaria" value="<%= cId %>">
                                     <input type="hidden" name="returnTo"
                                         value="<%= currentClientePath ?? '/cliente/catalogo' %>">
@@ -96,6 +97,7 @@
                     </a>
                     <!-- Logout -->
                     <form action="/logout" method="POST" class="flex items-center justify-center m-0">
+                        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                         <button type="submit"
                             class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
                             aria-label="Cerrar sesión">

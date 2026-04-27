@@ -12,6 +12,11 @@ export async function fetchJSON(method = 'GET', url, data = null) {
       options.body = JSON.stringify(data);
     }
 
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMeta) {
+      options.headers['x-csrf-token'] = csrfMeta.getAttribute('content');
+    }
+
     const response = await fetch(url, options);
 
     const jsonResponse = await response.json();

@@ -19,6 +19,7 @@
     "@supabase/supabase-js": "^2.100.0",
     "compression": "^1.8.1",
     "connect-pg-simple": "^10.0.0",
+    "csrf-sync": "^4.2.1",
     "csv-parser": "^3.2.0",
     "dotenv": "^17.3.1",
     "ejs": "^4.0.1",
