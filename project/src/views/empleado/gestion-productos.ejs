@@ -12,56 +12,92 @@
       <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
 
         <!-- Encabezado de la página -->
-        <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 mb-6">
-          <div class="self-center">
-            <h1 class="text-2xl font-bold text-gray-900">Gestión de Productos</h1>
-            <p class="text-sm text-gray-500 mt-1">Administra el inventario, añade nuevos productos o actualiza los
-              existentes.</p>
-          </div>
+        <div class="flex flex-col gap-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+            <div class="self-center">
+              <h1 class="text-2xl font-bold text-gray-900">Gestión de Productos</h1>
+              <p class="text-sm text-gray-500 mt-1">Administra el inventario, añade nuevos productos o actualiza los
+                existentes.</p>
+            </div>
 
-          <div class="flex flex-col sm:flex-row gap-3 md:justify-end self-center w-full md:w-auto items-center">
-            <form id="formCargaMasiva" method="POST" action="/empleado/gestion-productos/carga-masiva"
-              enctype="multipart/form-data" class="flex items-center gap-2">
-              <input type="file" id="cargaMasiva" name="cargaMasiva" accept="text/csv" class="hidden" />
-              <!-- Botón de carga masiva que sí se muestra -->
-              <label for="cargaMasiva" id="labelCargaMasiva"
-                class="cursor-pointer bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#007185] px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center text-sm">
+            <div class="flex flex-col sm:flex-row gap-3 md:justify-end self-center w-full md:w-auto items-center">
+              <button type="button" id="cargaMasiva"
+                class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-[#007185] px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center text-sm">
                 <span class="material-icons text-base text-[#007185]">upload_file</span>
                 Carga masiva
-              </label>
-              <!-- Info del archivo y botón para hacer post ocultos por defecto -->
-              <div id="infoCargaMasiva" class="hidden items-center gap-2 text-sm">
-                <span class="material-icons text-base text-green-600">description</span>
-                <span id="nombreArchivoCarga" class="text-gray-700 font-medium max-w-[150px] truncate"></span>
-                <button type="button" id="btnQuitarArchivo" title="Quitar archivo"
-                  class="text-gray-400 hover:text-red-500 transition-colors p-0.5 rounded-full hover:bg-red-50">
-                  <span class="material-icons text-base">close</span>
-                </button>
-              </div>
-              <button type="submit" id="btnRegistrarCarga"
-                class="hidden bg-[#007185] hover:bg-[#005d6e] text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 text-sm">
-                <span class="material-icons text-base">cloud_upload</span>
-                Registrar Carga
               </button>
-            </form>
-            <a href="/empleado/gestion-productos/anadir-producto"
-              class="bg-[#007185] hover:bg-[#005d6e] text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center text-sm">
-              <span class="material-icons text-base">add</span>
-              Añadir Producto
-            </a>
+              <a href="/empleado/gestion-productos/anadir-producto"
+                class="bg-[#007185] hover:bg-[#005d6e] text-white px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center text-sm">
+                <span class="material-icons text-base">add</span>
+                Añadir Producto
+              </a>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 md:col-span-2 md:justify-end w-full md:w-auto">
+              <button type="button" id="btnDeshabilitar"
+                class="bg-white border border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-200 px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
+                <span class="material-icons text-sm">remove_circle_outline</span>
+                Deshabilitar seleccionados
+              </button>
+              <button type="button" id="btnRehabilitar"
+                class="bg-white border border-gray-300 text-green-600 hover:bg-green-50 hover:border-green-200 px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
+                <span class="material-icons text-sm">add_circle_outline</span>
+                Rehabilitar seleccionados
+              </button>
+            </div>
           </div>
 
-          <div class="flex flex-col sm:flex-row gap-3 md:col-span-2 md:justify-end w-full md:w-auto">
-            <button type="button" id="btnDeshabilitar"
-              class="bg-white border border-gray-300 text-red-600 hover:bg-red-50 hover:border-red-200 px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
-              <span class="material-icons text-sm">remove_circle_outline</span>
-              Deshabilitar seleccionados
+          <!-- Cuadro desplegable de Carga Masiva -->
+          <div id="infoCargaMasiva" class="hidden flex-col bg-white border border-gray-200 rounded-lg p-6 shadow-sm mt-2 relative">
+            <button type="button" id="btnCerrarInfoCargaMasiva" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors">
+              <span class="material-icons">close</span>
             </button>
-            <button type="button" id="btnRehabilitar"
-              class="bg-white border border-gray-300 text-green-600 hover:bg-green-50 hover:border-green-200 px-4 py-2 rounded-lg font-medium shadow-sm transition-colors flex items-center gap-2 w-full sm:w-auto justify-center">
-              <span class="material-icons text-sm">add_circle_outline</span>
-              Rehabilitar seleccionados
-            </button>
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Carga Masiva de Productos</h3>
+            
+            <div class="mb-6 text-sm text-gray-600 bg-gray-50 p-4 rounded border border-gray-200">
+              <p class="font-medium text-gray-800 mb-2">Instrucciones para el archivo CSV:</p>
+              <ul class="list-disc pl-5 space-y-1">
+                <li>El archivo debe estar en formato <strong>.csv</strong></li>
+                <li>La primera fila debe contener los encabezados exactos: <br><code class="text-xs bg-gray-200 px-1 rounded">id_producto, nombre_producto, descripcion_producto, precio_producto, peso_unidad, unidad_venta_producto, id_campana</code></li>
+                <li>Todos los campos son <strong>obligatorios</strong>.</li>
+                <li>El <code class="text-xs bg-gray-200 px-1 rounded">id_producto</code> debe ser único en el sistema.</li>
+                <li>Asegúrate de no incluir comas extras dentro de los valores a menos que estén entre comillas.</li>
+              </ul>
+            </div>
+
+            <form id="formCargaMasiva" method="POST" action="/empleado/gestion-productos/carga-masiva" enctype="multipart/form-data">
+              <input type="file" id="inputFileCargaMasiva" name="cargaMasiva" accept="text/csv" class="hidden" />
+              
+              <div class="w-full flex justify-center items-center mb-4">
+                <label for="inputFileCargaMasiva" id="labelInputFileCargaMasiva"
+                  class="cursor-pointer w-full border-2 border-dashed border-gray-300 hover:border-[#007185] bg-gray-50 hover:bg-teal-50 text-gray-600 transition-colors rounded-lg flex flex-col items-center justify-center py-6">
+                  <span class="material-icons text-3xl text-gray-400 mb-2">cloud_upload</span>
+                  <span class="font-medium">Haz clic para seleccionar un archivo CSV</span>
+                </label>
+              </div>
+
+              <!-- Info del archivo seleccionado oculto por defecto -->
+              <div id="archivoSeleccionadoContainer" class="hidden flex-col items-center justify-center gap-3 mb-4">
+                <div class="flex items-center gap-2 text-sm bg-green-50 text-green-700 px-4 py-2 rounded border border-green-200 w-full justify-between">
+                  <div class="flex items-center gap-2 overflow-hidden">
+                    <span class="material-icons text-base">description</span>
+                    <span id="nombreArchivoCarga" class="font-medium truncate"></span>
+                  </div>
+                  <button type="button" id="btnQuitarArchivo" title="Quitar archivo"
+                    class="text-green-600 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50 flex-shrink-0">
+                    <span class="material-icons text-base">close</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="flex justify-end gap-3 mt-4 border-t border-gray-200 pt-4">
+                <button type="submit" id="btnRegistrarCarga" disabled
+                  class="bg-gray-300 text-gray-500 cursor-not-allowed px-4 py-2.5 rounded-lg font-medium shadow-sm transition-colors flex items-center justify-center gap-2 text-sm">
+                  <span class="material-icons text-base">check_circle</span>
+                  Registrar Carga
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
