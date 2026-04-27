@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import pg from 'pg';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { csrfSync } from 'csrf-sync';
 import authRoutes from './src/routes/auth.routes.js';
 import clienteRoutes from './src/routes/cliente.routes.js';
 import empleadoRoutes from './src/routes/empleado.routes.js';
@@ -62,11 +63,42 @@ app.use(session({
   },
 }));
 
-// Hacer que la variable este disponible en todas las vistas
+// Configuración de CSRF
+const { csrfSynchronisedProtection, generateToken } = csrfSync({
+  getTokenFromRequest: (req) => {
+    if (req.body && req.body['_csrf']) return req.body['_csrf'];
+    if (req.headers['x-csrf-token']) return req.headers['x-csrf-token'];
+    return null;
+  },
+});
+
+app.use(csrfSynchronisedProtection);
+
+// Prevención de caché en HTML para Vercel e inyección de variables
 app.use((req, res, next) => {
+  // Evitar que Vercel guarde en caché páginas con el token CSRF de una sesión específica
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
+  res.locals.csrfToken = generateToken(req);
   res.locals.concesionarias = req.session.concesionarias ?? [];
   res.locals.idConcesionaria = req.session.idConcesionaria ?? null;
   next();
+});
+
+// Manejo de errores CSRF
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+    const referer = req.get('Referrer') || '/login';
+    // Limpiamos params anteriores para no anidar invalidToken=1&invalidToken=1
+    const cleanReferer = referer.split('?')[0]; 
+    const qs = referer.includes('?') ? referer.split('?')[1] : '';
+    const newQs = new URLSearchParams(qs);
+    newQs.set('invalidToken', '1');
+    return res.redirect(`${cleanReferer}?${newQs.toString()}`);
+  }
+  next(err);
 });
 
 app.use(authRoutes);

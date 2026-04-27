@@ -66,6 +66,7 @@
             </div>
 
             <form id="formCargaMasiva" method="POST" action="/empleado/gestion-productos/carga-masiva" enctype="multipart/form-data">
+              <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
               <input type="file" id="inputFileCargaMasiva" name="cargaMasiva" accept="text/csv" class="hidden" />
               
               <div class="w-full flex justify-center items-center mb-4">
@@ -186,6 +187,7 @@
 
                           <!-- Tabla de Productos -->
                           <form method="POST" id="form-habilitado">
+                            <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                             <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
                               <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse">
