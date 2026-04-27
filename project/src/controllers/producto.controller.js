@@ -429,17 +429,15 @@ export async function renderAnadirProducto(request, response) {
 export async function postAnadirProducto(request, response) {
   try {
     const file = request.file;
-    if (!file) {
-      request.session[SESSION_ANADIR_PRODUCTO_ERROR] =
-        'Selecciona una imagen del producto (JPEG, JPG, PNG).';
-      return response.redirect('/empleado/gestion-productos/anadir-producto');
+    let foto = null;
+    if (file) {
+      const { publicUrl } = await uploadProductoImagen(
+        file.buffer,
+        file.mimetype,
+        request.body.idProducto,
+      );
+      foto = publicUrl;
     }
-
-    const { publicUrl: foto } = await uploadProductoImagen(
-      file.buffer,
-      file.mimetype,
-      request.body.idProducto,
-    );
 
     const producto = new Producto(
       request.body.idProducto,
