@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      card.style.opacity = '0.6';
-      card.style.pointerEvents = 'none';
-
       const result = await fetchJSON('POST', '/cliente/cambiar-cuenta', {
         idConcesionaria: idConcesionaria,
       });
@@ -38,13 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.reload();
         }
       } else {
-        card.style.opacity = '1';
-        card.style.pointerEvents = 'auto';
         console.error('Error al cambiar sucursal:', result.error);
       }
-
-      card.style.opacity = '1';
-      card.style.pointerEvents = 'auto';
     });
   });
 });

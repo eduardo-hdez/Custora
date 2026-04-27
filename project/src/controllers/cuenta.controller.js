@@ -29,7 +29,7 @@ export function postCambiarCuenta(request, response) {
           error: 'No se pudo actualizar la cuenta',
         });
       }
-      return response.redirect('/cliente/catalogo');
+      return response.redirect(redirectPath);
     }
 
     if (request.xhr || request.headers.accept?.includes('application/json')) {
