@@ -1,16 +1,56 @@
 import {Resend} from 'resend';
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const FALLBACK_IMAGE_PATH = path.resolve(__dirname, '../../public/images/branding/ppg_logo.svg');
+let fallbackImageDataUri = null;
 
-export async function enviarConfirmacionReserva(_correo, folio, productos) {
+async function getFallbackImageDataUri() {
+  if (fallbackImageDataUri) return fallbackImageDataUri;
+
+  try {
+    const svg = await readFile(FALLBACK_IMAGE_PATH, 'utf8');
+    const base64 = Buffer.from(svg).toString('base64');
+    fallbackImageDataUri = `data:image/svg+xml;base64,${base64}`;
+  } catch (error) {
+    fallbackImageDataUri = 'https://placehold.co/120x120/ffffff/cccccc?text=PPG';
+  }
+
+  return fallbackImageDataUri;
+}
+
+export async function enviarConfirmacionReserva(_correo, detalleReserva) {
+  const {
+    idConcesionaria,
+    folio,
+    estadoPedido = 'Reserva Confirmada',
+    fechaReserva = new Date(),
+    sucursalDireccion = 'N/D',
+    productos = [],
+  } = detalleReserva || {};
+  const fallbackImage = await getFallbackImageDataUri();
+  const fecha = new Date(fechaReserva);
+  const fechaTexto = Number.isNaN(fecha.getTime()) ? 'N/D' : fecha.toLocaleDateString('es-MX');
+  const horaTexto = Number.isNaN(fecha.getTime()) ?
+    'N/D' :
+    fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
+
   const filasProductos = productos.map((ps) => {
     const nombre = ps.producto?.nombre_producto ?? 'Producto';
     const precio = Number(ps.producto?.precio_producto ?? 0);
     const subtotal = precio * ps.cantidad;
+    const imagen = ps.producto?.foto_producto || fallbackImage;
     const fmt = (n) => n.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
     return `
       <tr>
+        <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; text-align: center;">
+          <img src="${imagen}" alt="${nombre}" width="58" height="58" style="width: 58px; height: 58px; object-fit: contain; border-radius: 6px; border: 1px solid #e5e7eb; background: #ffffff;">
+        </td>
         <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #111827;">${nombre}</td>
         <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #6b7280; text-align: center;">${ps.cantidad}</td>
         <td style="padding: 12px 8px; border-bottom: 1px solid #e5e7eb; color: #111827; text-align: right;">$${fmt(precio)}</td>
@@ -43,10 +83,36 @@ export async function enviarConfirmacionReserva(_correo, folio, productos) {
             <p style="margin: 4px 0 0; font-size: 26px; font-weight: 700; color: #2B6398; letter-spacing: 1px;">${folio}</p>
           </div>
 
+          <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
+            <tbody>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Cuenta</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${idConcesionaria ?? 'N/D'}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado de pedido</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${estadoPedido}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Hora</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${horaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Dirección de sucursal</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${sucursalDireccion}</td>
+              </tr>
+            </tbody>
+          </table>
+
           <h2 style="font-size: 15px; color: #374151; margin: 0 0 12px;">Productos reservados</h2>
           <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
             <thead>
               <tr style="background: #f9fafb;">
+                <th style="padding: 10px 8px; text-align: center; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Imagen</th>
                 <th style="padding: 10px 8px; text-align: left; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Producto</th>
                 <th style="padding: 10px 8px; text-align: center; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Cant.</th>
                 <th style="padding: 10px 8px; text-align: right; color: #6b7280; font-weight: 600; border-bottom: 2px solid #e5e7eb;">Precio u.</th>
@@ -76,11 +142,19 @@ export async function enviarConfirmacionReserva(_correo, folio, productos) {
   if (error) console.error('[email] enviarConfirmacionReserva error:', error);
 }
 
-export async function enviarCancelacionReserva(_correo, folio) {
-  const fechaCancelacion = new Date().toLocaleString('es-MX', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
+export async function enviarCancelacionReserva(_correo, detalleReserva) {
+  const {
+    idConcesionaria,
+    folio,
+    estadoPedido = 'Reserva Cancelada',
+    fechaCancelacion = new Date(),
+    sucursalDireccion = 'N/D',
+  } = detalleReserva || {};
+  const fecha = new Date(fechaCancelacion);
+  const fechaTexto = Number.isNaN(fecha.getTime()) ? 'N/D' : fecha.toLocaleDateString('es-MX');
+  const horaTexto = Number.isNaN(fecha.getTime()) ?
+    'N/D' :
+    fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
   const {error} = await resend.emails.send({
     from: 'Reservas <onboarding@resend.dev>',
@@ -102,12 +176,24 @@ export async function enviarCancelacionReserva(_correo, folio) {
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
             <tbody>
               <tr>
-                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado</td>
-                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Cancelada</td>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Cuenta</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${idConcesionaria ?? 'N/D'}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha de cancelación</td>
-                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaCancelacion}</td>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado de pedido</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${estadoPedido}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Hora</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${horaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Dirección de sucursal</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${sucursalDireccion}</td>
               </tr>
             </tbody>
           </table>
