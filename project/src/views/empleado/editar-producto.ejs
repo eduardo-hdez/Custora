@@ -158,14 +158,35 @@
                 Regresar a Catálogo
               </button>
             </a>
-            <input type="submit" value="Guardar cambios"
-              class="w-full sm:w-auto px-6 py-2 bg-[#007185] hover:bg-[#005d6e] text-white font-medium rounded-md transition-colors shadow-sm" />
+            <button type="button" id="btnGuardarCambios"
+              class="w-full sm:w-auto px-6 py-2 bg-[#007185] hover:bg-[#005d6e] text-white font-medium rounded-md transition-colors shadow-sm">
+              Guardar cambios
+            </button>
           </div>
 
         </form>
       </div>
     </section>
   </main>
+
+  <!-- Modal Confirmar Edición -->
+  <div id="modalConfirmarEdicion" tabindex="-1" aria-hidden="true"
+    class="hidden fixed inset-0 z-50 items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm transition-opacity">
+    <div class="relative w-full max-w-md bg-white rounded-lg shadow-xl p-6 text-center border border-gray-200">
+      <span class="material-icons text-[#007185] text-5xl mb-4">info_outline</span>
+      <h3 class="mb-6 text-lg font-medium text-gray-800">¿Seguro que quieres guardar los cambios realizados en este producto?</h3>
+      <div class="flex flex-col sm:flex-row justify-center gap-3">
+        <button id="btnCancelarEdicion" type="button"
+          class="order-2 sm:order-1 flex-1 text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+          Cancelar
+        </button>
+        <button id="btnConfirmarEdicion" type="button"
+          class="order-1 sm:order-2 flex-1 text-white bg-[#007185] hover:bg-[#005d6e] focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-lg text-sm px-5 py-2.5 transition-colors">
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
 
   <%- include('../partials/footer') %>
 <script src="/js/editar-prod.js"></script>
