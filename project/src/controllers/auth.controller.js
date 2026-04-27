@@ -37,9 +37,12 @@ export async function postLogin(request, response) {
 
     if (user.id_rol === ROL_CLIENTE) {
       const {data: poseer} = await Concesionaria.findByUsuario(user.id_usuario);
-      const concesionarias = (poseer ?? []).map((p) => p.id_concesionaria);
+      const concesionarias = (poseer ?? []).map((p) => ({
+        id: p.id_concesionaria,
+        nombre: p.nombre_concesionaria || p.id_concesionaria,
+      }));
       request.session.concesionarias = concesionarias;
-      request.session.idConcesionaria = concesionarias[0] ?? null;
+      request.session.idConcesionaria = concesionarias[0]?.id ?? null;
       return response.redirect('/cliente');
     }
 
