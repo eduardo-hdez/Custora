@@ -7,8 +7,8 @@
         </a>
 
         <a href="/cliente/historial-reservas"
-             class="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap ml-4">
-               Reservas
+            class="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap ml-4">
+            Reservas
         </a>
         <!-- Barra de búsqueda centrada -->
         <div class="flex justify-center flex-1">
@@ -26,74 +26,84 @@
         <div class="flex items-center gap-4">
 
             <!-- Botón de cambio de cuenta -->
-            <% if (concesionarias.length > 1) { %>
+            <% if (concesionarias.length> 1) { %>
                 <details class="relative group">
                     <summary
                         class="list-none bg-white text-[#262F3E] px-4 py-2 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-1 cursor-pointer">
-                        <% const activaNavbar = concesionarias.find((c) => {
+                        <% const activaNavbar=concesionarias.find((c)=> {
                             const cId = c?.id ?? c?.id_concesionaria ?? c;
                             return String(cId) === String(idConcesionaria);
-                        }); %>
-                        <%= activaNavbar ? (activaNavbar.nombre ?? activaNavbar.nombre_concesionaria ?? activaNavbar.id ?? activaNavbar.id_concesionaria ?? activaNavbar) : (idConcesionaria ?? 'Cuenta') %>
-                        <span class="material-icons text-base">arrow_drop_down</span>
+                            }); %>
+                            <%= activaNavbar ? (activaNavbar.nombre ?? activaNavbar.nombre_concesionaria ??
+                                activaNavbar.id ?? activaNavbar.id_concesionaria ?? activaNavbar) : (idConcesionaria
+                                ?? 'Cuenta' ) %>
+                                <span class="material-icons text-base">arrow_drop_down</span>
                     </summary>
                     <div
                         class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
                         <div class="py-2">
-                            <% concesionarias.forEach((c) => {
+                            <% concesionarias.forEach((c)=> {
                                 const cId = c?.id ?? c?.id_concesionaria ?? c;
                                 const cNombre = c?.nombre ?? c?.nombre_concesionaria ?? cId;
-                            %>
+                                %>
                                 <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
                                     <input type="hidden" name="idConcesionaria" value="<%= cId %>">
                                     <input type="hidden" name="returnTo"
                                         value="<%= currentClientePath ?? '/cliente/catalogo' %>">
                                     <button type="submit"
                                         class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= String(cId) === String(idConcesionaria) ? 'font-bold bg-slate-50' : 'font-medium' %>">
-                                        <% if (String(cId) === String(idConcesionaria)) { %>
+                                        <% if (String(cId)===String(idConcesionaria)) { %>
                                             <span class="absolute left-0 top-0 bottom-0 w-1 bg-[#2B6398]"></span>
-                                        <% } %>
-                                        <span class="truncate"><%= cNombre %></span>
+                                            <% } %>
+                                                <span class="truncate">
+                                                    <%= cNombre %>
+                                                </span>
                                     </button>
                                 </form>
-                            <% }) %>
+                                <% }) %>
                         </div>
                     </div>
                 </details>
-            <% } %>
-
-        
-
-            <!-- Perfil -->
-            <a href="/cliente/info-perfil"
-                class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                aria-label="Perfil">
-                <span class="material-icons" style="font-size:1.8rem">account_circle</span>
-            </a>
-
-            <!-- Carrito -->
-            <a href="/cliente/carrito-reserva"
-                class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                aria-label="Carrito">
-                <span class="material-icons" style="font-size:1.8rem">shopping_cart</span>
-                <% if ((cantidadProductosCarrito ?? 0) > 0) { %>
-                    <span
-                        class="absolute -top-1 -right-2 min-w-[1.5rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center">
-                        <%= cantidadProductosCarrito %>
-                    </span>
                 <% } %>
-            </a>
 
-            <!-- Logout -->
-            <form action="/logout" method="POST" class="flex items-center justify-center m-0">
-                <button type="submit"
-                    class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                    aria-label="Cerrar sesión">
-                    <span class="material-icons" style="font-size:1.8rem">logout</span>
-                </button>
-            </form>
 
-        
+
+                    <!-- Perfil -->
+                    <a href="/cliente/info-perfil"
+                        class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+                        aria-label="Perfil">
+                        <span class="material-icons" style="font-size:1.8rem">account_circle</span>
+                    </a>
+
+                    <!-- Carrito -->
+                    <a href="/cliente/carrito-reserva"
+                        class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+                        aria-label="Carrito">
+                        <span class="material-icons" style="font-size:1.8rem">shopping_cart</span>
+                        <% if ((cantidadProductosCarrito ?? 0)> 0) { %>
+                            <span
+                                class="absolute -top-1 -right-2 min-w-[1.5rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center">
+                                <%= cantidadProductosCarrito %>
+                            </span>
+                            <% } %>
+                    </a>
+                    <!-- Ayuda -->
+                    <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNEIFuRN8OMfLhF3Vbo4zlPgx" target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+                        aria-label="Ayuda">
+                        <span class="material-icons" style="font-size:1.8em">help_outline</span>
+                    </a>
+                    <!-- Logout -->
+                    <form action="/logout" method="POST" class="flex items-center justify-center m-0">
+                        <button type="submit"
+                            class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+                            aria-label="Cerrar sesión">
+                            <span class="material-icons" style="font-size:1.8rem">logout</span>
+                        </button>
+                    </form>
+
+
 
         </div>
     </div>

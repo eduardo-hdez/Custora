@@ -660,17 +660,15 @@ export async function deshabilitarProductosCatalogo(request, response) {
 
 export async function getEditarProducto(request, response) {
   try {
-    console.log('ID recibido:', request.params.id);
     const producto = await Producto.obtenerProductoPorId(request.params.id);
-    console.log('Producto obtenido:', producto);
     if (!producto) {
       return response.status(404).redirect('/empleado/catalogo');
     }
 
-  const [campanas, campanaActiva] = await Promise.all([
-  Campana.listarCampanas(),
-  Campana.getCampanaActiva(),
-]);
+    const [campanas, campanaActiva] = await Promise.all([
+      Campana.listarCampanas(),
+      Campana.getCampanaActiva(),
+    ]);
     const idCampanaActiva = campanas.find(c => c.activa)?.id ?? null;
 
     const errorSession = request.session[SESSION_EDITAR_PRODUCTO_ERROR] ?? null;
@@ -700,7 +698,7 @@ export async function getEditarProducto(request, response) {
     console.error('Error al cargar producto:', error.message);
     return response.redirect('/empleado/catalogo');
   }
-} 
+}
 
 export async function postEditarProducto(request, response) {
   try {
