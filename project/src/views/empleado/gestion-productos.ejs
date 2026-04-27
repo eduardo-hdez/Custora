@@ -220,11 +220,11 @@
                                             </td>
                                             <td class="p-4">
                                               <div class="flex items-center justify-center gap-2">
-                                                <button type="button"
+                                                <a href="/empleado/producto/editar/<%= producto.id_producto %>"
                                                   class="text-[#007185] hover:text-[#005d6e] hover:bg-teal-50 p-1.5 rounded-full transition-colors"
                                                   title="Editar producto">
                                                   <span class="material-icons text-[20px]">edit</span>
-                                                </button>
+                                                </a>
                                                 <% if (producto.habilitado) { %>
                                                   <button type="button"
                                                     class="btn-deshabilitar-producto text-teal-600 hover:text-teal-700 hover:bg-teal-50 p-1.5 rounded-full transition-colors"

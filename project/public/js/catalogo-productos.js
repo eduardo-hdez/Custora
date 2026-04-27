@@ -39,3 +39,17 @@
       document.getElementById('formDeshabilitar').submit();
     });
   }
+
+  const modalErrorModificar = document.getElementById('modalErrorModificar');
+  const btnModalErrorModificar = document.getElementById('btnModalErrorModificar');
+
+  if (modalErrorModificar && btnModalErrorModificar) {
+    const ocultarModalErrorModificar = () => {
+      modalErrorModificar.classList.add('hidden');
+    };
+
+    btnModalErrorModificar.addEventListener('click', ocultarModalErrorModificar);
+    modalErrorModificar.addEventListener('click', (e) => {
+      if (e.target === modalErrorModificar) ocultarModalErrorModificar();
+    });
+  }

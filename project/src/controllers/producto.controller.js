@@ -336,6 +336,9 @@ export async function renderDetalleProductoEmpleado(request, response) {
 }
 
 export async function renderCatalogoEmpleado(request, response) {
+  const success = request.query.success;
+  const errorModificar = request.query.errorModificar === '1';
+
   try {
     const [{ data, error }, vistaCampaña] = await Promise.all([
       Producto.fetchAll(),
@@ -365,6 +368,8 @@ export async function renderCatalogoEmpleado(request, response) {
       title: 'Catálogo de Productos',
       productos: productosConResenas,
       errorCatalogo: null,
+      errorModificar,
+      success,
       mostrarLinkEditarCampana: true,
       ...vistaCampaña,
     });
@@ -373,6 +378,8 @@ export async function renderCatalogoEmpleado(request, response) {
       title: 'Catálogo de Productos',
       productos: [],
       errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
+      errorModificar,
+      success,
       ...Campana.CATALOGO_CAMPANA_FALLBACK,
     });
   }
@@ -728,10 +735,9 @@ export async function postEditarProducto(request, response) {
       foto: fotoUrl, // null si no se subió nueva → COALESCE en el RPC conserva la anterior
     });
 
-    return response.redirect(`/empleado/catalogo`);
+    return response.redirect(`/empleado/catalogo?success=editar`);
 
   } catch (error) {
-    console.error('Error al editar producto:', error.message);
     request.session[SESSION_EDITAR_PRODUCTO_ERROR] = 'Ocurrió un error al guardar los cambios.';
     return response.redirect(`/empleado/producto/editar/${request.body.idProducto}`);
   }
