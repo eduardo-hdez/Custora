@@ -399,7 +399,7 @@ export async function renderAnadirProducto(request, response) {
   }
   if (!errorMessage && request.query.error === '1') {
     errorMessage =
-      'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa los datos e intenta de nuevo.';
+      'Lo siento, ocurrió un error al añadir el producto a la base de datos. Revisa que el ID Producto sea único e intenta de nuevo.';
   }
 
   try {

@@ -223,10 +223,10 @@ const tablaGestion = document.getElementById('form-habilitado');
 
 function desplazarAlInicioProductosGestion() {
   if (!tablaGestion) return;
-  tablaGestion.scrollIntoView({behavior: 'smooth', block: 'start'});
+  tablaGestion.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function crearBotonPaginacion({label, disabled = false, activo = false, onClick, ariaLabel = ''}) {
+function crearBotonPaginacion({ label, disabled = false, activo = false, onClick, ariaLabel = '' }) {
   const boton = document.createElement('button');
   boton.type = 'button';
 
@@ -365,12 +365,31 @@ if (filtroEstado) filtroEstado.addEventListener('change', aplicarFiltros);
 if (filtroUnidad) filtroUnidad.addEventListener('change', aplicarFiltros);
 
 // Script de Carga Masiva
-const inputCargaMasiva = document.getElementById('cargaMasiva');
-const labelCargaMasiva = document.getElementById('labelCargaMasiva');
+const btnAbrirCargaMasiva = document.getElementById('cargaMasiva');
 const infoCargaMasiva = document.getElementById('infoCargaMasiva');
+const btnCerrarInfoCargaMasiva = document.getElementById('btnCerrarInfoCargaMasiva');
+
+const inputCargaMasiva = document.getElementById('inputFileCargaMasiva');
+const labelInputFileCargaMasiva = document.getElementById('labelInputFileCargaMasiva');
+const archivoSeleccionadoContainer = document.getElementById('archivoSeleccionadoContainer');
 const nombreArchivoCarga = document.getElementById('nombreArchivoCarga');
 const btnQuitarArchivo = document.getElementById('btnQuitarArchivo');
 const btnRegistrarCarga = document.getElementById('btnRegistrarCarga');
+
+if (btnAbrirCargaMasiva && infoCargaMasiva) {
+  btnAbrirCargaMasiva.addEventListener('click', () => {
+    infoCargaMasiva.classList.toggle('hidden');
+    infoCargaMasiva.classList.toggle('flex');
+  });
+}
+
+if (btnCerrarInfoCargaMasiva && infoCargaMasiva) {
+  btnCerrarInfoCargaMasiva.addEventListener('click', () => {
+    infoCargaMasiva.classList.add('hidden');
+    infoCargaMasiva.classList.remove('flex');
+    restaurarEstadoArchivo();
+  });
+}
 
 function mostrarEstadoArchivo() {
   if (!inputCargaMasiva || !inputCargaMasiva.files.length) return;
@@ -378,27 +397,40 @@ function mostrarEstadoArchivo() {
   const archivo = inputCargaMasiva.files[0];
   nombreArchivoCarga.textContent = archivo.name;
 
-  //ocultar
-  labelCargaMasiva.classList.add('hidden');
-  infoCargaMasiva.classList.remove('hidden');
-  infoCargaMasiva.classList.add('flex');
-  btnRegistrarCarga.classList.remove('hidden');
-  btnRegistrarCarga.classList.add('flex');
+  //ocultar drop
+  labelInputFileCargaMasiva.classList.add('hidden');
+  labelInputFileCargaMasiva.classList.remove('flex');
+
+  archivoSeleccionadoContainer.classList.remove('hidden');
+  archivoSeleccionadoContainer.classList.add('flex');
+
+  // habilitar boton registrar
+  if (btnRegistrarCarga) {
+    btnRegistrarCarga.disabled = false;
+    btnRegistrarCarga.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+    btnRegistrarCarga.classList.add('bg-[#007185]', 'hover:bg-[#005d6e]', 'text-white');
+  }
 }
 
 function restaurarEstadoArchivo() {
   if (inputCargaMasiva) inputCargaMasiva.value = '';
   if (nombreArchivoCarga) nombreArchivoCarga.textContent = '';
 
-  //mostrar
-  if (labelCargaMasiva) labelCargaMasiva.classList.remove('hidden');
-  if (infoCargaMasiva) {
-    infoCargaMasiva.classList.add('hidden');
-    infoCargaMasiva.classList.remove('flex');
+  //mostrar drop
+  if (labelInputFileCargaMasiva) {
+    labelInputFileCargaMasiva.classList.remove('hidden');
+    labelInputFileCargaMasiva.classList.add('flex');
   }
+  if (archivoSeleccionadoContainer) {
+    archivoSeleccionadoContainer.classList.add('hidden');
+    archivoSeleccionadoContainer.classList.remove('flex');
+  }
+
+  // deshabilitar boton registrar
   if (btnRegistrarCarga) {
-    btnRegistrarCarga.classList.add('hidden');
-    btnRegistrarCarga.classList.remove('flex');
+    btnRegistrarCarga.disabled = true;
+    btnRegistrarCarga.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+    btnRegistrarCarga.classList.remove('bg-[#007185]', 'hover:bg-[#005d6e]', 'text-white');
   }
 }
 
