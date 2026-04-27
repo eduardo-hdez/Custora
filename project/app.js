@@ -24,6 +24,7 @@ app.use(helmet({
       scriptSrc: [
         "'self'",
         "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net",
         "'sha256-T9U76Q64V8htdr9TY5R6AS4UStIKoMU68kezfHSWxNI='"
       ],
     },

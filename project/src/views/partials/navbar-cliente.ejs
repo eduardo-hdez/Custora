@@ -15,16 +15,16 @@
         </div>
         
         <!-- Barra de búsqueda centrada -->
-        <div class="absolute left-1/2 -translate-x-1/2">
-            <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
-                <input type="text" placeholder="Buscar"
-                    class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
-                <button
-                    class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
-                    <span class="material-icons text-white" style="font-size:1.25rem">search</span>
-                </button>
-            </div>
-        </div>
+       <div class="absolute left-1/2 -translate-x-1/2">
+          <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
+             <input type="text" id="navbar-search-input" placeholder="Buscar"
+            class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
+        <button id="navbar-search-btn"
+            class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
+            <span class="material-icons text-white" style="font-size:1.25rem">search</span>
+        </button>
+          </div>
+       </div>
 
         <!-- Derecha: selector de cuenta + iconos + home -->
         <div class="flex items-center gap-4 ml-auto">
@@ -119,4 +119,5 @@
 
         </div>
     </div>
+    <script src="/js/navbar-search.js"></script>
 </nav>
