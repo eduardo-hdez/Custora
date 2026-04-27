@@ -24,7 +24,7 @@
       <% } %>
 
       <% const f = form || {}; %>
-      <form method="post" action="/empleado/campanas/nueva" enctype="multipart/form-data" class="space-y-5">
+      <form method="post" action="/empleado/campanas/nueva?_csrf=<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>" enctype="multipart/form-data" class="space-y-5">
         <div>
           <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">ID campaña</label>
           <input type="text" id="idCampana" name="idCampana" required
