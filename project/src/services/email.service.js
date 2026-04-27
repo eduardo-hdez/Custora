@@ -142,11 +142,19 @@ export async function enviarConfirmacionReserva(_correo, detalleReserva) {
   if (error) console.error('[email] enviarConfirmacionReserva error:', error);
 }
 
-export async function enviarCancelacionReserva(_correo, folio) {
-  const fechaCancelacion = new Date().toLocaleString('es-MX', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
+export async function enviarCancelacionReserva(_correo, detalleReserva) {
+  const {
+    idConcesionaria,
+    folio,
+    estadoPedido = 'Reserva Cancelada',
+    fechaCancelacion = new Date(),
+    sucursalDireccion = 'N/D',
+  } = detalleReserva || {};
+  const fecha = new Date(fechaCancelacion);
+  const fechaTexto = Number.isNaN(fecha.getTime()) ? 'N/D' : fecha.toLocaleDateString('es-MX');
+  const horaTexto = Number.isNaN(fecha.getTime()) ?
+    'N/D' :
+    fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
   const {error} = await resend.emails.send({
     from: 'Reservas <onboarding@resend.dev>',
@@ -168,12 +176,24 @@ export async function enviarCancelacionReserva(_correo, folio) {
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 20px;">
             <tbody>
               <tr>
-                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado</td>
-                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">Cancelada</td>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Cuenta</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb; font-weight: 600;">${idConcesionaria ?? 'N/D'}</td>
               </tr>
               <tr>
-                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha de cancelación</td>
-                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaCancelacion}</td>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Estado de pedido</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${estadoPedido}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Fecha</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${fechaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Hora</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${horaTexto}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #6b7280; border-bottom: 1px solid #e5e7eb;">Dirección de sucursal</td>
+                <td style="padding: 10px 0; color: #111827; text-align: right; border-bottom: 1px solid #e5e7eb;">${sucursalDireccion}</td>
               </tr>
             </tbody>
           </table>

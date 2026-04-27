@@ -260,7 +260,18 @@ export async function postCancelarReserva(request, response) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  enviarCancelacionReserva(request.session.correo, folio).catch((emailError) => {
+  const { data: sucursalSeleccionada } = await Concesionaria.getSucursalById(
+      idConcesionaria,
+      reserva.id_sucursal,
+  );
+
+  enviarCancelacionReserva(request.session.correo, {
+    idConcesionaria,
+    folio,
+    estadoPedido: 'Reserva Cancelada',
+    fechaCancelacion: reservaCancelada.fecha_cancelacion || new Date(),
+    sucursalDireccion: sucursalSeleccionada?.ubicacion || 'N/D',
+  }).catch((emailError) => {
     console.error('[reserva] enviarCancelacionReserva error:', emailError);
   });
 
