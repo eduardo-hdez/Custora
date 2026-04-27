@@ -67,6 +67,7 @@ app.use(session({
 const { csrfSynchronisedProtection, generateToken } = csrfSync({
   getTokenFromRequest: (req) => {
     if (req.body && req.body['_csrf']) return req.body['_csrf'];
+    if (req.query && req.query['_csrf']) return req.query['_csrf'];
     if (req.headers['x-csrf-token']) return req.headers['x-csrf-token'];
     return null;
   },
