@@ -23,9 +23,12 @@ export async function renderReporte(request, response) {
       fetchSingleTopSucursal()
     ]);
 
+    const sinReservas = topConcesionarias.length === 0 && demanda.productosMasSolicitados.length === 0;
+
     return response.render('empleado/reporte', {
       ...base,
       errorReporte: null,
+      infoReporte: sinReservas ? 'Actualmente no existen reservas en la campaña seleccionada. Las métricas se actualizarán cuando se registren nuevas reservas.' : null,
       ...demanda,
       topConcesionarias,
       ingresosHoy,
@@ -38,7 +41,8 @@ export async function renderReporte(request, response) {
 
     return response.status(500).render('empleado/reporte', {
       ...base,
-      errorReporte: 'No se pudo cargar el reporte en este momento.',
+      errorReporte: 'Lo siento. No se pudieron recuperar los datos o generar el reporte en este momento. Por favor, intenta más tarde.',
+      infoReporte: null,
       productosMasSolicitados: [],
       productosMenosSolicitados: [],
       topConcesionarias: [],
