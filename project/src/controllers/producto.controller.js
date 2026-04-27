@@ -338,6 +338,7 @@ export async function renderDetalleProductoEmpleado(request, response) {
 export async function renderCatalogoEmpleado(request, response) {
   const success = request.query.success;
   const errorModificar = request.query.errorModificar === '1';
+  const errorCargarProducto = request.query.errorCargarProducto === '1';
 
   try {
     const [{ data, error }, vistaCampaña] = await Promise.all([
@@ -369,6 +370,7 @@ export async function renderCatalogoEmpleado(request, response) {
       productos: productosConResenas,
       errorCatalogo: null,
       errorModificar,
+      errorCargarProducto,
       success,
       mostrarLinkEditarCampana: true,
       ...vistaCampaña,
@@ -379,6 +381,7 @@ export async function renderCatalogoEmpleado(request, response) {
       productos: [],
       errorCatalogo: 'No se pudo cargar el catálogo en este momento.',
       errorModificar,
+      errorCargarProducto,
       success,
       ...Campana.CATALOGO_CAMPANA_FALLBACK,
     });
@@ -669,7 +672,7 @@ export async function getEditarProducto(request, response) {
   try {
     const producto = await Producto.obtenerProductoPorId(request.params.id);
     if (!producto) {
-      return response.status(404).redirect('/empleado/catalogo');
+      return response.status(404).redirect('/empleado/catalogo?errorCargarProducto=1');
     }
 
     const [campanas, campanaActiva] = await Promise.all([
@@ -703,7 +706,7 @@ export async function getEditarProducto(request, response) {
     });
   } catch (error) {
     console.error('Error al cargar producto:', error.message);
-    return response.redirect('/empleado/catalogo');
+    return response.redirect('/empleado/catalogo?errorCargarProducto=1');
   }
 }
 
@@ -738,7 +741,7 @@ export async function postEditarProducto(request, response) {
     return response.redirect(`/empleado/catalogo?success=editar`);
 
   } catch (error) {
-    request.session[SESSION_EDITAR_PRODUCTO_ERROR] = 'Ocurrió un error al guardar los cambios.';
+    request.session[SESSION_EDITAR_PRODUCTO_ERROR] = 'Lo siento, ocurrió un error al guardar los cambios. Por favor intenta de nuevo.';
     return response.redirect(`/empleado/producto/editar/${request.body.idProducto}`);
   }
 }

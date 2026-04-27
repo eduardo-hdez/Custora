@@ -40,6 +40,20 @@
     });
   }
 
+  const modalErrorCargarProducto = document.getElementById('modalErrorCargarProducto');
+  const btnModalErrorCargarProducto = document.getElementById('btnModalErrorCargarProducto');
+
+  if (modalErrorCargarProducto && btnModalErrorCargarProducto) {
+    const ocultarModalErrorCargarProducto = () => {
+      modalErrorCargarProducto.classList.add('hidden');
+    };
+
+    btnModalErrorCargarProducto.addEventListener('click', ocultarModalErrorCargarProducto);
+    modalErrorCargarProducto.addEventListener('click', (e) => {
+      if (e.target === modalErrorCargarProducto) ocultarModalErrorCargarProducto();
+    });
+  }
+
   const modalErrorModificar = document.getElementById('modalErrorModificar');
   const btnModalErrorModificar = document.getElementById('btnModalErrorModificar');
 
