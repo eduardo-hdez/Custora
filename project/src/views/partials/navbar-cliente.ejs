@@ -1,5 +1,7 @@
 <nav class="bg-[#262F3E] py-4">
+
     <div class="flex items-center w-full px-4">
+        <div class="flex items-center gap-4">
         <a href="/cliente/catalogo"
             class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
             aria-label="Inicio">
@@ -10,8 +12,10 @@
              class="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap ml-4">
                Reservas
         </a>
+        </div>
+        
         <!-- Barra de búsqueda centrada -->
-        <div class="flex justify-center flex-1">
+        <div class="absolute left-1/2 -translate-x-1/2">
             <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
                 <input type="text" placeholder="Buscar"
                     class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
@@ -23,7 +27,7 @@
         </div>
 
         <!-- Derecha: selector de cuenta + iconos + home -->
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 ml-auto">
 
             <!-- Botón de cambio de cuenta -->
             <% if (concesionarias.length > 1) { %>
@@ -75,6 +79,14 @@
                     </span>
                 <% } %>
             </a>
+
+            <!-- Ayuda -->
+            <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNEIFuRN8OMfLhF3Vbo4zlPgx"
+            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+            aria-label="Ayuda">
+            <span class="material-icons" style="font-size:1.8em">help_outline</span>
+            </a>
+
 
             <!-- Logout -->
             <form action="/logout" method="POST" class="flex items-center justify-center m-0">

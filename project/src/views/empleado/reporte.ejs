@@ -10,8 +10,14 @@
 
     <main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow">
 
+     
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
         <h1 class="text-2xl font-bold text-gray-900">Reporte de Reservas</h1>
+      <div class="flex items-center gap-3">
+        <button class="bg-[#2B6398] hover:bg-[#1f496e] text-white text-sm font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors duration-200 cursor-pointer">
+        <span class="material-icons text-base">download</span>
+         Exportar
+        </button>
         <div class="text-sm text-gray-500 bg-white px-4 py-2 rounded-md border border-gray-200 shadow-sm">
           Ultima actualizacion:
           <span class="font-medium text-gray-900">
@@ -19,6 +25,7 @@
           </span>
         </div>
       </div>
+    </div>
 
       <% if (errorReporte) { %>
         <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6">
