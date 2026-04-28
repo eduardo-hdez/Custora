@@ -2,6 +2,7 @@ import Reserva from '../models/reserva.model.js';
 import Carrito from '../models/carrito.model.js';
 import Campana from '../models/campana.model.js';
 import Producto from '../models/producto.model.js';
+import Concesionaria from '../models/concesionaria.model.js';
 import { enviarConfirmacionReserva } from '../services/email.service.js';
 import { enviarCancelacionReserva } from '../services/email.service.js';
 
@@ -109,7 +110,16 @@ export async function confirmarReserva(request, response) {
 
   await Carrito.clearCart(carrito.id_carrito);
 
-  enviarConfirmacionReserva(request.session.correo, folio, productos);
+  const { data: sucursalSeleccionada } = await Concesionaria.getSucursalById(idConcesionaria, idSucursal);
+
+  enviarConfirmacionReserva(request.session.correo, {
+    idConcesionaria,
+    folio,
+    estadoPedido: 'Reserva Confirmada',
+    fechaReserva: new Date(),
+    sucursalDireccion: sucursalSeleccionada?.ubicacion || 'N/D',
+    productos,
+  });
 
   return response.render('cliente/confirmacion-reserva', {
     title: 'Reserva Confirmada',
@@ -250,7 +260,18 @@ export async function postCancelarReserva(request, response) {
     return response.redirect('/cliente/historial-reservas');
   }
 
-  enviarCancelacionReserva(request.session.correo, folio).catch((emailError) => {
+  const { data: sucursalSeleccionada } = await Concesionaria.getSucursalById(
+      idConcesionaria,
+      reserva.id_sucursal,
+  );
+
+  enviarCancelacionReserva(request.session.correo, {
+    idConcesionaria,
+    folio,
+    estadoPedido: 'Reserva Cancelada',
+    fechaCancelacion: reservaCancelada.fecha_cancelacion || new Date(),
+    sucursalDireccion: sucursalSeleccionada?.ubicacion || 'N/D',
+  }).catch((emailError) => {
     console.error('[reserva] enviarCancelacionReserva error:', emailError);
   });
 

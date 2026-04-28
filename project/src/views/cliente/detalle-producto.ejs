@@ -75,6 +75,7 @@
 
             <div class="flex flex-col gap-3">
                 <form method="POST" action="/cliente/carrito/agregar">
+                  <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                   <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
                   <input type="hidden" name="cantidad" value="1">
                   

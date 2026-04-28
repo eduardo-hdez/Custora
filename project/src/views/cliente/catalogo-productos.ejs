@@ -147,6 +147,7 @@
                   </div>
                   <% if (urlDetalle) { %>
                     <form action="/cliente/carrito/agregar" method="POST" class="flex flex-col gap-2">
+                      <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                       <input type="hidden" name="id_producto" value="<%= idProducto %>">
                       <input type="hidden" name="cantidad" value="1">
 

@@ -17,4 +17,15 @@ export default class Concesionaria {
 
     return {data, error};
   }
+
+  static async getSucursalById(id_concesionaria, id_sucursal) {
+    const {data, error} = await supabase
+        .from('sucursal')
+        .select('id_sucursal, nombre_sucursal, ubicacion')
+        .eq('id_concesionaria', id_concesionaria)
+        .eq('id_sucursal', id_sucursal)
+        .maybeSingle();
+
+    return {data, error};
+  }
 }

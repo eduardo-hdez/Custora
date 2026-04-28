@@ -13,18 +13,22 @@ export default class Producto {
     }
 
     save() {
+        const payload = {
+            id_producto: this.id,
+            nombre_producto: this.nombre,
+            descripcion_producto: this.descripcion,
+            precio_producto: this.precio,
+            peso_unidad: this.pesoUnidad,
+            unidad_venta_producto: this.unidadVenta,
+            id_campana: this.idCampana,
+        };
+        if (typeof this.foto === 'string' && this.foto.trim().length > 0) {
+            payload.foto_producto = this.foto;
+        }
+
         return supabase
             .from('producto')
-            .insert([{
-                id_producto: this.id,
-                nombre_producto: this.nombre,
-                descripcion_producto: this.descripcion,
-                precio_producto: this.precio,
-                foto_producto: this.foto,
-                peso_unidad: this.pesoUnidad,
-                unidad_venta_producto: this.unidadVenta,
-                id_campana: this.idCampana,
-            }]);
+            .insert([payload]);
     }
 
     static async insertarFila(fila) {

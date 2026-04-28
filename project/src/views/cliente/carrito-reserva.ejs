@@ -99,6 +99,7 @@
                     <div class="flex items-center gap-3 justify-end sm:justify-end sm:flex-shrink-0">
                       <% if (idProducto) { %>
                         <form method="POST" action="/cliente/carrito/eliminar" class="inline-flex m-0">
+                          <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                           <input type="hidden" name="id_producto" value="<%= idProducto %>">
                           <button type="submit" class="text-red-600 hover:text-red-800 hover:bg-red-50 p-2 rounded-md transition-colors flex items-center justify-center" title="Quitar del carrito" aria-label="Quitar del carrito">
                             <span class="material-icons text-xl">delete_outline</span>
@@ -144,6 +145,7 @@
               </div>
 
               <form method="POST" action="/cliente/reserva/confirmar">
+                <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
                 <div class="mt-8 mb-6">
                   <label for="sucursal" class="block text-sm font-bold text-gray-700 mb-2">
                     Seleccionar Sucursal para Enviar <span class="text-red-500">*</span>

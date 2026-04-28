@@ -215,6 +215,7 @@
 
   <!-- Form oculto que se envía al confirmar -->
   <form id="formDeshabilitar" action="/empleado/catalogo-productos/deshabilitar" method="POST" class="hidden">
+    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
     <input type="hidden" id="inputIdProducto" name="productosSeleccionados" value="">
   </form>
 

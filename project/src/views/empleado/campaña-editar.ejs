@@ -29,7 +29,7 @@
       %>
       <!-- 2. Action apunta a la ruta de editar -->
       <form method="post" enctype="multipart/form-data"
-        action="/empleado/campanas/<%= encodeURIComponent(campana.id) %>/editar" class="space-y-5">
+        action="/empleado/campanas/<%= encodeURIComponent(campana.id) %>/editar?_csrf=<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>" class="space-y-5">
 
         <div>
           <label for="idCampana" class="block text-sm font-medium text-gray-700 mb-1">ID campaña</label>

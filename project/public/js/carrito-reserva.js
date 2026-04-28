@@ -74,12 +74,19 @@ const enviarCantidadServidor = async (item, cantidad) => {
   botones.forEach((btn) => { btn.disabled = true; });
 
   try {
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    };
+    
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMeta) {
+      headers['x-csrf-token'] = csrfMeta.getAttribute('content');
+    }
+
     const response = await fetch(`/cliente/carrito/actualizar/${encodeURIComponent(idProducto)}`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
+      headers,
       body: JSON.stringify({cantidad}),
     });
 
