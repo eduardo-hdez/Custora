@@ -4,7 +4,8 @@ import {
   fetchIngresosHoy,
   fetchPromedioIngresosDiarios,
   fetchSingleTopConcesionaria,
-  fetchSingleTopSucursal
+  fetchSingleTopSucursal,
+  fetchTopProductosCalificados
 } from '../models/reporte.model.js';
 
 export async function renderReporte(request, response) {
@@ -14,13 +15,14 @@ export async function renderReporte(request, response) {
   };
 
   try {
-    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios, singleTopConcesionaria, singleTopSucursal] = await Promise.all([
+    const [demanda, topConcesionarias, ingresosHoy, promedioIngresosDiarios, singleTopConcesionaria, singleTopSucursal, mejoresProductos] = await Promise.all([
       fetchDemandaProductosRanking(3),
       fetchTopConcesionariasRanking(5),
       fetchIngresosHoy(),
       fetchPromedioIngresosDiarios(),
       fetchSingleTopConcesionaria(),
-      fetchSingleTopSucursal()
+      fetchSingleTopSucursal(),
+      fetchTopProductosCalificados(5)
     ]);
 
     const sinReservas = topConcesionarias.length === 0 && demanda.productosMasSolicitados.length === 0;
@@ -34,7 +36,8 @@ export async function renderReporte(request, response) {
       ingresosHoy,
       promedioIngresosDiarios,
       singleTopConcesionaria,
-      singleTopSucursal
+      singleTopSucursal,
+      mejoresProductos
     });
   } catch (error) {
     console.error('[reporte] Error al generar el reporte:', error);
@@ -49,7 +52,8 @@ export async function renderReporte(request, response) {
       ingresosHoy: [],
       promedioIngresosDiarios: [],
       singleTopConcesionaria: [],
-      singleTopSucursal: []
+      singleTopSucursal: [],
+      mejoresProductos: []
     });
   }
 }

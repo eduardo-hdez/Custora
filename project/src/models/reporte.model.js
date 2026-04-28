@@ -84,6 +84,39 @@ export async function fetchSingleTopConcesionaria() {
   return data?.[0] ?? 0;
 }
 
+export async function fetchTopProductosCalificados(limite = 5) {
+  const { data, error } = await supabase
+    .from('calificar')
+    .select('id_producto, puntuacion, producto(nombre_producto, foto_producto)');
+
+  if (error) throw error;
+
+  const mapa = new Map();
+  for (const r of data) {
+    const id = r.id_producto;
+    if (!id) continue;
+    
+    const puntuacion = Number(r.puntuacion) || 0;
+    const info = mapa.get(id) || { 
+      nombre: r.producto?.nombre_producto || 'N/D', 
+      foto: r.producto?.foto_producto,
+      suma: 0, 
+      conteo: 0 
+    };
+    info.suma += puntuacion;
+    info.conteo += 1;
+    mapa.set(id, info);
+  }
+
+  return Array.from(mapa.values())
+    .map(item => ({
+      ...item,
+      promedio: item.conteo > 0 ? (item.suma / item.conteo) : 0
+    }))
+    .sort((a, b) => b.promedio - a.promedio || b.conteo - a.conteo)
+    .slice(0, limite);
+}
+
 export async function fetchSingleTopSucursal() {
   const { data, error } = await supabase.rpc('get_single_top_sucursal');
 
