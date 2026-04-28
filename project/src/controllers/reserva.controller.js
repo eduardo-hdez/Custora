@@ -102,7 +102,7 @@ export async function confirmarReserva(request, response) {
     campana?.id_campana,
     productos,
   );
-  
+
   if (errorTransaccion) {
     console.error('[reserva] crearConProductos error:', errorTransaccion);
     return response.redirect('/cliente/carrito-reserva');
@@ -216,6 +216,39 @@ export async function getDetalleReserva(request, response) {
   });
 }
 
+export async function detalleReservaEmpleado(request, response) {
+  const folio = request.params.folio;
+  if (!folio) return response.redirect('/empleado/tabla-reservas');
+
+  const { data: reservaRaw, error: errorDetalle } = await Reserva.obtenerDetallePorFolio(folio, null);
+  if (errorDetalle) {
+    console.error('[reserva] detalleReservaEmpleado obtenerDetallePorFolio error:', errorDetalle);
+    return response.redirect('/empleado/tabla-reservas');
+  }
+
+  const reserva = reservaRaw ? mapReservaView(reservaRaw) : null;
+  if (!reserva) return response.redirect('/empleado/tabla-reservas');
+
+  const idsProducto = reserva.productos.map((item) => item.id).filter(Boolean);
+  const { data: resumenCalificaciones } = await Producto.getResumenCalificacionesByProductoIds(idsProducto);
+  const resumenPorProducto = new Map(
+    (resumenCalificaciones || []).map((item) => [item.id_producto, item]),
+  );
+  reserva.productos = reserva.productos.map((item) => {
+    const resumen = resumenPorProducto.get(item.id);
+    return {
+      ...item,
+      promedioPuntuacion: resumen ? Number(resumen.promedio_puntuacion) : 0,
+      totalResenas: resumen ? Number(resumen.total_resenas) : 0,
+    };
+  });
+
+  return response.render('empleado/detalle-reserva', {
+    title: `Detalle de Reserva ${folio}`,
+    reserva,
+  });
+}
+
 export async function postCancelarReserva(request, response) {
   const idConcesionaria = request.session.idConcesionaria;
   if (!idConcesionaria) return response.redirect('/login');
@@ -261,8 +294,8 @@ export async function postCancelarReserva(request, response) {
   }
 
   const { data: sucursalSeleccionada } = await Concesionaria.getSucursalById(
-      idConcesionaria,
-      reserva.id_sucursal,
+    idConcesionaria,
+    reserva.id_sucursal,
   );
 
   enviarCancelacionReserva(request.session.correo, {

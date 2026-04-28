@@ -15,8 +15,8 @@ router.get('/', productoController.renderCatalogoEmpleado);
 router.get('/catalogo', productoController.renderCatalogoEmpleado);
 router.post('/catalogo-productos/deshabilitar', productoController.deshabilitarProductosCatalogo);
 
-router.get('/producto/editar/:id',productoController.getEditarProducto);
-router.post('/producto/editar/:id', parseProductoMultipart,productoController.postEditarProducto);
+router.get('/producto/editar/:id', productoController.getEditarProducto);
+router.post('/producto/editar/:id', parseProductoMultipart, productoController.postEditarProducto);
 
 router.get('/detalle-producto/:id', productoController.renderDetalleProductoEmpleado);
 
@@ -38,9 +38,7 @@ router.post('/gestion-productos/rehabilitar', productoController.rehabilitarProd
 
 router.get('/tabla-reservas', reservaController.renderTablaReservas);
 
-router.get('/detalle-reserva', (request, response) => {
-  response.render('empleado/detalle-reserva', { title: 'Detalle de Reserva' });
-});
+router.get('/detalle-reserva/:folio', reservaController.detalleReservaEmpleado);
 
 router.get('/reporte', reporteController.renderReporte);
 
