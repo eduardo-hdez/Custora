@@ -1,16 +1,9 @@
-<%#
-  Tarjeta — Demanda de Productos
-  Muestra top 3 más solicitados y top 3 menos solicitados.
-  Variables esperadas:
-    - productosMasSolicitados:   Array<{ nombreProducto, totalUnidades }>  (hasta 3)
-    - productosMenosSolicitados: Array<{ nombreProducto, totalUnidades }>  (hasta 3)
-%>
-
 <section class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden mb-8">
 
   <header class="flex items-center gap-3 px-6 sm:px-8 py-5 bg-gray-50 border-b border-gray-200">
     <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#007185]/10 text-[#007185]">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
         <path d="M21 8v13H3V8"></path>
         <path d="M1 3h22v5H1z"></path>
         <path d="M10 12h4"></path>
@@ -20,64 +13,96 @@
   </header>
 
   <div class="px-6 sm:px-8 py-6">
-
-    <div class="mb-6">
-      <div class="flex items-center gap-2 mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-green-700">
-          <line x1="12" y1="19" x2="12" y2="5"></line>
-          <polyline points="5 12 12 5 19 12"></polyline>
-        </svg>
-        <h3 class="text-sm font-bold tracking-wider text-green-700 uppercase">Más Solicitados</h3>
-      </div>
-
-      <% if (!productosMasSolicitados || productosMasSolicitados.length === 0) { %>
-        <p class="text-sm text-gray-500 italic">Sin datos.</p>
+    <% if ((!productosMasSolicitados || productosMasSolicitados.length===0) && (!productosMenosSolicitados ||
+      productosMenosSolicitados.length===0)) { %>
+      <p class="text-sm text-gray-500 italic">Sin datos.</p>
       <% } else { %>
-        <ul class="divide-y divide-gray-100">
-          <% productosMasSolicitados.forEach((p, i) => { %>
-            <li class="flex items-baseline justify-between py-2.5">
-              <span class="text-gray-900 font-medium">
-                <span class="text-gray-500 mr-1"><%= i + 1 %>.</span>
-                <%= p.nombreProducto %>
-              </span>
-              <span class="text-gray-500 text-sm whitespace-nowrap">
-                <%= p.totalUnidades.toLocaleString('es-MX') %> unid.
-              </span>
-            </li>
-          <% }) %>
-        </ul>
-      <% } %>
-    </div>
+        <div class="w-full" style="height: 400px;">
+          <canvas id="demandaChart" data-mas-solicitados="<%= JSON.stringify(productosMasSolicitados || []) %>"
+            data-menos-solicitados="<%= JSON.stringify(productosMenosSolicitados || []) %>"></canvas>
+        </div>
 
-    <hr class="border-gray-200 my-6" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            const canvas = document.getElementById('demandaChart');
+            const masSolicitados = JSON.parse(canvas.getAttribute('data-mas-solicitados') || '[]');
+            const menosSolicitados = JSON.parse(canvas.getAttribute('data-menos-solicitados') || '[]');
 
-    <div>
-      <div class="flex items-center gap-2 mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-red-700">
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <polyline points="19 12 12 19 5 12"></polyline>
-        </svg>
-        <h3 class="text-sm font-bold tracking-wider text-red-700 uppercase">Menos Solicitados</h3>
-      </div>
 
-      <% if (!productosMenosSolicitados || productosMenosSolicitados.length === 0) { %>
-        <p class="text-sm text-gray-500 italic">Sin datos.</p>
-      <% } else { %>
-        <ul class="divide-y divide-gray-100">
-          <% productosMenosSolicitados.forEach((p, i) => { %>
-            <li class="flex items-baseline justify-between py-2.5">
-              <span class="text-gray-900 font-medium">
-                <span class="text-gray-500 mr-1"><%= i + 1 %>.</span>
-                <%= p.nombreProducto %>
-              </span>
-              <span class="text-gray-500 text-sm whitespace-nowrap">
-                <%= p.totalUnidades.toLocaleString('es-MX') %> unid.
-              </span>
-            </li>
-          <% }) %>
-        </ul>
-      <% } %>
-    </div>
+            const labels = [];
+            const data = [];
+            const bgColors = [];
+            const borderColors = [];
 
+            const palette = [
+              { bg: 'rgba(54, 162, 235, 0.7)', border: 'rgba(54, 162, 235, 1)' },
+              { bg: 'rgba(255, 99, 132, 0.7)', border: 'rgba(255, 99, 132, 1)' },
+              { bg: 'rgba(255, 206, 86, 0.7)', border: 'rgba(255, 206, 86, 1)' },
+              { bg: 'rgba(75, 192, 192, 0.7)', border: 'rgba(75, 192, 192, 1)' },
+              { bg: 'rgba(153, 102, 255, 0.7)', border: 'rgba(153, 102, 255, 1)' },
+              { bg: 'rgba(255, 159, 64, 0.7)', border: 'rgba(255, 159, 64, 1)' }
+            ];
+
+            let colorIndex = 0;
+
+            masSolicitados.forEach(p => {
+              labels.push(p.nombreProducto + ' (Top)');
+              data.push(p.totalUnidades);
+              bgColors.push(palette[colorIndex % palette.length].bg);
+              borderColors.push(palette[colorIndex % palette.length].border);
+              colorIndex++;
+            });
+
+            menosSolicitados.forEach(p => {
+              labels.push(p.nombreProducto + ' (Menos)');
+              data.push(p.totalUnidades);
+              bgColors.push(palette[colorIndex % palette.length].bg);
+              borderColors.push(palette[colorIndex % palette.length].border);
+              colorIndex++;
+            });
+
+            const ctx = document.getElementById('demandaChart').getContext('2d');
+            new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Unidades Solicitadas',
+                  data: data,
+                  backgroundColor: bgColors,
+                  borderColor: borderColors,
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    title: {
+                      display: true,
+                      text: 'Unidades'
+                    }
+                  }
+                },
+                plugins: {
+                  legend: {
+                    display: false
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: function (context) {
+                        return context.raw.toLocaleString('es-MX') + ' unid.';
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          });
+        </script>
+        <% } %>
   </div>
 </section>
