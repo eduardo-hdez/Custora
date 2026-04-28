@@ -115,3 +115,18 @@ export async function fetchPromedioReservasPorDia() {
     promedio: Number(mapa.get(d.dia_semana)?.promedio_reservas) || 0,
   }));
 }
+
+export async function fetchReservasPorHora() {
+  const { data, error } = await supabase.rpc('get_reservas_por_hora');
+
+  if (error) throw error;
+
+  // Garantizar que las 24 horas siempre aparezcan
+  const horas = Array.from({ length: 24 }, (_, i) => i);
+  const mapa = new Map((data || []).map(d => [d.hora, d]));
+
+  return horas.map(h => ({
+    hora: `${String(h).padStart(2, '0')}:00`,
+    total: Number(mapa.get(h)?.total_reservas) || 0,
+  }));
+}
