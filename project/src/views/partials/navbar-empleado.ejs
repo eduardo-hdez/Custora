@@ -1,70 +1,104 @@
-<nav class="bg-[#262F3E] py-4">
-    <div class="flex items-center gap-2 px-4 w-full">
-        <div class="flex items-center w-full px-4">
-        <!-- Home -->
-        <a href="/empleado/catalogo"
-            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
-            aria-label="Inicio">
-            <span class="material-icons" style="font-size:1.8rem">home</span>
-        </a>
+<nav class="bg-[#262F3E] py-3 relative">
+  <div class="flex items-center px-4 w-full gap-3">
 
-        <!-- Gestión -->
-        <a href="/empleado/gestion-productos"
-            class="text-white/85 hover:text-white text-sm font-medium px-2 py-2 whitespace-nowrap transition-colors duration-200">
-            Gestión
-        </a>
+    <!-- Hamburguesa (solo móvil) -->
+    <button id="menu-hamburguesa-empleado" class="sm:hidden text-white/80 hover:text-white flex items-center justify-center flex-shrink-0 transition-colors duration-200" aria-label="Menú">
+      <span class="material-icons" style="font-size:1.8rem">menu</span>
+    </button>
 
-        <!-- Reservas -->
-        <a href="/empleado/tabla-reservas"
-            class="text-white/85 hover:text-white text-sm font-medium px-2 py-2 whitespace-nowrap transition-colors duration-200">
-            Reservas
-        </a>
-
-        <!-- Campaña -->
-        <a href="/empleado/campanas"
-            class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
-            Campaña
-        </a>
-        </div>
-
-         <!-- Barra de búsqueda centrada -->
-       <div class="absolute left-1/2 -translate-x-1/2">
-          <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
-             <input type="text" id="navbar-search-input" placeholder="Buscar"
-            class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
-        <button id="navbar-search-btn"
-            class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
-            <span class="material-icons text-white" style="font-size:1.25rem">search</span>
-        </button>
-          </div>
-       </div>
-        
-       <div class="flex items-center gap-4 ml-auto">
-        <!-- Reporte -->
-        <a href="/empleado/reporte"
-            class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
-            Reporte
-        </a>
-
-        <!-- Ayuda -->
-        <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNELp5g-3eepBPnvYczT0eC85" target="_blank"
-            rel="noopener noreferrer"
-            class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
-            aria-label="Ayuda">
-            <span class="material-icons" style="font-size:1.8em">help_outline</span>
-        </a>
-
-        <!-- Logout -->
-        <form action="/logout" method="POST" class="flex items-center m-0">
-            <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-            <button type="submit"
-                class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
-                aria-label="Cerrar sesión">
-                <span class="material-icons" style="font-size:1.8rem">logout</span>
-            </button>
-        </form>
-        </div>
-
+    
+    <div class="hidden sm:flex items-center flex-shrink-0">
+      <a href="/empleado/catalogo"
+        class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+        aria-label="Inicio">
+        <span class="material-icons" style="font-size:1.8rem">home</span>
+      </a>
+      <a href="/empleado/gestion-productos"
+        class="text-white/85 hover:text-white text-sm font-medium px-2 py-2 whitespace-nowrap transition-colors duration-200">
+        Gestión
+      </a>
+      <a href="/empleado/tabla-reservas"
+        class="text-white/85 hover:text-white text-sm font-medium px-2 py-2 whitespace-nowrap transition-colors duration-200">
+        Reservas
+      </a>
+      <a href="/empleado/campanas"
+        class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
+        Campaña
+      </a>
     </div>
-    <script src="/js/navbar-search.js"></script>
+
+    <!-- Buscador --> 
+    <div class="flex flex-1 justify-center">
+      <div class="flex w-full sm:w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
+        <input type="text" id="navbar-search-input" placeholder="Buscar"
+          class="flex-1 px-4 py-2 sm:py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
+        <button id="navbar-search-btn"
+          class="bg-[#2B6398] hover:bg-[#1f476e] px-3 sm:px-4 flex items-center justify-center transition-colors duration-300">
+          <span class="material-icons text-white" style="font-size:1.25rem">search</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Derecha  -->
+    <div class="hidden sm:flex items-center gap-4 ml-auto flex-shrink-0">
+      <a href="/empleado/reporte"
+        class="text-white/85 hover:text-white text-sm font-medium px-2 py-1 whitespace-nowrap transition-colors duration-200">
+        Reporte
+      </a>
+      <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNELp5g-3eepBPnvYczT0eC85" target="_blank"
+        rel="noopener noreferrer"
+        class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+        aria-label="Ayuda">
+        <span class="material-icons" style="font-size:1.8em">help_outline</span>
+      </a>
+      <form action="/logout" method="POST" class="flex items-center m-0">
+        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+        <button type="submit"
+          class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
+          aria-label="Cerrar sesión">
+          <span class="material-icons" style="font-size:1.8rem">logout</span>
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- Menú desplegable móvil -->
+  <div id="menu-movil-empleado" class="sm:hidden hidden flex-col bg-[#1e2633] px-4 py-2 mt-2">
+    <a href="/empleado/catalogo"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">home</span> Inicio
+    </a>
+    <a href="/empleado/gestion-productos"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">inventory_2</span> Gestión
+    </a>
+    <a href="/empleado/tabla-reservas"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">receipt_long</span> Reservas
+    </a>
+    <a href="/empleado/campanas"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">campaign</span> Campaña
+    </a>
+    <a href="/empleado/reporte"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">bar_chart</span> Reporte
+    </a>
+    <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNELp5g-3eepBPnvYczT0eC85" target="_blank"
+      rel="noopener noreferrer"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">help_outline</span> Ayuda
+    </a>
+    <form action="/logout" method="POST" class="m-0">
+      <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+      <button type="submit"
+        class="w-full text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium">
+        <span class="material-icons text-base">logout</span> Cerrar sesión
+      </button>
+    </form>
+  </div>
+
+  <script src="/js/navbar-search.js"></script>
+  <script src="/js/navbar-empleado.js"></script>
 </nav>

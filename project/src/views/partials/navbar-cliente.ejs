@@ -1,119 +1,184 @@
-<nav class="bg-[#262F3E] py-4">
+<nav class="bg-[#262F3E] py-3 relative">
+  <!-- Fila principal -->
+  <div class="flex items-center w-full px-4 gap-3">
 
-    <div class="flex items-center w-full px-4">
-        <div class="flex items-center gap-4">
-        <a href="/cliente/catalogo"
-            class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-            aria-label="Inicio">
-            <span class="material-icons" style="font-size:1.8rem">home</span>
-        </a>
+    <!-- Hamburguesa (solo móvil) -->
+    <button id="menu-hamburguesa" class="sm:hidden text-white/80 hover:text-white flex items-center justify-center flex-shrink-0 transition-colors duration-200" aria-label="Menú">
+      <span class="material-icons" style="font-size:1.8rem">menu</span>
+    </button>
 
-        <a href="/cliente/historial-reservas"
-            class="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap ml-4">
-            Reservas
-        </a>
-        </div>
-        
-        <!-- Barra de búsqueda centrada -->
-       <div class="absolute left-1/2 -translate-x-1/2">
-          <div class="flex w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
-             <input type="text" id="navbar-search-input" placeholder="Buscar"
-            class="flex-1 px-5 py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
-        <button id="navbar-search-btn"
-            class="bg-[#2B6398] hover:bg-[#1f476e] px-4 flex items-center justify-center transition-colors duration-300">
-            <span class="material-icons text-white" style="font-size:1.25rem">search</span>
-        </button>
-          </div>
-       </div>
-
-        <!-- Derecha: selector de cuenta + iconos + home -->
-        <div class="flex items-center gap-4 ml-auto">
-
-            <!-- Botón de cambio de cuenta -->
-            <% if (concesionarias.length> 1) { %>
-                <details class="relative group">
-                    <summary
-                        class="list-none bg-white text-[#262F3E] px-4 py-2 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 ease-in-out flex items-center gap-1 cursor-pointer">
-                        <% const activaNavbar=concesionarias.find((c)=> {
-                            const cId = c?.id ?? c?.id_concesionaria ?? c;
-                            return String(cId) === String(idConcesionaria);
-                            }); %>
-                            <%= activaNavbar ? (activaNavbar.nombre ?? activaNavbar.nombre_concesionaria ??
-                                activaNavbar.id ?? activaNavbar.id_concesionaria ?? activaNavbar) : (idConcesionaria
-                                ?? 'Cuenta' ) %>
-                                <span class="material-icons text-base">arrow_drop_down</span>
-                    </summary>
-                    <div
-                        class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
-                        <div class="py-2">
-                            <% concesionarias.forEach((c)=> {
-                                const cId = c?.id ?? c?.id_concesionaria ?? c;
-                                const cNombre = c?.nombre ?? c?.nombre_concesionaria ?? cId;
-                                %>
-                                <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
-                                    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-                                    <input type="hidden" name="idConcesionaria" value="<%= cId %>">
-                                    <input type="hidden" name="returnTo"
-                                        value="<%= currentClientePath ?? '/cliente/catalogo' %>">
-                                    <button type="submit"
-                                        class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= String(cId) === String(idConcesionaria) ? 'font-bold bg-slate-50' : 'font-medium' %>">
-                                        <% if (String(cId)===String(idConcesionaria)) { %>
-                                            <span class="absolute left-0 top-0 bottom-0 w-1 bg-[#2B6398]"></span>
-                                            <% } %>
-                                                <span class="truncate">
-                                                    <%= cNombre %>
-                                                </span>
-                                    </button>
-                                </form>
-                                <% }) %>
-                        </div>
-                    </div>
-                </details>
-                <% } %>
-
-
-
-                    <!-- Perfil -->
-                    <a href="/cliente/info-perfil"
-                        class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                        aria-label="Perfil">
-                        <span class="material-icons" style="font-size:1.8rem">account_circle</span>
-                    </a>
-
-                    <!-- Carrito -->
-                    <a href="/cliente/carrito-reserva"
-                        class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                        aria-label="Carrito">
-                        <span class="material-icons" style="font-size:1.8rem">shopping_cart</span>
-                        <% if ((cantidadProductosCarrito ?? 0)> 0) { %>
-                            <span
-                                class="absolute -top-1 -right-2 min-w-[1.5rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center">
-                                <%= cantidadProductosCarrito %>
-                            </span>
-                            <% } %>
-                    </a>
-                    <!-- Ayuda -->
-                    <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNEIFuRN8OMfLhF3Vbo4zlPgx" target="_blank"
-                        rel="noopener noreferrer"
-                        class="text-white/75 hover:text-white flex items-center justify-center p-1 transition-colors duration-200"
-                        aria-label="Ayuda">
-                        <span class="material-icons" style="font-size:1.8em">help_outline</span>
-                    </a>
-        
-
-                    <!-- Logout -->
-                    <form action="/logout" method="POST" class="flex items-center justify-center m-0">
-                        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
-                        <button type="submit"
-                            class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
-                            aria-label="Cerrar sesión">
-                            <span class="material-icons" style="font-size:1.8rem">logout</span>
-                        </button>
-                    </form>
-
-
-
-        </div>
+    <!-- Izquierda: home + reservas (solo desktop) -->
+    <div class="hidden sm:flex items-center gap-4 flex-shrink-0">
+      <a href="/cliente/catalogo"
+        class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+        aria-label="Inicio">
+        <span class="material-icons" style="font-size:1.8rem">home</span>
+      </a>
+      <a href="/cliente/historial-reservas"
+        class="text-white/80 hover:text-white text-sm font-medium transition-colors duration-200 whitespace-nowrap ml-2">
+        Reservas
+      </a>
     </div>
-    <script src="/js/navbar-search.js"></script>
+
+    <!-- Buscador (siempre visible, crece) -->
+    <div class="flex flex-1 justify-center sm:justify-center">
+      <div class="flex w-full sm:w-96 shadow-md rounded-lg overflow-hidden transition-shadow focus-within:shadow-lg">
+        <input type="text" id="navbar-search-input" placeholder="Buscar"
+          class="flex-1 px-4 py-2 sm:py-2.5 text-sm outline-none text-gray-700 placeholder-gray-400" />
+        <button id="navbar-search-btn"
+          class="bg-[#2B6398] hover:bg-[#1f476e] px-3 sm:px-4 flex items-center justify-center transition-colors duration-300">
+          <span class="material-icons text-white" style="font-size:1.25rem">search</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Derecha -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+
+      <!-- Selector de cuenta (solo desktop) -->
+      <% if (concesionarias.length > 1) { %>
+        <details class="relative group hidden sm:block">
+          <summary class="list-none bg-white text-[#262F3E] px-3 py-1.5 text-sm font-semibold rounded-lg shadow-sm hover:bg-gray-200 transition-colors duration-200 flex items-center gap-1 cursor-pointer">
+            <% const activaNavbar = concesionarias.find((c) => {
+              const cId = c?.id ?? c?.id_concesionaria ?? c;
+              return String(cId) === String(idConcesionaria);
+            }); %>
+            <span class="truncate max-w-[120px]">
+              <%= activaNavbar ? (activaNavbar.nombre ?? activaNavbar.nombre_concesionaria ?? activaNavbar.id ?? activaNavbar.id_concesionaria ?? activaNavbar) : (idConcesionaria ?? 'Cuenta') %>
+            </span>
+            <span class="material-icons text-base flex-shrink-0">arrow_drop_down</span>
+          </summary>
+          <div class="absolute right-0 mt-3 w-64 bg-white rounded-xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.1),0_8px_10px_-6px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden z-50">
+            <div class="py-2">
+              <% concesionarias.forEach((c) => {
+                const cId = c?.id ?? c?.id_concesionaria ?? c;
+                const cNombre = c?.nombre ?? c?.nombre_concesionaria ?? cId;
+              %>
+                <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+                  <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                  <input type="hidden" name="idConcesionaria" value="<%= cId %>">
+                  <input type="hidden" name="returnTo" value="<%= currentClientePath ?? '/cliente/catalogo' %>">
+                  <button type="submit"
+                    class="w-full text-left px-5 py-2.5 text-sm text-[#262F3E] hover:bg-slate-50 transition-colors duration-200 flex items-center gap-2 relative <%= String(cId) === String(idConcesionaria) ? 'font-bold bg-slate-50' : 'font-medium' %>">
+                    <% if (String(cId) === String(idConcesionaria)) { %>
+                      <span class="absolute left-0 top-0 bottom-0 w-1 bg-[#2B6398]"></span>
+                    <% } %>
+                    <span class="truncate"><%= cNombre %></span>
+                  </button>
+                </form>
+              <% }) %>
+            </div>
+          </div>
+        </details>
+      <% } %>
+
+      <!-- Carrito (siempre visible) -->
+      <a href="/cliente/carrito-reserva"
+        class="relative text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+        aria-label="Carrito">
+        <span class="material-icons" style="font-size:1.8rem">shopping_cart</span>
+        <% if ((cantidadProductosCarrito ?? 0) > 0) { %>
+          <span class="absolute -top-1 -right-2 min-w-[1.5rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-semibold flex items-center justify-center">
+            <%= cantidadProductosCarrito %>
+          </span>
+        <% } %>
+      </a>
+
+      <!-- Perfil (solo desktop) -->
+      <a href="/cliente/info-perfil"
+        class="hidden sm:flex text-white/80 hover:text-white items-center justify-center transition-colors duration-200"
+        aria-label="Perfil">
+        <span class="material-icons" style="font-size:1.8rem">account_circle</span>
+      </a>
+
+      <!-- Ayuda (solo desktop) -->
+      <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNEIFuRN8OMfLhF3Vbo4zlPgx" target="_blank"
+        rel="noopener noreferrer"
+        class="hidden sm:flex text-white/75 hover:text-white items-center justify-center p-1 transition-colors duration-200"
+        aria-label="Ayuda">
+        <span class="material-icons" style="font-size:1.8em">help_outline</span>
+      </a>
+
+      <!-- Logout (solo desktop) -->
+      <form action="/logout" method="POST" class="hidden sm:flex items-center justify-center m-0">
+        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+        <button type="submit"
+          class="text-white/80 hover:text-white flex items-center justify-center transition-colors duration-200"
+          aria-label="Cerrar sesión">
+          <span class="material-icons" style="font-size:1.8rem">logout</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Menú desplegable móvil -->
+  <div id="menu-movil" class="sm:hidden hidden flex-col bg-[#1e2633] px-4 py-2 mt-2">
+
+    <a href="/cliente/catalogo"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">home</span> Inicio
+    </a>
+
+    <a href="/cliente/historial-reservas"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">receipt_long</span> Reservas
+    </a>
+
+    <a href="/cliente/info-perfil"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">account_circle</span> Perfil
+    </a>
+
+    <!-- Selector de cuenta en móvil -->
+    <% if (concesionarias.length > 1) { %>
+      <div class="border-b border-white/10 py-3">
+        <p class="text-white/50 text-xs mb-2 uppercase tracking-wide">Cuenta</p>
+        <% concesionarias.forEach((c) => {
+          const cId = c?.id ?? c?.id_concesionaria ?? c;
+          const cNombre = c?.nombre ?? c?.nombre_concesionaria ?? cId;
+        %>
+          <form action="/cliente/cambiar-cuenta" method="POST" class="m-0">
+            <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+            <input type="hidden" name="idConcesionaria" value="<%= cId %>">
+            <input type="hidden" name="returnTo" value="<%= currentClientePath ?? '/cliente/catalogo' %>">
+            <button type="submit"
+              class="w-full text-left py-2 text-sm flex items-center gap-2 relative <%= String(cId) === String(idConcesionaria) ? 'text-white font-bold' : 'text-white/70 font-medium' %>">
+              <% if (String(cId) === String(idConcesionaria)) { %>
+                <span class="material-icons text-[#2B6398] text-base">check</span>
+              <% } else { %>
+                <span class="w-4"></span>
+              <% } %>
+              <%= cNombre %>
+            </button>
+          </form>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <a href="https://www.youtube.com/playlist?list=PL6GZq8_TxNEIFuRN8OMfLhF3Vbo4zlPgx" target="_blank"
+      rel="noopener noreferrer"
+      class="text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium border-b border-white/10">
+      <span class="material-icons text-base">help_outline</span> Ayuda
+    </a>
+
+    <form action="/logout" method="POST" class="m-0">
+      <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+      <button type="submit"
+        class="w-full text-white/80 hover:text-white flex items-center gap-3 py-3 text-sm font-medium">
+        <span class="material-icons text-base">logout</span> Cerrar sesión
+      </button>
+    </form>
+  </div>
+
+  <script src="/js/navbar-search.js"></script>
+  <script>
+    (function () {
+      const btn = document.getElementById('menu-hamburguesa');
+      const menu = document.getElementById('menu-movil');
+      btn.addEventListener('click', function () {
+        menu.classList.toggle('hidden');
+        menu.classList.toggle('flex');
+      });
+    })();
+  </script>
 </nav>

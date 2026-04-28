@@ -28,7 +28,8 @@ app.use(helmet({
         "https://cdn.jsdelivr.net",
         "'sha256-T9U76Q64V8htdr9TY5R6AS4UStIKoMU68kezfHSWxNI='",
         "'sha256-aB5iLhMAjZCWez56HD1OHbGyHnDFgCCx7kojYB0kY2k='" ,
-        "'sha256-d0w2hHNrrTEZeMac//3+fgNIIKZBK3MU1r81Y1rdDkA='"
+        "'sha256-d0w2hHNrrTEZeMac//3+fgNIIKZBK3MU1r81Y1rdDkA='",
+        "'sha256-XsVZ6G64zkr2OlHqOgGkaTzQHcXmNo63exFYB+EZ8dM='"
       ],
     },
   },
