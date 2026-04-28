@@ -41,46 +41,58 @@
         
         <!-- Artículos -->
         <div class="mb-6">
-          <h3 class="font-semibold text-gray-800 mb-3">Artículos</h3>
+          <h3 class="font-semibold text-gray-800 mb-3">Unidad</h3>
           <div class="space-y-2">
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <input type="checkbox" value="rollo" data-filter-group="unidad" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
               <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Rollos</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <input type="checkbox" value="kit" data-filter-group="unidad" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
               <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Kits</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Pinturas</span>
+              <input type="checkbox" value="cubeta" data-filter-group="unidad" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Cubetas / Galones</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Vestimenta</span>
+              <input type="checkbox" value="pieza" data-filter-group="unidad" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Piezas</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" value="caja" data-filter-group="unidad" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Cajas</span>
             </label>
           </div>
         </div>
 
         <!-- Categorías -->
         <div>
-          <h3 class="font-semibold text-gray-800 mb-3">Categorías</h3>
+          <h3 class="font-semibold text-gray-800 mb-3">Tipo de producto</h3>
           <div class="space-y-2">
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Paraguas</span>
+              <input type="checkbox" value="pintura" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Pinturas</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Mochilas</span>
+              <input type="checkbox" value="cepillo" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Cepillos</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Termos</span>
+              <input type="checkbox" value="recubrimiento" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Recubrimientos</span>
             </label>
             <label class="flex items-center cursor-pointer">
-              <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
-              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Otros Accesorios</span>
+              <input type="checkbox" value="esmalte" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Esmaltes</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" value="limpiador" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Limpiadores</span>
+            </label>
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" value="sellador" data-filter-group="categoria" class="w-4 h-4 rounded border-gray-300 text-[#007185] focus:ring-[#007185]">
+              <span class="ml-2 text-sm text-gray-700 hover:text-[#007185]">Selladores</span>
             </label>
           </div>
         </div>
@@ -116,7 +128,10 @@
           <% productos.forEach((producto) => { %>
             <% const idProducto = producto.id_producto; %>
             <% const urlDetalle = idProducto != null && idProducto !== '' ? `/empleado/detalle-producto/${idProducto}` : null; %>
-            <div data-producto-card class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
+            <div data-producto-card 
+                 data-unidad="<%= (producto.unidad_venta_producto || '').toLowerCase() %>" 
+                 data-search="<%= ((producto.nombre_producto || '') + ' ' + (producto.descripcion_producto || '')).toLowerCase() %>"
+                 class="flex flex-col h-full bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-shadow">
               <a href="<%= urlDetalle || '#' %>" class="relative w-full aspect-square bg-gray-50 rounded-md mb-3 flex items-center justify-center p-4 block<%= urlDetalle ? '' : ' pointer-events-none opacity-70' %>" aria-disabled="<%= urlDetalle ? 'false' : 'true' %>">
                 <img
                   src="<%= producto.foto_producto || 'https://placehold.co/400x400/ffffff/cccccc?text=Sin+imagen' %>"
@@ -256,5 +271,6 @@
  <script src="/js/catalogo-preventa-countdown.js"></script>
  <script src="/js/catalogo-paginacion.js"></script>
  <script src="/js/catalogo-productos.js"></script>
+ <script src="/js/filtros-catalogo.js"></script>
 </body>
 </html>

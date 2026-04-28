@@ -3,10 +3,11 @@ const contenedorPaginacion = document.querySelector('[data-catalogo-paginacion]'
 
 if (gridCatalogo && contenedorPaginacion) {
   const tarjetas = Array.from(gridCatalogo.querySelectorAll('[data-producto-card]'));
+  let tarjetasVisibles = tarjetas.filter(t => t.dataset.filteredOut !== 'true');
   const tamanioPagina = Number(gridCatalogo.dataset.pageSize) || 20;
   let paginaActual = 1;
 
-  const totalPaginas = () => Math.max(1, Math.ceil(tarjetas.length / tamanioPagina));
+  const totalPaginas = () => Math.max(1, Math.ceil(tarjetasVisibles.length / tamanioPagina));
 
   const crearBoton = (texto, {activo = false, deshabilitado = false, onClick} = {}) => {
     const boton = document.createElement('button');
@@ -33,15 +34,18 @@ if (gridCatalogo && contenedorPaginacion) {
   };
 
   const renderPagina = ({desplazar = false} = {}) => {
+    // Hide everything first
+    tarjetas.forEach(tarjeta => tarjeta.style.display = 'none');
+
     const inicio = (paginaActual - 1) * tamanioPagina;
     const fin = inicio + tamanioPagina;
 
-    tarjetas.forEach((tarjeta, index) => {
+    tarjetasVisibles.forEach((tarjeta, index) => {
       tarjeta.style.display = index >= inicio && index < fin ? '' : 'none';
     });
 
     contenedorPaginacion.innerHTML = '';
-    if (tarjetas.length <= tamanioPagina) return;
+    if (tarjetasVisibles.length <= tamanioPagina) return;
 
     contenedorPaginacion.appendChild(
       crearBoton('Anterior', {
@@ -82,6 +86,12 @@ if (gridCatalogo && contenedorPaginacion) {
     if (desplazar) {
       desplazarAlInicioProductos();
     }
+  };
+
+  window.actualizarPaginacion = () => {
+    tarjetasVisibles = tarjetas.filter(t => t.dataset.filteredOut !== 'true');
+    paginaActual = 1;
+    renderPagina();
   };
 
   renderPagina();
