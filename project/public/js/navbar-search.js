@@ -1,7 +1,12 @@
 (function () {
   const input = document.getElementById('navbar-search-input');
   const btn = document.getElementById('navbar-search-btn');
-  const enCatalogo = window.location.pathname === '/cliente/catalogo';
+  const enCatalogo = window.location.pathname === '/cliente/catalogo' || 
+                   window.location.pathname === '/empleado/catalogo';
+
+  const rutaCatalogo = window.location.pathname.startsWith('/cliente') 
+  ? '/cliente/catalogo' 
+  : '/empleado/catalogo';
 
   // Al cargar el catálogo, leer ?q= y aplicar filtro
   if (enCatalogo) {
@@ -31,13 +36,13 @@
   });
 
   function buscar() {
-    const q = input.value.trim();
-    if (enCatalogo) {
-      filtrarProductos(q);
-    } else {
-      window.location.href = '/cliente/catalogo?q=' + encodeURIComponent(q);
-    }
+  const q = input.value.trim();
+  if (enCatalogo) {
+    filtrarProductos(q);
+  } else {
+    window.location.href = rutaCatalogo + '?q=' + encodeURIComponent(q);
   }
+}
 
   function filtrarProductos(q) {
   const termino = q.toLowerCase().trim();
