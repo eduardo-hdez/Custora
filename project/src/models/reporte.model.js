@@ -91,3 +91,27 @@ export async function fetchSingleTopSucursal() {
 
   return data?.[0] ?? 0;
 }
+
+export async function fetchPromedioReservasPorDia() {
+  const { data, error } = await supabase.rpc('get_promedio_reservas_por_dia_semana');
+
+  if (error) throw error;
+
+  // Garantizar que los 7 días siempre aparezcan aunque no haya datos
+  const dias = [
+    { dia_semana: 1, nombre_dia: 'Lun' },
+    { dia_semana: 2, nombre_dia: 'Mar' },
+    { dia_semana: 3, nombre_dia: 'Mié' },
+    { dia_semana: 4, nombre_dia: 'Jue' },
+    { dia_semana: 5, nombre_dia: 'Vie' },
+    { dia_semana: 6, nombre_dia: 'Sáb' },
+    { dia_semana: 7, nombre_dia: 'Dom' },
+  ];
+
+  const mapa = new Map((data || []).map(d => [d.dia_semana, d]));
+
+  return dias.map(d => ({
+    nombreDia: d.nombre_dia,
+    promedio: Number(mapa.get(d.dia_semana)?.promedio_reservas) || 0,
+  }));
+}

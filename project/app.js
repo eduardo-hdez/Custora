@@ -22,6 +22,13 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       imgSrc: ["'self'", 'data:', 'https:'],
+      scriptSrc: [
+        "'self'",
+        "https://cdnjs.cloudflare.com",
+        "https://cdn.jsdelivr.net",
+        "'sha256-T9U76Q64V8htdr9TY5R6AS4UStIKoMU68kezfHSWxNI='",
+        "'sha256-aB5iLhMAjZCWez56HD1OHbGyHnDFgCCx7kojYB0kY2k='" 
+      ],
     },
   },
 }));
